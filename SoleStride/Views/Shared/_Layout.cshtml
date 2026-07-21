@@ -27,6 +27,37 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <div class="ms-auto">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-dark dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2 3a2 2 0 0 1-2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1 2-2"/>
+                                </svg>
+                                @if (Context.Session.GetString("Username") != null)
+                                {
+                                    @Context.Session.GetString("Username")
+                                }
+                                else
+                                {
+                                    <span>Account</span>
+                                }
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @if (Context.Session.GetString("Username") != null)
+                                {
+                                    <li><span class="dropdown-item-text">Hello, @Context.Session.GetString("Username")!</span></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                                }
+                                else
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>

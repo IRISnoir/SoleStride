@@ -9,8 +9,8 @@ namespace SoleStride.Models
         [MaxLength(100)]
         public string Username { get; set; }
 
-        [Required]
         [PasswordPropertyText]
+        [Required]
         public string Password { get; set; }
 
         public enum UserRole
