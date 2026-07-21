@@ -6,7 +6,7 @@ namespace SoleStride.Models
     public class User
     {
         [Key]
-        [MaxLength(255)]
+        [MaxLength(100)]
         public string Username { get; set; }
 
         [Required]
