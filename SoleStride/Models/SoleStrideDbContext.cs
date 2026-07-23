@@ -8,5 +8,7 @@ namespace SoleStride.Models
         {
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<Shoes> Shoes { get; set; }
+        public DbSet<ShoeStock> ShoeStocks { get; set; }
     }
 }
