@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoleStride.Models;
 
@@ -11,9 +12,11 @@ using SoleStride.Models;
 namespace SoleStride.Migrations
 {
     [DbContext(typeof(SoleStrideDbContext))]
-    partial class SoleStrideDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260729020825_AddUserProfileFields")]
+    partial class AddUserProfileFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,72 +39,6 @@ namespace SoleStride.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Category");
-                });
-
-            modelBuilder.Entity("SoleStride.Models.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ShippingAddress")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("OrderId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
-                {
-                    b.Property<int>("OrderDetailId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"));
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderDetailId");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>
@@ -225,25 +162,6 @@ namespace SoleStride.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
-                {
-                    b.HasOne("SoleStride.Models.Order", "Order")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SoleStride.Models.Shoes", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>
                 {
                     b.HasOne("SoleStride.Models.Shoes", "Shoes")
@@ -264,11 +182,6 @@ namespace SoleStride.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("SoleStride.Models.Order", b =>
-                {
-                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }

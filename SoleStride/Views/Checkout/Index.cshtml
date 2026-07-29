@@ -1,0 +1,63 @@
+@model List<SoleStride.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="page-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
+        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+        <path d="M11.354 5.646a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708l6-6a.5.5 0 0 1 .708 0"/>
+    </svg>
+    <h1>Checkout</h1>
+</div>
+
+@if (TempData["CheckoutError"] != null)
+{
+    <div class="alert alert-danger alert-custom">@TempData["CheckoutError"]</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="form-card">
+            <div class="form-section">
+                <div class="form-section-title">Shipping Information</div>
+                <form asp-action="PlaceOrder" method="post">
+                    <div class="mb-3">
+                        <label for="shippingAddress" class="form-label-custom">Shipping Address</label>
+                        <textarea name="shippingAddress" id="shippingAddress" class="form-control form-control-custom" rows="3" placeholder="Enter your full address" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label-custom">Phone Number</label>
+                        <input type="text" name="phone" id="phone" class="form-control form-control-custom" placeholder="Phone number" />
+                    </div>
+                    <button type="submit" class="btn btn-submit">Place Order</button>
+                    <a asp-controller="Cart" asp-action="Index" class="btn btn-back">Back to Cart</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="form-card">
+            <div class="form-section">
+                <div class="form-section-title">Order Summary</div>
+                @foreach (var item in Model)
+                {
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <span class="fw-medium">@item.ShoesName</span>
+                            <span class="text-muted ms-1">x @item.Quantity</span>
+                        </div>
+                        <span>$@item.Subtotal.ToString("F2")</span>
+                    </div>
+                }
+                <hr />
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="h5 mb-0">Total</span>
+                    <span class="h5 mb-0 fw-bold">$@Model.Sum(i => i.Subtotal).ToString("F2")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -29,6 +29,28 @@ namespace SoleStride.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Search(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return RedirectToAction("Index");
+            }
+
+            var results = await _context.Shoes
+                .Include(s => s.Category)
+                .Where(s => s.ShoesName.Contains(query)
+                    || (s.Description != null && s.Description.Contains(query))
+                    || (s.Category != null && s.Category.CategoryName.Contains(query))
+                    || s.ShoesColor.Contains(query)
+                    || s.Material.Contains(query))
+                .OrderBy(s => s.ShoesName)
+                .ToListAsync();
+
+            ViewBag.Query = query;
+            return View(results);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

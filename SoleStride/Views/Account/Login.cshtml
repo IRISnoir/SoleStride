@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Sign In";
     Layout = null;
 }
 
@@ -13,58 +13,96 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <div class="auth-page">
-        <div class="auth-card">
-            <div class="auth-header">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+    <div class="auth-split">
+        <div class="auth-brand">
+            <div class="auth-brand-content">
+                <svg class="auth-brand-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                 </svg>
-                <h1>Welcome back</h1>
-                <p>Sign in to your SoleStride account</p>
+                <h1 class="auth-brand-title">SoleStride</h1>
+                <p class="auth-brand-tagline">Step into style with premium footwear crafted for every journey.</p>
+                <div class="auth-brand-features">
+                    <div class="auth-brand-feature">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                        <span>Curated collections for every style</span>
+                    </div>
+                    <div class="auth-brand-feature">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                        <span>Fast & free shipping on orders over $50</span>
+                    </div>
+                    <div class="auth-brand-feature">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                        <span>Easy 30-day returns, no questions asked</span>
+                    </div>
+                </div>
             </div>
-            <div class="auth-body">
+        </div>
+
+        <div class="auth-form-panel">
+            <div class="auth-form-inner">
+                <div class="auth-form-header">
+                    <a asp-controller="Home" asp-action="Index" class="auth-back-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                        Back to Home
+                    </a>
+                    <h1>Welcome back</h1>
+                    <p>Sign in to your SoleStride account to continue.</p>
+                </div>
+
                 @if (ViewBag.Error != null)
                 {
-                    <div class="alert alert-danger alert-custom">@ViewBag.Error</div>
+                    <div class="auth-alert">@ViewBag.Error</div>
                 }
+
                 <form asp-action="Login" method="post">
-                    <div class="form-floating-custom">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required autofocus />
+                    <div class="auth-form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="auth-input" id="username" name="username" placeholder="Enter your username" required autofocus />
                     </div>
-                    <div class="form-floating-custom">
-                        <label for="password" class="form-label">Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="loginPassword" name="password" required />
-                            <button class="btn btn-outline-secondary" type="button" id="toggleLoginPassword" style="border-radius:0 12px 12px 0;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" id="loginEyeIcon">
-                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.607A10 10 0 0 0 8 5.5c1.757 0 3.35.56 4.65 1.56a13 13 0 0 1 1.66 2.607C12.797 10.953 10.586 11.5 8 11.5s-4.797-.547-6.17-1.5z"/>
-                                    <path d="M8 12.5a5 5 0 0 1-4.396-2.106c-.155.205-.372.44-.636.707A6.5 6.5 0 0 0 8 13.5c.78 0 1.52-.12 2.2-.334a8.96 8.96 0 0 1-.636-.707A5 5 0 0 1 8 12.5"/>
+
+                    <div class="auth-form-group">
+                        <label for="password">Password</label>
+                        <div class="auth-input-group">
+                            <input type="password" class="auth-input" id="loginPassword" name="password" placeholder="Enter your password" required />
+                            <button class="auth-input-group-btn" type="button" id="toggleLoginPassword">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" id="loginEyeIcon">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
                                 </svg>
                             </button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-auth">Sign In</button>
-                </form>
-                <div class="auth-footer">
-                    Don't have an account? <a asp-action="Register">Create one</a>
-</div>
-</div>
-</div>
 
-<script>
-document.getElementById('toggleLoginPassword').addEventListener('click', function () {
-    var passwordInput = document.getElementById('loginPassword');
-    var eyeIcon = document.getElementById('loginEyeIcon');
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.innerHTML = '<path d="M10.793 2.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1 0 1.414l-7 7a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414l7-7zm-2 9.707a3 3 0 1 1 5.657-5.657 3 3 0 0 1-5.657 5.657z"/><path d="M1.173 8a13 13 0 0 1 1.66-2.607A10 10 0 0 0 8 5.5c1.757 0 3.35.56 4.65 1.56a13 13 0 0 1 1.66 2.607C12.797 10.953 10.586 11.5 8 11.5s-4.797-.547-6.17-1.5z"/>';
-    } else {
-        passwordInput.type = 'password';
-        eyeIcon.innerHTML = '<path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.607A10 10 0 0 0 8 5.5c1.757 0 3.35.56 4.65 1.56a13 13 0 0 1 1.66 2.607C12.797 10.953 10.586 11.5 8 11.5s-4.797-.547-6.17-1.5z"/><path d="M8 12.5a5 5 0 0 1-4.396-2.106c-.155.205-.372.44-.636.707A6.5 6.5 0 0 0 8 13.5c.78 0 1.52-.12 2.2-.334a8.96 8.96 0 0 1-.636-.707A5 5 0 0 1 8 12.5"/>';
-    }
-});
-</script>
+                    <button type="submit" class="auth-btn">Sign In</button>
+                </form>
+
+                <div class="auth-footer-text">
+                    Don't have an account? <a asp-action="Register">Create one</a>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('toggleLoginPassword').addEventListener('click', function () {
+            var passwordInput = document.getElementById('loginPassword');
+            var eyeIcon = document.getElementById('loginEyeIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            }
+        });
+    </script>
 </body>
 </html>

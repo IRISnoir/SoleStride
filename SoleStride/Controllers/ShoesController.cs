@@ -40,6 +40,9 @@ public class ShoesController : Controller
     // GET: SHOESS/Create
     public IActionResult Create()
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         ViewBag.Categories = _context.Category.ToList();
         return View();
     }
@@ -51,6 +54,9 @@ public class ShoesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("ProductId,ShoesName,Category,CategoryId,ShoesGender,ShoesSize,ShoesColor,Material,Description,Price,SalePercentage")] Shoes shoes, IFormFile imageFile)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         if (ModelState.IsValid)
         {
             var colorCode = string.IsNullOrWhiteSpace(shoes.ShoesColor) ? "XXX" : shoes.ShoesColor.Substring(0, Math.Min(3, shoes.ShoesColor.Length)).ToUpper();
@@ -84,6 +90,9 @@ public class ShoesController : Controller
     // GET: SHOESS/Edit/5
     public async Task<IActionResult> Edit(System.Guid? productid)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         if (productid == null)
         {
             return NotFound();
@@ -104,6 +113,9 @@ public class ShoesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(System.Guid? productid, [Bind("ProductId,ShoesName,SkuId,Category,CategoryId,ShoesGender,ShoesSize,ShoesColor,Material,Description,Price,SalePercentage")] Shoes shoes)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         if (productid != shoes.ProductId)
         {
             return NotFound();
@@ -135,6 +147,9 @@ public class ShoesController : Controller
     // GET: SHOESS/Delete/5
     public async Task<IActionResult> Delete(System.Guid? productid)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         if (productid == null)
         {
             return NotFound();
@@ -155,6 +170,9 @@ public class ShoesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(System.Guid? productid)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         var shoes = await _context.Shoes.FindAsync(productid);
         if (shoes != null)
         {
