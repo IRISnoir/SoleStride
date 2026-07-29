@@ -64,7 +64,7 @@ else
                             </div>
                         }
                         <div class="badge-overlay">
-                            <span class="badge bg-dark bg-opacity-75 text-white">@item.Category.CategoryName</span>
+                            <span class="badge bg-dark bg-opacity-75 text-white">@(item.Category?.CategoryName ?? "N/A")</span>
                         </div>
                         @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
                         {
@@ -110,9 +110,16 @@ else
                                 <span class="price-regular">$@item.Price.ToString("F2")</span>
                             }
                         </div>
-                        <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark btn-view">View Details</a>
+                        <div class="d-flex gap-2 mt-2">
+                            <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark btn-view flex-fill">View Details</a>
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display:inline;">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-submit" style="white-space:nowrap;">Add to Cart</button>
+                            </form>
+                        </div>
                     </div>
-                    @if (Context.Session.GetString("Role") == "2")
+                    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
                     {
                         <div class="card-footer-admin">
                             <div class="d-flex gap-2">

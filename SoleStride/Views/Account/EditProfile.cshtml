@@ -1,0 +1,158 @@
+@model SoleStride.Models.User
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<form asp-action="EditProfile" method="post" enctype="multipart/form-data" id="editProfileForm">
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="form-card text-center">
+            <div class="position-relative d-inline-block">
+                <div id="avatarPreviewContainer">
+                    @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                    {
+                        <img src="@Model.AvatarUrl" id="avatarPreview" alt="@Model.Username" class="rounded-circle" style="width:120px; height:120px; object-fit:cover; border:4px solid #f1f3f5;" />
+                    }
+                    else
+                    {
+                        <div id="avatarPreview" class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width:120px; height:120px; background:linear-gradient(135deg, #212529, #495057);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#adb5bd" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                            </svg>
+                        </div>
+                    }
+                </div>
+                <label for="avatarFileInput" class="btn btn-sm btn-outline-secondary rounded-circle position-absolute bottom-0 end-0" style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; background:#fff; border:2px solid #fff; cursor:pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168z"/>
+                    </svg>
+                </label>
+                <input type="file" name="avatarFile" id="avatarFileInput" accept="image/*" style="display:none;" onchange="previewAvatar(event)" />
+            </div>
+            <h4 class="mt-3 mb-0 fw-bold">@(Model.FirstName ?? Model.Username)</h4>
+            <p class="text-muted mb-0">@@@Model.Username</p>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="form-card">
+
+                @if (TempData["ProfileError"] != null)
+                {
+                    <div class="alert alert-danger alert-custom">@TempData["ProfileError"]</div>
+                }
+
+                <div class="form-section">
+                    <div class="form-section-title">Personal Information</div>
+                    <div class="mb-3">
+                        <label class="form-label-custom">Username</label>
+                        <input class="form-control form-control-custom" value="@Model.Username" disabled style="background:#f8f9fa; color:#6c757d;" />
+                        <small class="text-muted">Username cannot be changed.</small>
+                    </div>
+                    <div class="form-row">
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label-custom">First Name</label>
+                            <input type="text" name="firstName" id="firstName" class="form-control form-control-custom" value="@Model.FirstName" placeholder="First name" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label-custom">Last Name</label>
+                            <input type="text" name="lastName" id="lastName" class="form-control form-control-custom" value="@Model.LastName" placeholder="Last name" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="mb-3">
+                            <label for="phone" class="form-label-custom">Phone</label>
+                            <input type="text" name="phone" id="phone" class="form-control form-control-custom" value="@Model.Phone" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailAddress" class="form-label-custom">Email</label>
+                            <input type="email" name="emailAddress" id="emailAddress" class="form-control form-control-custom" value="@Model.EmailAddress" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="mb-3">
+                            <label for="birthdate" class="form-label-custom">Birthdate</label>
+                            <input type="date" name="birthdate" id="birthdate" class="form-control form-control-custom" value="@Model.Birthdate.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="userGender" class="form-label-custom">Gender</label>
+                            @{
+                                var isMale = Model.UserGender == SoleStride.Models.User.Gender.Male;
+                                var isFemale = Model.UserGender == SoleStride.Models.User.Gender.Female;
+                                var isOther = Model.UserGender == SoleStride.Models.User.Gender.Other;
+                            }
+                            <select name="userGender" id="userGender" class="form-control form-control-custom">
+                                <option value="Male" selected="@isMale">Male</option>
+                                <option value="Female" selected="@isFemale">Female</option>
+                                <option value="Other" selected="@isOther">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 pt-3" style="border-top:1px solid #f1f3f5;">
+                    <button type="submit" class="btn btn-submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                        </svg>
+                        Save Changes
+                    </button>
+                    <a asp-action="Profile" class="btn btn-back">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-card mt-4">
+            <div class="form-section mb-0">
+                <div class="form-section-title">Change Password</div>
+
+                @if (TempData["PasswordSuccess"] != null)
+                {
+                    <div class="alert alert-success alert-custom">@TempData["PasswordSuccess"]</div>
+                }
+                @if (TempData["PasswordError"] != null)
+                {
+                    <div class="alert alert-danger alert-custom">@TempData["PasswordError"]</div>
+                }
+
+                <form asp-action="ChangePassword" method="post">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label-custom">Current Password</label>
+                        <input type="password" name="currentPassword" id="currentPassword" class="form-control form-control-custom" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label-custom">New Password</label>
+                            <input type="password" name="newPassword" id="newPassword" class="form-control form-control-custom" required minlength="6" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label-custom">Confirm Password</label>
+                            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control form-control-custom" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                        Update Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewAvatar(event) {
+    var file = event.target.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var container = document.getElementById('avatarPreviewContainer');
+            container.innerHTML = '<img src="' + e.target.result + '" class="rounded-circle" style="width:120px; height:120px; object-fit:cover; border:4px solid #f1f3f5;" />';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>

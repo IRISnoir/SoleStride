@@ -39,6 +39,9 @@ public class CategoryController : Controller
     // GET: CATEGORYS/Create
     public async Task<IActionResult> Create()
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         ViewBag.Categories = await _context.Category.ToListAsync();
         return View(new Category());
     }
@@ -50,6 +53,9 @@ public class CategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] Category category)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         if (ModelState.IsValid)
         {
             _context.Add(category);
@@ -64,6 +70,9 @@ public class CategoryController : Controller
     // GET: CATEGORYS/Delete/5
     public async Task<IActionResult> Delete(string? categoryid)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         if (categoryid == null)
         {
             return NotFound();
@@ -84,6 +93,9 @@ public class CategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string? categoryid)
     {
+        var role = HttpContext.Session.GetString("Role");
+        if (role != "Admin" && role != "Staff")
+            return RedirectToAction("Index", "Home");
         var category = await _context.Category.FindAsync(categoryid);
         if (category != null)
         {
