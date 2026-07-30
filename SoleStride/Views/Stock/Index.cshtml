@@ -52,10 +52,13 @@
                                     <button type="submit" class="btn btn-sm btn-outline-success">Sold</button>
                                 </form>
                             }
-                            <form asp-action="Delete" method="post" style="display:inline;">
-                                <input type="hidden" name="stockId" value="@item.StockId" />
-                                <button type="submit" class="btn-delete-sm">Remove</button>
-                            </form>
+                            @if (Context.Session.GetString("Role") == "Admin")
+                            {
+                                <form asp-action="Delete" method="post" style="display:inline;">
+                                    <input type="hidden" name="stockId" value="@item.StockId" />
+                                    <button type="submit" class="btn-delete-sm">Remove</button>
+                                </form>
+                            }
                         </div>
                     </td>
                 </tr>

@@ -16,7 +16,7 @@ public class ShoesController : Controller
     // GET: SHOESS
     public async Task<IActionResult> Index()    
     {
-        return View(await _context.Shoes.ToListAsync());
+        return View(await _context.Shoes.Include(s => s.Category).ToListAsync());
     }
 
     // GET: SHOESS/Details/5
@@ -137,7 +137,7 @@ public class ShoesController : Controller
                 else
                 {
                     throw;
-                }
+            }
             }
             return RedirectToAction(nameof(Index));
         }
@@ -148,7 +148,7 @@ public class ShoesController : Controller
     public async Task<IActionResult> Delete(System.Guid? id)
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
+        if (role != "Admin")
             return RedirectToAction("Index", "Home");
         if (id == null)
         {
@@ -171,7 +171,7 @@ public class ShoesController : Controller
     public async Task<IActionResult> DeleteConfirmed(System.Guid? id)
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
+        if (role != "Admin")
             return RedirectToAction("Index", "Home");
         var shoes = await _context.Shoes.FindAsync(id);
         if (shoes != null)

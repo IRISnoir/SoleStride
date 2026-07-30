@@ -55,7 +55,7 @@ public class StockController : Controller
     public async Task<IActionResult> Delete(int stockId)
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff") return RedirectToAction("Index", "Home");
+        if (role != "Admin") return RedirectToAction("Index", "Home");
 
         var stock = await _context.ShoeStocks.FindAsync(stockId);
         if (stock != null)

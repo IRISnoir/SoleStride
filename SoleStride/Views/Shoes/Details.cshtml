@@ -100,6 +100,11 @@
                         <input type="hidden" name="quantity" value="1" />
                         <button type="submit" class="btn btn-primary btn-add-cart">Add to Cart</button>
                     </form>
+                    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-primary ms-2">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-outline-danger ms-2">Delete</a>
+                    }
                     <a asp-controller="Home" asp-action="Index" class="btn btn-back ms-3">Back to Shoe Collection</a>
                 </div>
             </div>

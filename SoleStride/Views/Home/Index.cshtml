@@ -124,7 +124,10 @@ else
                         <div class="card-footer-admin">
                             <div class="d-flex gap-2">
                                 <a asp-controller="Shoes" asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary flex-fill">Edit</a>
-                                <a asp-controller="Shoes" asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger flex-fill">Delete</a>
+                                @if (Context.Session.GetString("Role") == "Admin")
+                                {
+                                    <a asp-controller="Shoes" asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger flex-fill">Delete</a>
+                                }
                             </div>
                         </div>
                     }
