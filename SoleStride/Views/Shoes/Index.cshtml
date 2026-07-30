@@ -79,7 +79,14 @@
                 @Html.DisplayFor(model => item.Material)
             </td>
             <td>
-                @Html.DisplayFor(model => item.Description)
+                @if (item.Description.Length > 50)
+                {
+                        @(item.Description.Substring(0, 50) + "...")
+                    }
+                else
+                {
+                    @Html.DisplayFor(model => item.Description)
+                }
             </td>
             <td>
                 @Html.DisplayFor(model => item.Price)

@@ -1236,6 +1236,46 @@ select.auth-input {
   color: #ff6b6b !important;
 }
 
+.sidebar-dropdown {
+  background: #2d1810;
+  border: 1px solid rgba(250,163,7,0.15);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  padding: 0.35rem 0;
+  min-width: 180px;
+  margin-top: 0.5rem;
+}
+
+.sidebar-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 1rem;
+  clear: both;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #d4c5b2;
+  text-align: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  transition: all 0.2s ease;
+}
+
+.sidebar-dropdown-item:hover,
+.sidebar-dropdown-item:focus {
+  color: #fff;
+  background: rgba(250,163,7,0.15);
+  text-decoration: none;
+}
+
+.sidebar-dropdown-divider {
+  height: 0;
+  margin: 0.4rem 0;
+  overflow: hidden;
+  border-top: 1px solid rgba(250,163,7,0.12);
+}
+
 .sidebar-footer-links {
   display: flex;
   flex-direction: column;
