@@ -111,11 +111,11 @@ else
                             }
                         </div>
                         <div class="d-flex gap-2 mt-2">
-                            <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark btn-view flex-fill">View Details</a>
+                            <a asp-controller="Shoes" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark btn-view flex-fill">View Details</a>
                             <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display:inline;">
                                 <input type="hidden" name="productId" value="@item.ProductId" />
                                 <input type="hidden" name="quantity" value="1" />
-                                <button type="submit" class="btn btn-submit" style="white-space:nowrap;">Add to Cart</button>
+                                <button type="submit" class="btn btn-submit" style="white-space:nowrap; margin-top: 15px">Add to Cart</button>
                             </form>
                         </div>
                     </div>
@@ -123,9 +123,9 @@ else
                     {
                         <div class="card-footer-admin">
                             <div class="d-flex gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary flex-fill">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-secondary flex-fill">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger flex-fill">Delete</a>
+                                <a asp-controller="Shoes" asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary flex-fill">Edit</a>
+                                <a asp-controller="Shoes" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-secondary flex-fill">Details</a>
+                                <a asp-controller="Shoes" asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger flex-fill">Delete</a>
                             </div>
                         </div>
                     }

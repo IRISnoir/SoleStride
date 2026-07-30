@@ -20,15 +20,15 @@ public class ShoesController : Controller
     }
 
     // GET: SHOESS/Details/5
-    public async Task<IActionResult> Details(System.Guid? productid)
+    public async Task<IActionResult> Details(System.Guid? id)
     {
-        if (productid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
         var shoes = await _context.Shoes
-            .FirstOrDefaultAsync(m => m.ProductId == productid);
+            .FirstOrDefaultAsync(m => m.ProductId == id);
         if (shoes == null)
         {
             return NotFound();
@@ -88,17 +88,17 @@ public class ShoesController : Controller
     }
 
     // GET: SHOESS/Edit/5
-    public async Task<IActionResult> Edit(System.Guid? productid)
+    public async Task<IActionResult> Edit(System.Guid? id)
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
             return RedirectToAction("Index", "Home");
-        if (productid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        var shoes = await _context.Shoes.FindAsync(productid);
+        var shoes = await _context.Shoes.FindAsync(id);
         if (shoes == null)
         {
             return NotFound();
@@ -111,12 +111,12 @@ public class ShoesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(System.Guid? productid, [Bind("ProductId,ShoesName,SkuId,Category,CategoryId,ShoesGender,ShoesSize,ShoesColor,Material,Description,Price,SalePercentage")] Shoes shoes)
+    public async Task<IActionResult> Edit(System.Guid? id, [Bind("ProductId,ShoesName,SkuId,Category,CategoryId,ShoesGender,ShoesSize,ShoesColor,Material,Description,Price,SalePercentage")] Shoes shoes)
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
             return RedirectToAction("Index", "Home");
-        if (productid != shoes.ProductId)
+        if (id != shoes.ProductId)
         {
             return NotFound();
         }
@@ -145,18 +145,18 @@ public class ShoesController : Controller
     }
 
     // GET: SHOESS/Delete/5
-    public async Task<IActionResult> Delete(System.Guid? productid)
+    public async Task<IActionResult> Delete(System.Guid? id)
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
             return RedirectToAction("Index", "Home");
-        if (productid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
         var shoes = await _context.Shoes
-            .FirstOrDefaultAsync(m => m.ProductId == productid);
+            .FirstOrDefaultAsync(m => m.ProductId == id);
         if (shoes == null)
         {
             return NotFound();
@@ -168,23 +168,23 @@ public class ShoesController : Controller
     // POST: SHOESS/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(System.Guid? productid)
+    public async Task<IActionResult> DeleteConfirmed(System.Guid? id)
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
             return RedirectToAction("Index", "Home");
-        var shoes = await _context.Shoes.FindAsync(productid);
+        var shoes = await _context.Shoes.FindAsync(id);
         if (shoes != null)
         {
             _context.Shoes.Remove(shoes);
         }
 
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction("Index", "Home");
     }
 
-    private bool ShoesExists(System.Guid? productid)
+    private bool ShoesExists(System.Guid? id)
     {
-        return _context.Shoes.Any(e => e.ProductId == productid);
+        return _context.Shoes.Any(e => e.ProductId == id);
     }
 }
