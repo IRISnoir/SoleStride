@@ -1,0 +1,81 @@
+@model SoleStride.Models.User
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="form-card text-center">
+            <div class="position-relative d-inline-block">
+                @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                {
+                    <img src="@Model.AvatarUrl" alt="@Model.Username" class="rounded-circle" style="width:120px; height:120px; object-fit:cover; border:4px solid #f1f3f5;" />
+                }
+                else
+                {
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width:120px; height:120px; background:linear-gradient(135deg, #212529, #495057);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#adb5bd" viewBox="0 0 16 16">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                        </svg>
+                    </div>
+                }
+            </div>
+            <h4 class="mt-3 mb-1 fw-bold">@(Model.FirstName ?? Model.Username)</h4>
+            <p class="text-muted mb-0">@@@Model.Username</p>
+            <span class="badge bg-dark bg-opacity-75 text-white mt-2">@Model.Role</span>
+
+            <div class="mt-4 pt-3" style="border-top:1px solid #f1f3f5;">
+                <a asp-action="EditProfile" class="btn btn-submit w-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168z"/>
+                    </svg>
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="form-card">
+            <div class="form-section">
+                <div class="form-section-title">Personal Information</div>
+                <div class="detail-row">
+                    <span class="detail-label">Username</span>
+                    <span class="detail-value">@Model.Username</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">First Name</span>
+                    <span class="detail-value">@(Model.FirstName ?? "-")</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Last Name</span>
+                    <span class="detail-value">@(Model.LastName ?? "-")</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">@(Model.EmailAddress ?? "-")</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value">@(Model.Phone ?? "-")</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Gender</span>
+                    <span class="detail-value">@Model.UserGender</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Birthdate</span>
+                    <span class="detail-value">@Model.Birthdate.ToString("MMM dd, yyyy")</span>
+                </div>
+            </div>
+            <div class="form-section mb-0">
+                <div class="form-section-title">Account</div>
+                <div class="detail-row">
+                    <span class="detail-label">Role</span>
+                    <span class="detail-value">@Model.Role</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

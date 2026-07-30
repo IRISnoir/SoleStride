@@ -22,6 +22,12 @@ namespace SoleStride.Models
         [Required]
         public UserRole Role { get; set; }
 
+        [StringLength(100)]
+        public string? FirstName { get; set; }
+
+        [StringLength(100)]
+        public string? LastName { get; set; }
+
         [Phone]
         public string? Phone { get; set; }
 
@@ -35,5 +41,7 @@ namespace SoleStride.Models
         public enum Gender { Male, Female, Other }
         [Required]
         public Gender UserGender { get; set; }
+
+        public string? AvatarUrl { get; set; }
     }
 }

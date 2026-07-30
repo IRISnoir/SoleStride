@@ -1,0 +1,60 @@
+@model IEnumerable<SoleStride.Models.Order>
+
+@{
+    ViewData["Title"] = "Orders";
+    var role = Context.Session.GetString("Role");
+}
+
+<div class="page-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
+        <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+    </svg>
+    <h1>@(role == "Admin" || role == "Staff" ? "All Orders" : "My Orders")</h1>
+</div>
+
+@if (TempData["OrderSuccess"] != null)
+{
+    <div class="alert alert-success alert-custom">@TempData["OrderSuccess"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="form-card text-center py-5">
+        <h5 class="text-muted">No orders found.</h5>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-submit mt-3">Start Shopping</a>
+    </div>
+}
+else
+{
+    <div class="table-custom">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th style="width:100px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.OrderId</td>
+                        <td>@item.OrderDate.ToString("MMM dd, yyyy HH:mm")</td>
+                        <td class="fw-bold">$@item.TotalAmount.ToString("F2")</td>
+                        <td>
+                            <span class="badge @(item.Status == "Delivered" ? "bg-success" : item.Status == "Cancelled" ? "bg-danger" : "bg-warning text-dark")">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-sm btn-outline-secondary">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

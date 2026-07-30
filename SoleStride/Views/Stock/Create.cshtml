@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Add Stock";
+}
+
+<div class="page-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
+        <path d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+    </svg>
+    <h1>Add Stock</h1>
+</div>
+<p class="page-subtitle">Add new inventory items for a product.</p>
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div class="form-section">
+            <div class="form-section-title">Stock Information</div>
+            <div class="mb-3">
+                <label for="productId" class="form-label-custom">Product</label>
+                <select name="productId" id="productId" class="form-control form-control-custom" required>
+                    <option value="">Select a product</option>
+                    @foreach (var product in ViewBag.Products as List<SoleStride.Models.Shoes>)
+                    {
+                        <option value="@product.ProductId">@product.ShoesName (@product.SkuId)</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="quantity" class="form-label-custom">Quantity</label>
+                <input type="number" name="quantity" id="quantity" class="form-control form-control-custom" min="1" value="1" required />
+            </div>
+        </div>
+        <div class="d-flex gap-2 pt-3" style="border-top:1px solid #f1f3f5;">
+            <button type="submit" class="btn btn-submit">Add Stock</button>
+            <a asp-action="Index" class="btn btn-back">Cancel</a>
+        </div>
+    </form>
+</div>

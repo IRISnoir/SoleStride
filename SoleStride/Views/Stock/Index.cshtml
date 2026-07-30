@@ -1,0 +1,65 @@
+@model IEnumerable<SoleStride.Models.ShoeStock>
+
+@{
+    ViewData["Title"] = "Inventory Stock";
+}
+
+<div class="page-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
+        <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm7-2v-2H7v2zM5 0h6a1 1 0 0 1 1 1v3H4V1a1 1 0 0 1 1-1"/>
+    </svg>
+    <h1>Inventory Stock</h1>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="page-subtitle mb-0">Manage individual stock items.</p>
+    <a asp-action="Create" class="btn btn-submit">Add Stock</a>
+</div>
+
+<div class="table-custom">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Stock ID</th>
+                <th>Product</th>
+                <th>SKU</th>
+                <th>Status</th>
+                <th>Entry Date</th>
+                <th>Purchase Date</th>
+                <th style="width:160px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>#@item.StockId</td>
+                    <td class="fw-medium">@(item.Shoes?.ShoesName ?? "N/A")</td>
+                    <td>@(item.Shoes?.SkuId ?? "-")</td>
+                    <td>
+                        <span class="badge @(item.Status == ShoeStock.InventoryStatus.Available ? "bg-success" : item.Status == ShoeStock.InventoryStatus.Sold ? "bg-secondary" : "bg-danger")">
+                            @item.Status
+                        </span>
+                    </td>
+                    <td>@item.EntryDate.ToString("MMM dd, yyyy")</td>
+                    <td>@(item.PurchaseDate?.ToString("MMM dd, yyyy") ?? "-")</td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            @if (item.Status == ShoeStock.InventoryStatus.Available)
+                            {
+                                <form asp-action="MarkSold" method="post" style="display:inline;">
+                                    <input type="hidden" name="stockId" value="@item.StockId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Sold</button>
+                                </form>
+                            }
+                            <form asp-action="Delete" method="post" style="display:inline;">
+                                <input type="hidden" name="stockId" value="@item.StockId" />
+                                <button type="submit" class="btn-delete-sm">Remove</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,45 @@
+@model IEnumerable<SoleStride.Models.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="page-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
+        <path d="m.5 3 .04.87a1.99 1.99 0 0 0 .342 1.311l.561 2.286a1 1 0 0 0 .95.684h11.34a1 1 0 0 0 .95-.684l.561-2.285a1.99 1.99 0 0 0 .342-1.31L13.5 3zM2 4.665v3.718a2 2 0 0 0 .5 1.311l5.15 2.66A2 2 0 0 0 9 13.133h7.5v-2.618a2 2 0 0 0-.5-1.311L9.35 6.685A2 2 0 0 0 8.5 4.665L2 4.665zM7.5 13.133a2 2 0 0 0 1.311-.5l5.15-2.66A2 2 0 0 0 14 10.383V4.665L7.5 8.18V13.133z"/>
+    </svg>
+    <h1>Categories</h1>
+</div>
+<p class="page-subtitle">Manage product categories used to organize your inventory.</p>
+
+@if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+{
+    <p>
+        <a asp-action="Create" class="btn btn-submit">Create New</a>
+    </p>
+}
+
+<div class="table-custom">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th style="width:160px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><span class="badge bg-light text-dark border">@item.CategoryId</span></td>
+                    <td class="fw-medium">@item.CategoryName</td>
+                    <td>
+                        <a asp-action="Details" asp-route-categoryid="@item.CategoryId" class="btn btn-sm btn-outline-secondary">Details</a>
+                        <a asp-action="Delete" asp-route-categoryid="@item.CategoryId" class="btn-delete-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
