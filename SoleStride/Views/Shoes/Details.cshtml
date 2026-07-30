@@ -1,7 +1,7 @@
 @model SoleStride.Models.Shoes
 
 @{
-    ViewData["Title"] = Model.ShoesName;
+    ViewData["Title"] = "Shoe Details";
     var salePrice = Model.SalePercentage.HasValue && Model.SalePercentage > 0
         ? Model.Price * (decimal)(1 - Model.SalePercentage.Value / 100)
         : Model.Price;
