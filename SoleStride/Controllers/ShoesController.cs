@@ -107,12 +107,13 @@ public class ShoesController : Controller
     }
 
     // POST: SHOESS/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(System.Guid? id, [Bind("ProductId,ShoesName,SkuId,Category,CategoryId,ShoesGender,ShoesSize,ShoesColor,Material,Description,Price,SalePercentage")] Shoes shoes)
+    public async Task<IActionResult> Edit(System.Guid? id, [Bind("ProductId,ShoesName,SkuId,Category,CategoryId,ShoesGender,ShoesSize,ShoesColor,Material,Description,Price,SalePercentage")] Shoes shoes, IFormFile imageFile)
     {
+        var colorCode = string.IsNullOrWhiteSpace(shoes.ShoesColor) ? "XXX" : shoes.ShoesColor.Substring(0, Math.Min(3, shoes.ShoesColor.Length)).ToUpper();
+        shoes.SkuId = $"{shoes.CategoryId}-{shoes.ShoesGender.ToString().Substring(0, 1)}-{shoes.ShoesSize}-{colorCode}";
+
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
             return RedirectToAction("Index", "Home");
@@ -121,27 +122,61 @@ public class ShoesController : Controller
             return NotFound();
         }
 
-        if (ModelState.IsValid)
+        if (imageFile == null || imageFile.Length == 0)
         {
-            try
-            {
-                _context.Update(shoes);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ShoesExists(shoes.ProductId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-            }
-            }
-            return RedirectToAction(nameof(Index));
+            ModelState.Remove("imageFile");
         }
-        return View(shoes);
+
+        if (!ModelState.IsValid)
+        {
+            return View(shoes);
+        }
+
+        var existingShoes = await _context.Shoes.FindAsync(id);
+        if (existingShoes == null)
+        {
+            return NotFound();
+        }
+
+        if (imageFile != null && imageFile.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(imageFile.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+            existingShoes.ImageUrl = "/images/" + uniqueFileName;
+        }
+
+        existingShoes.ShoesName = shoes.ShoesName;
+        existingShoes.SkuId = shoes.SkuId;
+        existingShoes.CategoryId = shoes.CategoryId;
+        existingShoes.ShoesGender = shoes.ShoesGender;
+        existingShoes.ShoesSize = shoes.ShoesSize;
+        existingShoes.ShoesColor = shoes.ShoesColor;
+        existingShoes.Material = shoes.Material;
+        existingShoes.Description = shoes.Description;
+        existingShoes.Price = shoes.Price;
+        existingShoes.SalePercentage = shoes.SalePercentage;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ShoesExists(shoes.ProductId))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: SHOESS/Delete/5

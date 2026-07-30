@@ -48,7 +48,7 @@ else
                 : item.Price;
 
             <div class="col">
-                <div class="card product-card h-100">
+                <div class="card product-card h-100" data-details-url="@Url.Action("Details", "Shoes", new { id = item.ProductId })">
                     <div class="card-img-wrapper">
                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                         {
@@ -111,17 +111,16 @@ else
                             }
                         </div>
                         <div class="d-flex gap-2 mt-2">
-                            <a asp-controller="Shoes" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark btn-view flex-fill">View Details</a>
-                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display:inline;">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill" onclick="event.stopPropagation()">
                                 <input type="hidden" name="productId" value="@item.ProductId" />
                                 <input type="hidden" name="quantity" value="1" />
-                                <button type="submit" class="btn btn-submit btn-view flex-fill" style="white-space:nowrap;">Add to Cart</button>
+                                <button type="submit" class="btn btn-submit btn-view w-100" style="white-space:nowrap;">Add to Cart</button>
                             </form>
                         </div>
                     </div>
                     @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
                     {
-                        <div class="card-footer-admin">
+                        <div class="card-footer-admin" onclick="event.stopPropagation()">
                             <div class="d-flex gap-2">
                                 <a asp-controller="Shoes" asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary flex-fill">Edit</a>
                                 @if (Context.Session.GetString("Role") == "Admin")
@@ -135,4 +134,20 @@ else
             </div>
         }
     </div>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.product-card').forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('button, a, form, input, select, textarea')) {
+                    return;
+                }
+                const url = card.getAttribute('data-details-url');
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
 }
