@@ -116,6 +116,21 @@
                 </div>
             </div>
         }
+        else
+        {
+            @if (Model.Status != "Cancelled" && Model.Status != "Delivered")
+            {
+                <div class="form-card mt-3">
+                    <div class="form-section">
+                        <div class="form-section-title">Update Status</div>
+                        <form asp-action="CancelOrder" method="post">
+                            <input type="hidden" name="orderId" value="@Model.OrderId" />
+                            <button type="submit" class="btn btn-submit w-100">Cancel Order</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
     </div>
 </div>
 

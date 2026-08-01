@@ -63,4 +63,17 @@ public class OrderController : Controller
         }
         return RedirectToAction(nameof(Details), new { id = orderId });
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CancelOrder(int orderId)
+    {
+        var order = await _context.Orders.FindAsync(orderId);
+        if (order != null)
+        {
+            order.Status = "Cancelled";
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction(nameof(Details), new { id = orderId });
+    }
 }
