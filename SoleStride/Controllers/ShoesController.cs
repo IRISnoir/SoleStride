@@ -42,7 +42,7 @@ public class ShoesController : Controller
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         ViewBag.Categories = _context.Category.ToList();
         return View();
     }
@@ -56,7 +56,7 @@ public class ShoesController : Controller
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (ModelState.IsValid)
         {
             var colorCode = string.IsNullOrWhiteSpace(shoes.ShoesColor) ? "XXX" : shoes.ShoesColor.Substring(0, Math.Min(3, shoes.ShoesColor.Length)).ToUpper();
@@ -92,7 +92,7 @@ public class ShoesController : Controller
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (id == null)
         {
             return NotFound();
@@ -116,7 +116,7 @@ public class ShoesController : Controller
 
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Staff")
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (id != shoes.ProductId)
         {
             return NotFound();
@@ -184,7 +184,7 @@ public class ShoesController : Controller
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin")
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (id == null)
         {
             return NotFound();
@@ -207,7 +207,7 @@ public class ShoesController : Controller
     {
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin")
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         var shoes = await _context.Shoes.FindAsync(id);
         if (shoes != null)
         {

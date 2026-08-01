@@ -15,7 +15,7 @@ public class OrderController : Controller
     public async Task<IActionResult> Index()
     {
         var username = HttpContext.Session.GetString("Username");
-        if (username == null) return RedirectToAction("Login", "Account");
+        if (username == null) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var role = HttpContext.Session.GetString("Role");
         List<Order> orders;
@@ -36,7 +36,7 @@ public class OrderController : Controller
         if (id == null) return NotFound();
 
         var username = HttpContext.Session.GetString("Username");
-        if (username == null) return RedirectToAction("Login", "Account");
+        if (username == null) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var role = HttpContext.Session.GetString("Role");
         var order = await _context.Orders.Include(o => o.OrderDetails).ThenInclude(d => d.Product).FirstOrDefaultAsync(o => o.OrderId == id);
@@ -53,7 +53,7 @@ public class OrderController : Controller
     public async Task<IActionResult> UpdateStatus(int orderId, string status)
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff") return RedirectToAction("Index", "Home");
+        if (role != "Admin" && role != "Staff") return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var order = await _context.Orders.FindAsync(orderId);
         if (order != null)

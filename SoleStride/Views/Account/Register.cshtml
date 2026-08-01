@@ -60,6 +60,7 @@
                 </div>
 
                 <form asp-action="Register" method="post">
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
                     <div asp-validation-summary="ModelOnly" class="auth-alert" style="display:none;"></div>
 
                     <div class="auth-form-group">
@@ -128,7 +129,7 @@
                 </form>
 
                 <div class="auth-footer-text">
-                    Already have an account? <a asp-action="Login">Sign in</a>
+                    Already have an account? <a asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]">Sign in</a>
                 </div>
             </div>
         </div>

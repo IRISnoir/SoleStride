@@ -20,7 +20,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> Index()    
     {
         if (!IsAdmin())
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         return View(await _context.Category.ToListAsync());
     }
 
@@ -28,7 +28,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> Details(string? categoryid)
     {
         if (!IsAdmin())
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         if (categoryid == null)
         {
@@ -49,7 +49,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> Create()
     {
         if (!IsAdmin())
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         ViewBag.Categories = await _context.Category.ToListAsync();
         return View(new Category());
     }
@@ -62,7 +62,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] Category category)
     {
         if (!IsAdmin())
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (ModelState.IsValid)
         {
             _context.Add(category);
@@ -78,7 +78,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> Delete(string? categoryid)
     {
         if (!IsAdmin())
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (categoryid == null)
         {
             return NotFound();
@@ -100,7 +100,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> DeleteConfirmed(string? categoryid)
     {
         if (!IsAdmin())
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         var category = await _context.Category.FindAsync(categoryid);
         if (category != null)
         {

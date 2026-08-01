@@ -14,7 +14,7 @@ public class StockController : Controller
     public async Task<IActionResult> Index()
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff") return RedirectToAction("Index", "Home");
+        if (role != "Admin" && role != "Staff") return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var stock = await _context.ShoeStocks.Include(s => s.Shoes).OrderByDescending(s => s.EntryDate).ToListAsync();
         return View(stock);
@@ -24,7 +24,7 @@ public class StockController : Controller
     public async Task<IActionResult> Create()
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff") return RedirectToAction("Index", "Home");
+        if (role != "Admin" && role != "Staff") return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         ViewBag.Products = await _context.Shoes.ToListAsync();
         return View();
@@ -35,7 +35,7 @@ public class StockController : Controller
     public async Task<IActionResult> Create(Guid productId, int quantity)
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff") return RedirectToAction("Index", "Home");
+        if (role != "Admin" && role != "Staff") return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         for (int i = 0; i < quantity; i++)
         {
@@ -55,7 +55,7 @@ public class StockController : Controller
     public async Task<IActionResult> Delete(int stockId)
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin") return RedirectToAction("Index", "Home");
+        if (role != "Admin") return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var stock = await _context.ShoeStocks.FindAsync(stockId);
         if (stock != null)
@@ -71,7 +71,7 @@ public class StockController : Controller
     public async Task<IActionResult> MarkSold(int stockId)
     {
         var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff") return RedirectToAction("Index", "Home");
+        if (role != "Admin" && role != "Staff") return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var stock = await _context.ShoeStocks.FindAsync(stockId);
         if (stock != null)

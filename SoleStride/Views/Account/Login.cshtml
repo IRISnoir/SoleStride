@@ -63,6 +63,7 @@
                 }
 
                 <form asp-action="Login" method="post">
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
                     <div class="auth-form-group">
                         <label for="username">Username</label>
                         <input type="text" class="auth-input" id="username" name="username" placeholder="Enter your username" required autofocus />
@@ -85,7 +86,7 @@
                 </form>
 
                 <div class="auth-footer-text">
-                    Don't have an account? <a asp-action="Register">Create one</a>
+                    Don't have an account? <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]">Create one</a>
                 </div>
             </div>
         </div>

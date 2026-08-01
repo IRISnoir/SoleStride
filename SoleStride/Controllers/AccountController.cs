@@ -15,21 +15,37 @@ namespace SoleStride.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
+            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/")
+            {
+                returnUrl = Url.Action("Index", "Home");
+            }
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(string returnUrl = null)
         {
+            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/")
+            {
+                returnUrl = Url.Action("Index", "Home");
+            }
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("Username,Password,FirstName,LastName,Phone,EmailAddress,Birthdate,UserGender")] User user)
+        public async Task<IActionResult> Register([Bind("Username,Password,FirstName,LastName,Phone,EmailAddress,Birthdate,UserGender")] User user, string? returnUrl = null)
         {
+            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/")
+            {
+                returnUrl = Url.Action("Index", "Home");
+            }
+            ViewData["ReturnUrl"] = returnUrl;
+
             if (ModelState.IsValid)
             {
                 if (await _context.Users.AnyAsync(u => u.Username == user.Username))
@@ -48,15 +64,21 @@ namespace SoleStride.Controllers
 
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Login));
+                return RedirectToAction(nameof(Login), new { returnUrl = returnUrl });
             }
             return View(user);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string username, string password)
+        public async Task<IActionResult> Login(string username, string password, string? returnUrl = null)
         {
+            if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/")
+            {
+                returnUrl = Url.Action("Index", "Home");
+            }
+            ViewData["ReturnUrl"] = returnUrl;
+
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 ViewBag.Error = "Please enter username and password.";
@@ -81,6 +103,10 @@ namespace SoleStride.Controllers
             HttpContext.Session.SetString("Role", user.Role.ToString());
             HttpContext.Session.SetString("AvatarUrl", user.AvatarUrl ?? "");
 
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
             return RedirectToAction("Index", "Home");
         }
 
