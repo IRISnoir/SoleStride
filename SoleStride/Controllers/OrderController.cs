@@ -11,15 +11,24 @@ public class OrderController : Controller
         _context = context;
     }
 
+    private bool IsAdmin()
+    {
+        return HttpContext.Session.GetString("Role") == "Admin";
+    }
+
+    private bool IsStaff()
+    {
+        return HttpContext.Session.GetString("Role") == "Staff";
+    }
+
     [HttpGet]
     public async Task<IActionResult> Index()
     {
         var username = HttpContext.Session.GetString("Username");
         if (username == null) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
-        var role = HttpContext.Session.GetString("Role");
         List<Order> orders;
-        if (role == "Admin" || role == "Staff")
+        if (IsAdmin() || IsStaff())
         {
             orders = await _context.Orders.OrderByDescending(o => o.OrderDate).ToListAsync();
         }
@@ -38,11 +47,10 @@ public class OrderController : Controller
         var username = HttpContext.Session.GetString("Username");
         if (username == null) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
-        var role = HttpContext.Session.GetString("Role");
         var order = await _context.Orders.Include(o => o.OrderDetails).ThenInclude(d => d.Product).FirstOrDefaultAsync(o => o.OrderId == id);
         if (order == null) return NotFound();
 
-        if (role != "Admin" && role != "Staff" && order.Username != username)
+        if (!IsAdmin() && !IsStaff() && order.Username != username)
             return RedirectToAction(nameof(Index));
 
         return View(order);
@@ -52,8 +60,7 @@ public class OrderController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateStatus(int orderId, string status)
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff") return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
+        if (!IsAdmin() && !IsStaff()) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var order = await _context.Orders.FindAsync(orderId);
         if (order != null)

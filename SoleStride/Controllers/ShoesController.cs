@@ -13,6 +13,16 @@ public class ShoesController : Controller
         _context = context;
     }
 
+    private bool IsAdmin()
+    {
+        return HttpContext.Session.GetString("Role") == "Admin";
+    }
+
+    private bool IsStaff()
+    {
+        return HttpContext.Session.GetString("Role") == "Staff";
+    }
+
     // GET: SHOESS
     public async Task<IActionResult> Index()    
     {
@@ -40,8 +50,7 @@ public class ShoesController : Controller
     // GET: SHOESS/Create
     public IActionResult Create()
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
+        if (!IsAdmin() && !IsStaff())
             return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         ViewBag.Categories = _context.Category.ToList();
         return View();
@@ -54,8 +63,7 @@ public class ShoesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("ProductId,ShoesName,Category,CategoryId,ShoesGender,ShoesSize,ShoesColor,Material,Description,Price,SalePercentage")] Shoes shoes, IFormFile imageFile)
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
+        if (!IsAdmin() && !IsStaff())
             return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (ModelState.IsValid)
         {
@@ -90,8 +98,7 @@ public class ShoesController : Controller
     // GET: SHOESS/Edit/5
     public async Task<IActionResult> Edit(System.Guid? id)
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
+        if (!IsAdmin() && !IsStaff())
             return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (id == null)
         {
@@ -114,8 +121,7 @@ public class ShoesController : Controller
         var colorCode = string.IsNullOrWhiteSpace(shoes.ShoesColor) ? "XXX" : shoes.ShoesColor.Substring(0, Math.Min(3, shoes.ShoesColor.Length)).ToUpper();
         shoes.SkuId = $"{shoes.CategoryId}-{shoes.ShoesGender.ToString().Substring(0, 1)}-{shoes.ShoesSize}-{colorCode}";
 
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
+        if (!IsAdmin() && !IsStaff())
             return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (id != shoes.ProductId)
         {
@@ -182,8 +188,7 @@ public class ShoesController : Controller
     // GET: SHOESS/Delete/5
     public async Task<IActionResult> Delete(System.Guid? id)
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin")
+        if (!IsAdmin())
             return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (id == null)
         {
@@ -205,8 +210,7 @@ public class ShoesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(System.Guid? id)
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin")
+        if (!IsAdmin())
             return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         var shoes = await _context.Shoes.FindAsync(id);
         if (shoes != null)
