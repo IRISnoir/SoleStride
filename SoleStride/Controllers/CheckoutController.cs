@@ -27,7 +27,7 @@ public class CheckoutController : Controller
     public IActionResult Index()
     {
         var username = HttpContext.Session.GetString("Username");
-        if (username == null) return RedirectToAction("Login", "Account");
+        if (username == null) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var cart = GetCart();
         if (!cart.Any()) return RedirectToAction("Index", "Cart");
@@ -40,7 +40,7 @@ public class CheckoutController : Controller
     public async Task<IActionResult> PlaceOrder(string shippingAddress, string phone)
     {
         var username = HttpContext.Session.GetString("Username");
-        if (username == null) return RedirectToAction("Login", "Account");
+        if (username == null) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
         var cart = GetCart();
         if (!cart.Any()) return RedirectToAction("Index", "Cart");

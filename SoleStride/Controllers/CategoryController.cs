@@ -6,21 +6,30 @@ using SoleStride.Models;
 public class CategoryController : Controller
 {
     private readonly SoleStrideDbContext _context;
-
     public CategoryController(SoleStrideDbContext context)
     {
         _context = context;
     }
 
+    private bool IsAdmin()
+    {
+        return HttpContext.Session.GetString("Role") == "Admin";
+    }
+
     // GET: CATEGORYS
     public async Task<IActionResult> Index()    
     {
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         return View(await _context.Category.ToListAsync());
     }
 
     // GET: CATEGORYS/Details/5
     public async Task<IActionResult> Details(string? categoryid)
     {
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
+
         if (categoryid == null)
         {
             return NotFound();
@@ -39,9 +48,8 @@ public class CategoryController : Controller
     // GET: CATEGORYS/Create
     public async Task<IActionResult> Create()
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
-            return RedirectToAction("Index", "Home");
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         ViewBag.Categories = await _context.Category.ToListAsync();
         return View(new Category());
     }
@@ -53,9 +61,8 @@ public class CategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] Category category)
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
-            return RedirectToAction("Index", "Home");
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (ModelState.IsValid)
         {
             _context.Add(category);
@@ -70,9 +77,8 @@ public class CategoryController : Controller
     // GET: CATEGORYS/Delete/5
     public async Task<IActionResult> Delete(string? categoryid)
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
-            return RedirectToAction("Index", "Home");
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         if (categoryid == null)
         {
             return NotFound();
@@ -93,9 +99,8 @@ public class CategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string? categoryid)
     {
-        var role = HttpContext.Session.GetString("Role");
-        if (role != "Admin" && role != "Staff")
-            return RedirectToAction("Index", "Home");
+        if (!IsAdmin())
+            return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
         var category = await _context.Category.FindAsync(categoryid);
         if (category != null)
         {

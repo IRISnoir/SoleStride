@@ -45,6 +45,21 @@
                     <td>@(item.PurchaseDate?.ToString("MMM dd, yyyy") ?? "-")</td>
                     <td>
                         <div class="d-flex gap-1">
+                            @if (item.Status == ShoeStock.InventoryStatus.Damaged)
+                            {
+                                <form asp-action="MarkDamaged" method="post" style="display:inline;">
+                                    <input type="hidden" name="stockId" value="@item.StockId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Mark Available</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="MarkDamaged" method="post" style="display:inline;">
+                                    <input type="hidden" name="stockId" value="@item.StockId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Mark Damaged</button>
+                                </form>
+                            }
+
                             @if (item.Status == ShoeStock.InventoryStatus.Available)
                             {
                                 <form asp-action="MarkSold" method="post" style="display:inline;">
@@ -52,10 +67,21 @@
                                     <button type="submit" class="btn btn-sm btn-outline-success">Sold</button>
                                 </form>
                             }
-                            <form asp-action="Delete" method="post" style="display:inline;">
-                                <input type="hidden" name="stockId" value="@item.StockId" />
-                                <button type="submit" class="btn-delete-sm">Remove</button>
-                            </form>
+                            @if (item.Status == ShoeStock.InventoryStatus.Sold)
+                            {
+                                <form asp-action="MarkSold" method="post" style="display:inline;">
+                                    <input type="hidden" name="stockId" value="@item.StockId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Product Return</button>
+                                </form>
+                            }
+
+                            @if (Context.Session.GetString("Role") == "Admin")
+                            {
+                                <form asp-action="Delete" method="post" style="display:inline;">
+                                    <input type="hidden" name="stockId" value="@item.StockId" />
+                                    <button type="submit" class="btn-delete-sm">Remove</button>
+                                </form>
+                            }
                         </div>
                     </td>
                 </tr>

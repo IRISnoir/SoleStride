@@ -1,98 +1,119 @@
 @model IEnumerable<SoleStride.Models.Shoes>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Shoes";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
+        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm5.354 4.646a.5.5 0 1 1-.708.708L5.5 4.207V7.5a.5.5 0 0 1-1 0V4.207l-1.146 1.147a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0zM6.5 11.793V9.5a.5.5 0 0 1 1 0v2.293l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708zm3.646-4.147a.5.5 0 0 1 0-.708l2-2a.5.5 0 0 1 .708.708L11.207 6.5H12.5a.5.5 0 0 1 0 1h-1.293l1.147 1.146a.5.5 0 0 1-.708.708z"/>
+    </svg>
+    <h1>Shoes</h1>
+</div>
 
 @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
 {
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="page-subtitle mb-0">Manage your shoe inventory.</p>
+        <a asp-action="Create" class="btn btn-submit">Add Product</a>
+    </div>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ShoesName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SkuId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShoesGender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShoesSize)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShoesColor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Material)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalePercentage)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.ShoesName)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.SkuId)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.CategoryId)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.ShoesGender)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.ShoesSize)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.ShoesColor)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Material)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.SalePercentage)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-            </td>
-        </tr>
+
+@if (!Model.Any())
+{
+    <div class="catalogue-empty">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+        <h3>No shoes available</h3>
+        <p class="text-muted mb-0">Check back soon for new arrivals.</p>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="d-flex flex-column gap-2">
+        @foreach (var item in Model)
+        {
+            var salePrice = item.SalePercentage.HasValue && item.SalePercentage > 0
+                ? item.Price * (decimal)(1 - item.SalePercentage.Value / 100)
+                : item.Price;
+
+            <div class="product-card" data-details-url="@Url.Action("Details", "Shoes", new { id = item.ProductId })">
+                <div class="card-body py-2 px-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div class="d-flex align-items-center gap-3">
+                            <h5 class="product-name mb-0 fs-6">@item.ShoesName</h5>
+                        </div>
+                        <div class="price-section mb-0">
+                            @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
+                            {
+                                <span class="price-original small">$@item.Price.ToString("F2")</span>
+                                <span class="price-sale ms-1">$@salePrice.ToString("F2")</span>
+                            }
+                            else
+                            {
+                                <span class="price-regular fs-6">$@item.Price.ToString("F2")</span>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                        <span class="badge bg-light text-dark border">@item.ShoesGender</span>
+                        <span class="badge bg-light text-dark border">Size: @item.ShoesSize</span>
+                        <span class="badge bg-light text-dark border">Color: @item.ShoesColor</span>
+                        <span class="badge bg-light text-dark border">@item.Category?.CategoryName</span>
+                        @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
+                        {
+                            <span class="badge bg-success text-white">-@item.SalePercentage.Value%</span>
+                        }
+                    </div>
+
+                    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+                    {
+                        <div class="staff-info mb-2">
+                            <span class="staff-chip">
+                                <span class="chip-label">ID</span>
+                                <span class="chip-value">@item.ProductId</span>
+                            </span>
+                            <span class="staff-chip">
+                                <span class="chip-label">SKU</span>
+                                <span class="chip-value">@item.SkuId</span>
+                            </span>
+                            <span class="staff-chip">
+                                <span class="chip-label">Category ID</span>
+                                <span class="chip-value">@item.CategoryId</span>
+                            </span>
+                        </div>
+                    }
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">@item.Category?.CategoryName</span>
+                        <div class="d-flex gap-2">
+                            @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation()">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation()">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.product-card').forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('button, a, form, input, select, textarea')) {
+                    return;
+                }
+                const url = card.getAttribute('data-details-url');
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
+}

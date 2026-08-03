@@ -4,32 +4,38 @@
     ViewData["Title"] = "Search Results";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <div class="page-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-            </svg>
-            <h1>Search Results</h1>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h1 class="h2 mb-0">Shoe Collection</h1>
+    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+    {
+        <div class="d-flex gap-2">
+            <a asp-controller="Shoes" asp-action="Create" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                </svg>
+                Add Product
+            </a>
+            @if (Context.Session.GetString("Role") == "Admin")
+            {
+                <a asp-controller="Category" asp-action="Create" class="btn btn-outline-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder-plus me-1" viewBox="0 0 16 16">
+                        <path d="m.5 3 .04.87a1.99 1.99 0 0 0 .342 1.311l.561 2.286a1 1 0 0 0 .95.684h11.34a1 1 0 0 0 .95-.684l.561-2.285a1.99 1.99 0 0 0 .342-1.31L13.5 3zM2 4.665v3.718a2 2 0 0 0 .5 1.311l5.15 2.66A2 2 0 0 0 9 13.133h7.5v-2.618a2 2 0 0 0-.5-1.311L9.35 6.685A2 2 0 0 0 8.5 4.665L2 4.665zM7.5 13.133a2 2 0 0 0 1.311-.5l5.15-2.66A2 2 0 0 0 14 10.383V4.665L7.5 8.18V13.133z"/>
+                    </svg>
+                    Category
+                </a>
+            }
         </div>
-        <p class="page-subtitle">@Model.Count() result(s) for "@ViewBag.Query"</p>
-    </div>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-back">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-        </svg>
-        Back to Catalog
-    </a>
+    }
 </div>
 
 @if (!Model.Any())
 {
     <div class="catalogue-empty">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
         </svg>
-        <h3>No results found</h3>
-        <p class="text-muted mb-0">Try searching with different keywords.</p>
+        <h3>No shoes available</h3>
+        <p class="text-muted mb-0">Check back soon for new arrivals.</p>
     </div>
 }
 else
@@ -42,7 +48,7 @@ else
                 : item.Price;
 
             <div class="col">
-                <div class="card product-card h-100">
+                <div class="card product-card h-100" data-details-url="@Url.Action("Details", "Shoes", new { id = item.ProductId })">
                     <div class="card-img-wrapper">
                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                         {
@@ -51,7 +57,7 @@ else
                         else
                         {
                             <div class="card-img-placeholder">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="placeholder-img" viewBox="0 0 16 16">
                                     <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
                                     <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3-3-2.5 3-1-1.5-4 5h12z"/>
                                 </svg>
@@ -70,7 +76,29 @@ else
                             <h5 class="product-name mb-0">@item.ShoesName</h5>
                             <span class="badge gender-badge bg-light text-dark border">@item.ShoesGender</span>
                         </div>
-                        <p class="product-description text-muted small mb-3">@item.Description</p>
+                        @if (!string.IsNullOrEmpty(item.Description))
+                        {
+                            <p class="product-description text-muted small mb-3">@item.Description</p>
+                        }
+
+                        @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+                        {
+                            <div class="staff-info">
+                                <span class="staff-chip">
+                                    <span class="chip-label">ID</span>
+                                    <span class="chip-value">@item.ProductId</span>
+                                </span>
+                                <span class="staff-chip">
+                                    <span class="chip-label">SKU</span>
+                                    <span class="chip-value">@item.SkuId</span>
+                                </span>
+                                <span class="staff-chip">
+                                    <span class="chip-label">Category</span>
+                                    <span class="chip-value">@item.CategoryId</span>
+                                </span>
+                            </div>
+                        }
+
                         <div class="price-section">
                             @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
                             {
@@ -83,16 +111,43 @@ else
                             }
                         </div>
                         <div class="d-flex gap-2 mt-2">
-                            <a asp-controller="Shoes" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-dark btn-view flex-fill">View Details</a>
-                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display:inline;">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill" onclick="event.stopPropagation()">
                                 <input type="hidden" name="productId" value="@item.ProductId" />
                                 <input type="hidden" name="quantity" value="1" />
-                                <button type="submit" class="btn btn-submit" style="white-space:nowrap;">Add to Cart</button>
+                                <button type="submit" class="btn btn-submit btn-view w-100" style="white-space:nowrap;">Add to Cart</button>
                             </form>
                         </div>
                     </div>
+                    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+                    {
+                        <div class="card-footer-admin" onclick="event.stopPropagation()">
+                            <div class="d-flex gap-2">
+                                <a asp-controller="Shoes" asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary flex-fill">Edit</a>
+                                @if (Context.Session.GetString("Role") == "Admin")
+                                {
+                                    <a asp-controller="Shoes" asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger flex-fill">Delete</a>
+                                }
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         }
     </div>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.product-card').forEach(function(card) {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('button, a, form, input, select, textarea')) {
+                    return;
+                }
+                const url = card.getAttribute('data-details-url');
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
 }

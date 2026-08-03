@@ -72,11 +72,11 @@ else
                         <td>
                             <form asp-action="UpdateQuantity" method="post" class="d-flex align-items-center gap-2">
                                 <input type="hidden" name="productId" value="@item.ProductId" />
-                                <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control form-control-custom" style="width:70px;" />
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control form-control-custom cart-qty-input" style="width:70px;" data-price="@item.FinalPrice" onchange="updateCartRow(this)" />
+                                @* <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button> *@
                             </form>
                         </td>
-                        <td class="fw-bold">$@item.Subtotal.ToString("F2")</td>
+                        <td class="fw-bold cart-subtotal" data-price="@item.FinalPrice">$@item.Subtotal.ToString("F2")</td>
                         <td>
                             <form asp-action="Remove" method="post">
                                 <input type="hidden" name="productId" value="@item.ProductId" />
@@ -90,10 +90,29 @@ else
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-4">
-        <div class="h4 mb-0">Total: <strong>$@Model.Sum(i => i.Subtotal).ToString("F2")</strong></div>
+        <div class="h4 mb-0">Total: <strong id="cartGrandTotal">$@Model.Sum(i => i.Subtotal).ToString("F2")</strong></div>
         <div class="d-flex gap-2">
             <a asp-controller="Home" asp-action="Index" class="btn btn-back">Continue Shopping</a>
             <a asp-controller="Checkout" asp-action="Index" class="btn btn-submit">Proceed to Checkout</a>
         </div>
     </div>
+    <script>
+        function updateCartRow(input) {
+            const row = input.closest('tr');
+            const qty = parseInt(input.value) || 1;
+            const price = parseFloat(input.dataset.price) || 0;
+            const subtotalCell = row.querySelector('.cart-subtotal');
+            const subtotal = qty * price;
+            subtotalCell.textContent = '$' + subtotal.toFixed(2);
+            updateGrandTotal();
+            input.form.submit();
+        }
+        function updateGrandTotal() {
+            let total = 0;
+            document.querySelectorAll('.cart-subtotal').forEach(function(cell) {
+                total += parseFloat(cell.textContent.replace('$', '')) || 0;
+            });
+            document.getElementById('cartGrandTotal').textContent = '$' + total.toFixed(2);
+        }
+    </script>
 }
