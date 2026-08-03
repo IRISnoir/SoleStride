@@ -21,7 +21,25 @@ namespace SoleStride.Controllers
                 .OrderBy(s => s.ShoesName)
                 .ToListAsync();
 
-            return View(shoes);
+            // Create view models with stock data for each shoe
+            var homeProducts = new List<HomeProductViewModel>();
+            foreach (var shoe in shoes)
+            {
+                var quantityAvailable = await _context.ShoeStocks
+                    .CountAsync(s => s.ProductId == shoe.ProductId && s.Status == ShoeStock.InventoryStatus.Available);
+
+                var quantitySold = await _context.ShoeStocks
+                    .CountAsync(s => s.ProductId == shoe.ProductId && s.Status == ShoeStock.InventoryStatus.Sold);
+
+                homeProducts.Add(new HomeProductViewModel
+                {
+                    Shoes = shoe,
+                    QuantityAvailable = quantityAvailable,
+                    QuantitySold = quantitySold
+                });
+            }
+
+            return View(homeProducts);
         }
 
         public IActionResult Privacy()

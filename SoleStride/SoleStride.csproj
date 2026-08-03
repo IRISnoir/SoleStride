@@ -16,7 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Hubs\" />
     <Folder Include="Views\Category\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>
