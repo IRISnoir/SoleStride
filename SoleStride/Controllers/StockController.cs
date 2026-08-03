@@ -81,9 +81,39 @@ public class StockController : Controller
         var stock = await _context.ShoeStocks.FindAsync(stockId);
         if (stock != null)
         {
-            stock.Status = ShoeStock.InventoryStatus.Sold;
-            stock.PurchaseDate = DateTime.Now;
-            await _context.SaveChangesAsync();
+            if (stock.Status == ShoeStock.InventoryStatus.Available)
+            {
+                stock.Status = ShoeStock.InventoryStatus.Sold;
+                stock.PurchaseDate = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                stock.Status = ShoeStock.InventoryStatus.Available;
+                stock.PurchaseDate = null;
+                await _context.SaveChangesAsync();
+            }
+        }
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> MarkDamaged(int stockId)
+    {
+        if (!IsAdmin() && !IsStaff()) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
+
+        var stock = await _context.ShoeStocks.FindAsync(stockId);
+        if (stock != null)
+        {
+            if (stock.Status == ShoeStock.InventoryStatus.Available)
+            {
+                stock.Status = ShoeStock.InventoryStatus.Damaged;
+                await _context.SaveChangesAsync();
+            }
+            else if (stock.Status == ShoeStock.InventoryStatus.Damaged)
+            {
+                stock.Status = ShoeStock.InventoryStatus.Available;
+                await _context.SaveChangesAsync();
+            }
         }
         return RedirectToAction(nameof(Index));
     }
