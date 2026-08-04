@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Shoes";
+    var categories = ViewBag.Categories as List<SoleStride.Models.Category>;
 }
 
 <div class="page-header">
@@ -18,6 +19,84 @@
         <a asp-action="Create" class="btn btn-submit">Add Product</a>
     </div>
 }
+
+<div class="filter-card mb-4">
+    <form asp-controller="Shoes" asp-action="Index" method="get" class="filter-form">
+        <div class="filter-grid">
+            <div class="filter-field">
+                <label for="categoryId" class="form-label-custom">Category</label>
+                <select name="categoryId" id="categoryId" class="form-control form-control-custom">
+                    <option value="">All Categories</option>
+                    @if (categories != null)
+                    {
+                        foreach (var cat in categories)
+                        {
+                            <option value="@cat.CategoryId" selected="@(ViewBag.SelectedCategoryId == cat.CategoryId)">@cat.CategoryName</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="gender" class="form-label-custom">Gender</label>
+                <select name="gender" id="gender" class="form-control form-control-custom">
+                    <option value="">All</option>
+                    <option value="Men" selected="@(ViewBag.SelectedGender == "Men")">Men</option>
+                    <option value="Women" selected="@(ViewBag.SelectedGender == "Women")">Women</option>
+                    <option value="Unisex" selected="@(ViewBag.SelectedGender == "Unisex")">Unisex</option>
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="minSize" class="form-label-custom">Size (min - max)</label>
+                <div class="d-flex align-items-center gap-1">
+                    <input type="number" name="minSize" id="minSize" class="form-control form-control-custom" min="1" max="50" placeholder="Min" value="@ViewBag.MinSize" />
+                    <span class="text-muted">-</span>
+                    <input type="number" name="maxSize" id="maxSize" class="form-control form-control-custom" min="1" max="50" placeholder="Max" value="@ViewBag.MaxSize" />
+                </div>
+            </div>
+
+            <div class="filter-field">
+                <label for="color" class="form-label-custom">Color</label>
+                <input type="text" name="color" id="color" class="form-control form-control-custom" placeholder="e.g. Black, Red" value="@ViewBag.SelectedColor" />
+            </div>
+
+            <div class="filter-field">
+                <label for="minPrice" class="form-label-custom">Price (min - max)</label>
+                <div class="d-flex align-items-center gap-1">
+                    <input type="number" name="minPrice" id="minPrice" class="form-control form-control-custom" min="0" step="0.01" placeholder="Min $" value="@ViewBag.MinPrice" />
+                    <span class="text-muted">-</span>
+                    <input type="number" name="maxPrice" id="maxPrice" class="form-control form-control-custom" min="0" step="0.01" placeholder="Max $" value="@ViewBag.MaxPrice" />
+                </div>
+            </div>
+
+            <div class="filter-field">
+                <label for="sortBy" class="form-label-custom">Sort by</label>
+                <select name="sortBy" id="sortBy" class="form-control form-control-custom">
+                    <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc")">Name (A-Z)</option>
+                    <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc")">Name (Z-A)</option>
+                    <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">Price (Low to High)</option>
+                    <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">Price (High to Low)</option>
+                    <option value="newest" selected="@(ViewBag.SortBy == "newest")">Newest</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 filter-actions mt-3">
+            <label class="filter-checkbox d-flex align-items-center gap-2 mb-0">
+                <input type="checkbox" name="onSale" value="true" checked="@(ViewBag.OnSale == true)" />
+                <span>On sale only</span>
+            </label>
+            <button type="submit" class="btn btn-submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+                Apply Filters
+            </button>
+            <a asp-controller="Shoes" asp-action="Index" class="btn btn-back">Clear</a>
+        </div>
+    </form>
+</div>
 
 @if (!Model.Any())
 {
