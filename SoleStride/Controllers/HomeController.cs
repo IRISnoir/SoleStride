@@ -110,7 +110,7 @@ namespace SoleStride.Controllers
                 return RedirectToAction("Index");
             }
 
-            var results = await _context.Shoes
+            var shoes = await _context.Shoes
                 .Include(s => s.Category)
                 .Where(s => s.ShoesName.Contains(query)
                     || (s.Description != null && s.Description.Contains(query))
@@ -120,8 +120,25 @@ namespace SoleStride.Controllers
                 .OrderBy(s => s.ShoesName)
                 .ToListAsync();
 
+            var homeProducts = new List<HomeProductViewModel>();
+            foreach (var shoe in shoes)
+            {
+                var quantityAvailable = await _context.ShoeStocks
+                    .CountAsync(s => s.ProductId == shoe.ProductId && s.Status == ShoeStock.InventoryStatus.Available);
+
+                var quantitySold = await _context.ShoeStocks
+                    .CountAsync(s => s.ProductId == shoe.ProductId && s.Status == ShoeStock.InventoryStatus.Sold);
+
+                homeProducts.Add(new HomeProductViewModel
+                {
+                    Shoes = shoe,
+                    QuantityAvailable = quantityAvailable,
+                    QuantitySold = quantitySold
+                });
+            }
+
             ViewBag.Query = query;
-            return View(results);
+            return View(homeProducts);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
