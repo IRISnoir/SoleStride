@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SoleStride.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -153,6 +154,11 @@ namespace SoleStride.Controllers
 
             var age = DateTime.Now.Year - birthdate.Year;
             if (birthdate > DateTime.Now.AddYears(-age)) age--;
+            if (emailAddress == null || !new EmailAddressAttribute().IsValid(emailAddress))
+            {
+                TempData["ProfileError"] = "Please enter a valid email address.";
+                return RedirectToAction(nameof(EditProfile));
+            }
             if (age < 14)
             {
                 TempData["ProfileError"] = "You must be at least 14 years old.";
@@ -261,6 +267,7 @@ namespace SoleStride.Controllers
             HttpContext.Session.SetString("ResetCode", code);
 
             ViewBag.Username = user.Username;
+            ViewBag.EmailAddress = user.EmailAddress;
             ViewBag.ResetCode = code;
             return View("VerifyCode");
         }
@@ -362,7 +369,7 @@ namespace SoleStride.Controllers
 
         private static string GenerateResetCode()
         {
-            const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789";
             var random = new Random();
             var code = new StringBuilder();
             for (int i = 0; i < 6; i++)

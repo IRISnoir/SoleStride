@@ -247,19 +247,30 @@
                     @{
                         var maxRevenue = Model.SalesByCategory.Max(c => c.Revenue);
                         var totalCategoryRevenue = Model.SalesByCategory.Sum(c => c.Revenue);
+                        int ranking = 1;
                     }
                     @foreach (var cat in Model.SalesByCategory)
                     {
                         var pct = totalCategoryRevenue > 0 ? (cat.Revenue / totalCategoryRevenue * 100) : 0;
                         <div class="category-item">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="fw-semibold">@cat.CategoryName</span>
-                                <span class="text-muted small">$@cat.Revenue.ToString("N0") (@((totalCategoryRevenue > 0 ? cat.Revenue / totalCategoryRevenue * 100 : 0).ToString("0.0"))%)</span>
+                                
+                                @if (ranking == 1)
+                                {
+                                    <span style="color: #e85d04;" class="fw-semibold">@cat.CategoryName</span>
+                                    <span style="color: #e85d04;" class="small">$@cat.Revenue.ToString("N0") (@((totalCategoryRevenue > 0 ? cat.Revenue / totalCategoryRevenue * 100 : 0).ToString("0.0"))%)</span>
+                                }
+                                else
+                                {
+                                    <span class="fw-semibold">@cat.CategoryName</span>
+                                    <span class="text-muted small">$@cat.Revenue.ToString("N0") (@((totalCategoryRevenue > 0 ? cat.Revenue / totalCategoryRevenue * 100 : 0).ToString("0.0"))%)</span>
+                                }
                             </div>
                             <div class="progress" style="height:8px;">
                                 <div class="progress-bar" style="width:@pct.ToString("0.#")%; background:linear-gradient(135deg,#e85d04,#f48c06);"></div>
                             </div>
                         </div>
+                        ranking++;
                     }
                 </div>
             }
