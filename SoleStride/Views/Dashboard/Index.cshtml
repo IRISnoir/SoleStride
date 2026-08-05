@@ -250,7 +250,7 @@
                     }
                     @foreach (var cat in Model.SalesByCategory)
                     {
-                        var pct = maxRevenue > 0 ? (cat.Revenue / maxRevenue * 100) : 0;
+                        var pct = totalCategoryRevenue > 0 ? (cat.Revenue / totalCategoryRevenue * 100) : 0;
                         <div class="category-item">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="fw-semibold">@cat.CategoryName</span>
