@@ -1,7 +1,8 @@
-﻿@model IEnumerable<SoleStride.Models.Shoes>
+﻿@model IEnumerable<SoleStride.Models.HomeProductViewModel>
 
 @{
     ViewData["Title"] = "Shoe Collection";
+    var categories = ViewBag.Categories as List<SoleStride.Models.Category>;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -28,6 +29,84 @@
     }
 </div>
 
+<div class="filter-card mb-4">
+    <form asp-controller="Home" asp-action="Index" method="get" class="filter-form">
+        <div class="filter-grid">
+            <div class="filter-field">
+                <label for="categoryId" class="form-label-custom">Category</label>
+                <select name="categoryId" id="categoryId" class="form-control form-control-custom">
+                    <option value="">All Categories</option>
+                    @if (categories != null)
+                    {
+                        foreach (var cat in categories)
+                        {
+                            <option value="@cat.CategoryId" selected="@(ViewBag.SelectedCategoryId == cat.CategoryId)">@cat.CategoryName</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="gender" class="form-label-custom">Gender</label>
+                <select name="gender" id="gender" class="form-control form-control-custom">
+                    <option value="">All</option>
+                    <option value="Men" selected="@(ViewBag.SelectedGender == "Men")">Men</option>
+                    <option value="Women" selected="@(ViewBag.SelectedGender == "Women")">Women</option>
+                    <option value="Unisex" selected="@(ViewBag.SelectedGender == "Unisex")">Unisex</option>
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="minSize" class="form-label-custom">Size (min - max)</label>
+                <div class="d-flex align-items-center gap-1">
+                    <input type="number" name="minSize" id="minSize" class="form-control form-control-custom" min="1" max="50" placeholder="Min" value="@ViewBag.MinSize" />
+                    <span class="text-muted">-</span>
+                    <input type="number" name="maxSize" id="maxSize" class="form-control form-control-custom" min="1" max="50" placeholder="Max" value="@ViewBag.MaxSize" />
+                </div>
+            </div>
+
+            <div class="filter-field">
+                <label for="color" class="form-label-custom">Color</label>
+                <input type="text" name="color" id="color" class="form-control form-control-custom" placeholder="e.g. Black, Red" value="@ViewBag.SelectedColor" />
+            </div>
+
+            <div class="filter-field">
+                <label for="minPrice" class="form-label-custom">Price (min - max)</label>
+                <div class="d-flex align-items-center gap-1">
+                    <input type="number" name="minPrice" id="minPrice" class="form-control form-control-custom" min="0" step="0.01" placeholder="Min $" value="@ViewBag.MinPrice" />
+                    <span class="text-muted">-</span>
+                    <input type="number" name="maxPrice" id="maxPrice" class="form-control form-control-custom" min="0" step="0.01" placeholder="Max $" value="@ViewBag.MaxPrice" />
+                </div>
+            </div>
+
+            <div class="filter-field">
+                <label for="sortBy" class="form-label-custom">Sort by</label>
+                <select name="sortBy" id="sortBy" class="form-control form-control-custom">
+                    <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc")">Name (A-Z)</option>
+                    <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc")">Name (Z-A)</option>
+                    <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">Price (Low to High)</option>
+                    <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">Price (High to Low)</option>
+                    <option value="newest" selected="@(ViewBag.SortBy == "newest")">Newest</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 filter-actions mt-3">
+            <label class="filter-checkbox d-flex align-items-center gap-2 mb-0">
+                <input type="checkbox" name="onSale" value="true" checked="@(ViewBag.OnSale == true)" />
+                <span>On sale only</span>
+            </label>
+            <button type="submit" class="btn btn-submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+                Apply Filters
+            </button>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-back">Clear</a>
+        </div>
+    </form>
+</div>
+
 @if (!Model.Any())
 {
     <div class="catalogue-empty">
@@ -43,16 +122,16 @@ else
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
         @foreach (var item in Model)
         {
-            var salePrice = item.SalePercentage.HasValue && item.SalePercentage > 0
-                ? item.Price * (decimal)(1 - item.SalePercentage.Value / 100)
-                : item.Price;
+            var salePrice = item.Shoes.SalePercentage.HasValue && item.Shoes.SalePercentage > 0
+                ? item.Shoes.Price * (decimal)(1 - item.Shoes.SalePercentage.Value / 100)
+                : item.Shoes.Price;
 
             <div class="col">
-                <div class="card product-card h-100" data-details-url="@Url.Action("Details", "Shoes", new { id = item.ProductId })">
+                <div class="card product-card h-100" data-details-url="@Url.Action("Details", "Shoes", new { id = item.Shoes.ProductId })">
                     <div class="card-img-wrapper">
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        @if (!string.IsNullOrEmpty(item.Shoes.ImageUrl))
                         {
-                            <img src="@item.ImageUrl" alt="@item.ShoesName" loading="lazy" />
+                            <img src="@item.Shoes.ImageUrl" alt="@item.Shoes.ShoesName" loading="lazy" />
                         }
                         else
                         {
@@ -64,21 +143,21 @@ else
                             </div>
                         }
                         <div class="badge-overlay">
-                            <span class="badge bg-dark bg-opacity-75 text-white">@(item.Category?.CategoryName ?? "N/A")</span>
+                            <span class="badge bg-dark bg-opacity-75 text-white">@(item.Shoes.Category?.CategoryName ?? "N/A")</span>
                         </div>
-                        @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
+                        @if (item.Shoes.SalePercentage.HasValue && item.Shoes.SalePercentage > 0)
                         {
-                            <span class="badge-sale badge">-@item.SalePercentage.Value%</span>
+                            <span class="badge-sale badge">-@item.Shoes.SalePercentage.Value%</span>
                         }
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="product-name mb-0">@item.ShoesName</h5>
-                            <span class="badge gender-badge bg-light text-dark border">@item.ShoesGender</span>
+                            <h5 class="product-name mb-0">@item.Shoes.ShoesName</h5>
+                            <span class="badge gender-badge bg-light text-dark border">@item.Shoes.ShoesGender</span>
                         </div>
-                        @if (!string.IsNullOrEmpty(item.Description))
+                        @if (!string.IsNullOrEmpty(item.Shoes.Description))
                         {
-                            <p class="product-description text-muted small mb-3">@item.Description</p>
+                            <p class="product-description text-muted small mb-3">@item.Shoes.Description</p>
                         }
 
                         @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
@@ -86,33 +165,45 @@ else
                             <div class="staff-info">
                                 <span class="staff-chip">
                                     <span class="chip-label">ID</span>
-                                    <span class="chip-value">@item.ProductId</span>
+                                    <span class="chip-value">@item.Shoes.ProductId</span>
                                 </span>
                                 <span class="staff-chip">
                                     <span class="chip-label">SKU</span>
-                                    <span class="chip-value">@item.SkuId</span>
+                                    <span class="chip-value">@item.Shoes.SkuId</span>
                                 </span>
                                 <span class="staff-chip">
                                     <span class="chip-label">Category</span>
-                                    <span class="chip-value">@item.CategoryId</span>
+                                    <span class="chip-value">@item.Shoes.CategoryId</span>
                                 </span>
                             </div>
                         }
 
+                        <!-- Stock Display in Product Card -->
+                        <div class="product-card-stock">
+                            <div class="stock-mini stock-available" title="Available in stock">
+                                <span class="stock-icon">Available </span>
+                                <span class="stock-count">@item.QuantityAvailable</span>
+                            </div>
+                            <div class="stock-mini stock-sold" title="Sold units">
+                                <span class="stock-icon">Sold </span>
+                                <span class="stock-count">@item.QuantitySold ✓</span>
+                            </div>
+                        </div>
+
                         <div class="price-section">
-                            @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
+                            @if (item.Shoes.SalePercentage.HasValue && item.Shoes.SalePercentage > 0)
                             {
-                                <span class="price-original">$@item.Price.ToString("F2")</span>
+                                <span class="price-original">$@item.Shoes.Price.ToString("F2")</span>
                                 <span class="price-sale">$@salePrice.ToString("F2")</span>
                             }
                             else
                             {
-                                <span class="price-regular">$@item.Price.ToString("F2")</span>
+                                <span class="price-regular">$@item.Shoes.Price.ToString("F2")</span>
                             }
                         </div>
                         <div class="d-flex gap-2 mt-2">
                             <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill" onclick="event.stopPropagation()">
-                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="hidden" name="productId" value="@item.Shoes.ProductId" />
                                 <input type="hidden" name="quantity" value="1" />
                                 <button type="submit" class="btn btn-submit btn-view w-100" style="white-space:nowrap;">Add to Cart</button>
                             </form>
@@ -122,10 +213,10 @@ else
                     {
                         <div class="card-footer-admin" onclick="event.stopPropagation()">
                             <div class="d-flex gap-2">
-                                <a asp-controller="Shoes" asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary flex-fill">Edit</a>
+                                <a asp-controller="Shoes" asp-action="Edit" asp-route-id="@item.Shoes.ProductId" class="btn btn-sm btn-outline-primary flex-fill">Edit</a>
                                 @if (Context.Session.GetString("Role") == "Admin")
                                 {
-                                    <a asp-controller="Shoes" asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger flex-fill">Delete</a>
+                                    <a asp-controller="Shoes" asp-action="Delete" asp-route-id="@item.Shoes.ProductId" class="btn btn-sm btn-outline-danger flex-fill">Delete</a>
                                 }
                             </div>
                         </div>

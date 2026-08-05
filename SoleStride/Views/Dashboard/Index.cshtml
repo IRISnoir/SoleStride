@@ -1,0 +1,318 @@
+@model SoleStride.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="page-header mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#e85d04;">
+        <path d="M4 16s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m5 0c1 0 2 1.5 2 3.5 0 .4-.1.8-.3 1.2-.6-.9-1.5-1.6-2.7-1.9-.6-1-1.4-1.8-2.4-2.2 1.2-.4 2.4-.6 3.4-.6m-9 1.2c-1 .4-1.8 1.2-2.4 2.2-.2.4-.3.8-.3 1.2 0 .4.1.8.3 1.2H1.5c.1-.4.3-.8.4-1.2C2.1 11.6 3 11 4 11c1 0 1.9.6 2.1 1.4.1.4.3.8.4 1.2-.4-.4-.8-.8-1.5-.8v-.2l.1-.3c.4-.8.9-1.5 1.4-2a3.3 3.3 0 0 0-1.5-.1zM11.9 9.1c1.5.6 2.5 2.2 2.5 3.9 0 .3 0 .7-.1 1h.4c.8 0 1.5-.7 1.8-1.6h.5c.5 0 1 .4 1 1s-.5 1-1 1H11c0 .4-.1.8-.3 1.2h3.6c.4 0 .8-.1 1.1-.3.7.3 1.4.9 1.8 1.8.2-.3.3-.7.3-1.1 0-.5-.2-.9-.5-1.3.4-.6.6-1.3.6-2.1 0-2.1-1.6-3.8-3.7-3.9-.9 0-1.7.3-2.4.7z"/>
+    </svg>
+    <h1>Admin Dashboard</h1>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-orange">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm7-2v-2H7v2zm-2 4V4h2v3h3v2H9V6z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@Model.TotalProducts</div>
+                <div class="dash-stat-label">Products</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@Model.TotalOrders</div>
+                <div class="dash-stat-label">Orders</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-green">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M0 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm4.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m6 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2 6.5A.5.5 0 0 0 2 7h.5v2H2a.5.5 0 0 0 0 1h1.5a.5.5 0 0 0 .5-.5v-3A.5.5 0 0 0 3.5 6zm9 0a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 0-1h-.5V7H14a.5.5 0 0 0 0-1z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">$@Model.TotalRevenue.ToString("N0")</div>
+                <div class="dash-stat-label">Revenue</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-purple">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@Model.TotalUsers</div>
+                <div class="dash-stat-label">Users</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Recent Orders</h3>
+                <a asp-controller="Order" asp-action="Index" class="dash-card-link">View all</a>
+            </div>
+            @if (Model.RecentOrders.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr style="cursor:pointer;" onclick="window.location.href='@Url.Action("Details", "Order", new { id = order.OrderId })'">
+                                    <td class="fw-semibold">#@order.OrderId</td>
+                                    <td>@order.Username</td>
+                                    <td>@order.OrderDate.ToString("MMM dd, HH:mm")</td>
+                                    <td class="fw-semibold">$@order.TotalAmount.ToString("F2")</td>
+                                    <td>
+                                        <span class="badge order-status-badge status-@order.Status.ToLower()">@order.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="dash-empty">No orders yet.</div>
+            }
+        </div>
+
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Order Status</h3>
+            </div>
+            <div class="row g-3 text-center">
+                <div class="col-6 col-md">
+                    <div class="status-count">
+                        <div class="status-count-value text-warning">@Model.PendingOrders</div>
+                        <div class="status-count-label">Pending</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="status-count">
+                        <div class="status-count-value text-info">@Model.ProcessingOrders</div>
+                        <div class="status-count-label">Processing</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="status-count">
+                        <div class="status-count-value text-primary">@Model.ShippedOrders</div>
+                        <div class="status-count-label">Shipped</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="status-count">
+                        <div class="status-count-value text-success">@Model.DeliveredOrders</div>
+                        <div class="status-count-label">Delivered</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md">
+                    <div class="status-count">
+                        <div class="status-count-value text-danger">@Model.CancelledOrders</div>
+                        <div class="status-count-label">Cancelled</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Best Selling Shoes</h3>
+            </div>
+            @if (Model.BestSellers.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th class="text-end">Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var rank = 1;
+                            }
+                            @foreach (var item in Model.BestSellers)
+                            {
+                                <tr style="cursor:pointer;" onclick="window.location.href='@Url.Action("Details", "Shoes", new { id = item.ProductId })'">
+                                    <td>
+                                        @if (rank == 1)
+                                        {
+                                            <span class="rank-badge rank-1">1</span>
+                                        }
+                                        else if (rank == 2)
+                                        {
+                                            <span class="rank-badge rank-2">2</span>
+                                        }
+                                        else if (rank == 3)
+                                        {
+                                            <span class="rank-badge rank-3">3</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="rank-badge">@rank</span>
+                                        }
+                                    </td>
+                                    <td class="fw-semibold">@item.ShoesName</td>
+                                    <td>@item.CategoryName</td>
+                                    <td class="text-end fw-semibold text-success">@item.TotalSold</td>
+                                </tr>
+                                rank++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="dash-empty">No sales recorded yet.</div>
+            }
+        </div>
+
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Inventory</h3>
+                <a asp-controller="Stock" asp-action="Index" class="dash-card-link">Manage stock</a>
+            </div>
+            <div class="row g-3">
+                <div class="col-4 text-center">
+                    <div class="inventory-count">
+                        <div class="inventory-count-value text-success">@Model.StockAvailable</div>
+                        <div class="inventory-count-label">Available</div>
+                    </div>
+                </div>
+                <div class="col-4 text-center">
+                    <div class="inventory-count">
+                        <div class="inventory-count-value text-info">@Model.StockSold</div>
+                        <div class="inventory-count-label">Sold</div>
+                    </div>
+                </div>
+                <div class="col-4 text-center">
+                    <div class="inventory-count">
+                        <div class="inventory-count-value text-danger">@Model.StockDamaged</div>
+                        <div class="inventory-count-label">Damaged</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-7">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Revenue by Category</h3>
+            </div>
+            @if (Model.SalesByCategory.Any())
+            {
+                <div class="category-list">
+                    @{
+                        var maxRevenue = Model.SalesByCategory.Max(c => c.Revenue);
+                        var totalCategoryRevenue = Model.SalesByCategory.Sum(c => c.Revenue);
+                        int ranking = 1;
+                    }
+                    @foreach (var cat in Model.SalesByCategory)
+                    {
+                        var pct = totalCategoryRevenue > 0 ? (cat.Revenue / totalCategoryRevenue * 100) : 0;
+                        <div class="category-item">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                
+                                @if (ranking == 1)
+                                {
+                                    <span style="color: #e85d04;" class="fw-semibold">@cat.CategoryName</span>
+                                    <span style="color: #e85d04;" class="small">$@cat.Revenue.ToString("N0") (@((totalCategoryRevenue > 0 ? cat.Revenue / totalCategoryRevenue * 100 : 0).ToString("0.0"))%)</span>
+                                }
+                                else
+                                {
+                                    <span class="fw-semibold">@cat.CategoryName</span>
+                                    <span class="text-muted small">$@cat.Revenue.ToString("N0") (@((totalCategoryRevenue > 0 ? cat.Revenue / totalCategoryRevenue * 100 : 0).ToString("0.0"))%)</span>
+                                }
+                            </div>
+                            <div class="progress" style="height:8px;">
+                                <div class="progress-bar" style="width:@pct.ToString("0.#")%; background:linear-gradient(135deg,#e85d04,#f48c06);"></div>
+                            </div>
+                        </div>
+                        ranking++;
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="dash-empty">No category revenue yet.</div>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title">Low Stock Alert</h3>
+                <a asp-controller="Stock" asp-action="Index" class="dash-card-link">Manage stock</a>
+            </div>
+            @if (Model.LowStockProducts.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-end">Available</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var shoe in Model.LowStockProducts)
+                            {
+                                <tr style="cursor:pointer;" onclick="window.location.href='@Url.Action("Details", "Shoes", new { id = shoe.ProductId })'">
+                                    <td class="fw-semibold">@shoe.ShoesName</td>
+                                    <td class="text-end"><span class="badge bg-danger text-white">@(Model.AvailableCounts.ContainsKey(shoe.ProductId) ? Model.AvailableCounts[shoe.ProductId] : 0)</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="dash-empty">All products are well stocked.</div>
+            }
+        </div>
+    </div>
+</div>

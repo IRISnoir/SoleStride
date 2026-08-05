@@ -32,6 +32,7 @@ namespace SoleStride.Models
         public string? Phone { get; set; }
 
         [EmailAddress]
+        [Required]
         public string? EmailAddress { get; set; }
 
         [BirthdateConstraint]
