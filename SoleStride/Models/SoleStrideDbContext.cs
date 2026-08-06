@@ -13,5 +13,6 @@ namespace SoleStride.Models
         public DbSet<ShoeStock> ShoeStocks { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<OrderStock> OrderStocks { get; set; }
     }
 }
