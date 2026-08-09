@@ -123,12 +123,12 @@
 
                                         </div>
 
-                                        <div class="text-muted mt-1">
-                                            @address.Phone
+                                        <div class="mt-1">
+                                            <strong>SĐT:</strong> @address.Phone
                                         </div>
 
                                         <div class="mt-1">
-                                            @address.AddressLine
+                                            <strong>Địa chỉ:</strong> @address.AddressLine
                                         </div>
 
                                         @if (!address.IsDefault)
@@ -229,7 +229,7 @@
                     Note
                 </div>
 
-                <textarea name="note"
+                <textarea name="customerNote"
                           class="form-control"
                           rows="5"
                           placeholder="Add a note for your order..."></textarea>
