@@ -66,6 +66,30 @@ public class OrderController : Controller
         if (order != null)
         {
             order.Status = status;
+
+            if (order.Status == "Cancelled")
+            {
+                var orderDetails = await _context.OrderDetails
+                .Where(od => od.OrderId == orderId)
+                .ToListAsync();
+
+                var orderDetailIds = orderDetails.Select(od => od.OrderDetailId).ToList();
+
+                var orderStocks = await _context.OrderStocks
+                    .Where(os => orderDetailIds.Contains(os.OrderDetailId))
+                    .ToListAsync();
+
+                foreach (var orderStock in orderStocks)
+                {
+                    var shoeStock = await _context.ShoeStocks.FindAsync(orderStock.StockId);
+                    if (shoeStock != null)
+                    {
+                        shoeStock.Status = ShoeStock.InventoryStatus.Available;
+                        shoeStock.PurchaseDate = null;
+                    }
+                }
+            }
+
             await _context.SaveChangesAsync();
         }
         return RedirectToAction(nameof(Details), new { id = orderId });
@@ -79,6 +103,27 @@ public class OrderController : Controller
         if (order != null)
         {
             order.Status = "Cancelled";
+
+            var orderDetails = await _context.OrderDetails
+                .Where(od => od.OrderId == orderId)
+                .ToListAsync();
+
+            var orderDetailIds = orderDetails.Select(od => od.OrderDetailId).ToList();
+
+            var orderStocks = await _context.OrderStocks
+                .Where(os => orderDetailIds.Contains(os.OrderDetailId))
+                .ToListAsync();
+
+            foreach (var orderStock in orderStocks)
+            {
+                var shoeStock = await _context.ShoeStocks.FindAsync(orderStock.StockId);
+                if (shoeStock != null)
+                {
+                    shoeStock.Status = ShoeStock.InventoryStatus.Available;
+                    shoeStock.PurchaseDate = null;
+                }
+            }
+
             await _context.SaveChangesAsync();
         }
         return RedirectToAction(nameof(Details), new { id = orderId });
