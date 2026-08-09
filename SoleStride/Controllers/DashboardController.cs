@@ -105,6 +105,40 @@ namespace SoleStride.Controllers
                 SelectedMonth = month
             };
 
+            // Prepare revenue timeseries by day (within selected month or last 30 days)
+            var timeseriesOrders = orders.Where(o => o.Status != "Cancelled").OrderBy(o => o.OrderDate).ToList();
+            var labels = new List<string>();
+            var values = new List<decimal>();
+
+            if (!string.IsNullOrWhiteSpace(month) && DateTime.TryParse(month + "-01", out var mStart))
+            {
+                var start = mStart.Date;
+                var end = mStart.AddMonths(1).Date;
+                for (var d = start; d < end; d = d.AddDays(1))
+                {
+                    labels.Add(d.ToString("MMM d"));
+                    values.Add(timeseriesOrders.Where(o => o.OrderDate.Date == d).Sum(o => o.TotalAmount));
+                }
+            }
+            else
+            {
+                // last 30 days
+                var start = DateTime.UtcNow.Date.AddDays(-29);
+                for (var d = start; d <= DateTime.UtcNow.Date; d = d.AddDays(1))
+                {
+                    labels.Add(d.ToString("MMM d"));
+                    values.Add(timeseriesOrders.Where(o => o.OrderDate.Date == d).Sum(o => o.TotalAmount));
+                }
+            }
+
+            model.RevenueLabels = labels;
+            model.RevenueValues = values;
+
+            // Bestseller series for chart
+            // Already have BestSellers in model; ensure it's top 10
+
+            return View(model);
+
             return View(model);
         }
 
