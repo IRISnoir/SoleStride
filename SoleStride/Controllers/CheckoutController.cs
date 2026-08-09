@@ -368,9 +368,11 @@ public class CheckoutController : Controller
             OrderDate = DateTime.Now,
             TotalAmount = cart.Sum(i => i.Subtotal),
             Status = "Pending",
-            CustomerNote = customerNote,
+
             ShippingAddress = address.AddressLine,
-            Phone = address.Phone
+            Phone = address.Phone,
+
+            CustomerNote = customerNote
         };
 
         _context.Orders.Add(order);
