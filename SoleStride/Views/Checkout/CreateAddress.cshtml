@@ -1,0 +1,117 @@
+﻿@model SoleStride.Models.Address
+
+@{
+    ViewData["Title"] = "Add Address";
+}
+
+<div class="page-header">
+    <h1>Add New Address</h1>
+</div>
+
+<div class="row">
+
+    <div class="col-lg-7">
+
+        <div class="form-card">
+
+            <div class="form-section">
+
+                <div class="form-section-title">
+                    Address Information
+                </div>
+
+                <form asp-action="CreateAddress" method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="RecipientName"
+                               class="form-label">
+                            Recipient Name
+                        </label>
+
+                        <input asp-for="RecipientName"
+                               class="form-control"
+                               placeholder="Enter recipient name" />
+
+                        <span asp-validation-for="RecipientName"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="Phone"
+                               class="form-label">
+                            Phone Number
+                        </label>
+
+                        <input asp-for="Phone"
+                               class="form-control"
+                               placeholder="Enter phone number" />
+
+                        <span asp-validation-for="Phone"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="AddressLine"
+                               class="form-label">
+                            Address
+                        </label>
+
+                        <textarea asp-for="AddressLine"
+                                  class="form-control"
+                                  rows="4"
+                                  placeholder="Enter full address"></textarea>
+
+                        <span asp-validation-for="AddressLine"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="form-check mb-3">
+
+                        <input asp-for="IsDefault"
+                               class="form-check-input" />
+
+                        <label asp-for="IsDefault"
+                               class="form-check-label">
+                            Set as default address
+                        </label>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Create
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

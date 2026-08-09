@@ -1,0 +1,107 @@
+﻿@model SoleStride.Models.Address
+
+@{
+    ViewData["Title"] = "Edit Address";
+}
+
+<div class="page-header">
+    <h1>Edit Address</h1>
+</div>
+
+@if (TempData["AddressError"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["AddressError"]
+    </div>
+}
+
+<div class="row">
+
+    <div class="col-lg-7">
+
+        <div class="form-card">
+
+            <div class="form-section">
+
+                <div class="form-section-title">
+                    Edit Address
+                </div>
+
+                <form asp-action="EditAddress"
+                      asp-route-id="@Model.AddressId"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Recipient Name
+                        </label>
+
+                        <input name="recipientName"
+                               value="@Model.RecipientName"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Phone Number
+                        </label>
+
+                        <input name="phone"
+                               value="@Model.Phone"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Address
+                        </label>
+
+                        <textarea name="addressLine"
+                                  class="form-control"
+                                  rows="4"
+                                  required>@Model.AddressLine</textarea>
+
+                    </div>
+
+                    <div class="form-check mb-3">
+
+                        <input type="checkbox"
+                               name="isDefault"
+                               value="true"
+                               class="form-check-input"
+                        @(Model.IsDefault ? "checked" : "") />
+
+                        <label class="form-check-label">
+                            Set as default address
+                        </label>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Save Changes
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
