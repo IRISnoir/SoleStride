@@ -192,5 +192,42 @@ namespace SoleStride.Controllers
             TempData["UserSuccess"] = $"Updated role of '{username}' to {newRole}.";
             return RedirectToAction(nameof(Users));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(string username)
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null)
+            {
+                TempData["UserError"] = "User not found.";
+                return RedirectToAction(nameof(Users));
+            }
+
+            var currentUsername = HttpContext.Session.GetString("Username");
+            if (user.Username == currentUsername)
+            {
+                TempData["UserError"] = "You cannot delete your own account.";
+                return RedirectToAction(nameof(Users));
+            }
+
+            if (user.Role == SoleStride.Models.User.UserRole.Admin)
+            {
+                var adminCount = await _context.Users.CountAsync(u => u.Role == SoleStride.Models.User.UserRole.Admin);
+                if (adminCount <= 1)
+                {
+                    TempData["UserError"] = "Cannot delete the last admin.";
+                    return RedirectToAction(nameof(Users));
+                }
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            TempData["UserSuccess"] = $"Deleted user '{username}'.";
+            return RedirectToAction(nameof(Users));
+        }
     }
 }
