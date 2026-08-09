@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoleStride.Models;
 
@@ -11,9 +12,11 @@ using SoleStride.Models;
 namespace SoleStride.Migrations
 {
     [DbContext(typeof(SoleStrideDbContext))]
-    partial class SoleStrideDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260808174100_AddReceiverAndNote")]
+    partial class AddReceiverAndNote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,29 +113,6 @@ namespace SoleStride.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderDetails");
-                });
-
-            modelBuilder.Entity("SoleStride.Models.OrderStock", b =>
-                {
-                    b.Property<int>("OrderStockId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderStockId"));
-
-                    b.Property<int>("OrderDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StockId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderStockId");
-
-                    b.HasIndex("OrderDetailId");
-
-                    b.HasIndex("StockId");
-
-                    b.ToTable("OrderStocks");
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>
@@ -274,25 +254,6 @@ namespace SoleStride.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("SoleStride.Models.OrderStock", b =>
-                {
-                    b.HasOne("SoleStride.Models.OrderDetail", "OrderDetail")
-                        .WithMany()
-                        .HasForeignKey("OrderDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SoleStride.Models.ShoeStock", "ShoeStock")
-                        .WithMany()
-                        .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderDetail");
-
-                    b.Navigation("ShoeStock");
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>

@@ -269,6 +269,40 @@ body {
   text-decoration: underline;
 }
 
+.dash-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dash-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  background: #fff;
+  color: #495057;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+  transition: all 0.2s;
+}
+
+.dash-tab:hover {
+  color: #e85d04;
+  border-color: #f8b08a;
+}
+
+.dash-tab.active {
+  background: linear-gradient(135deg, #e85d04, #f48c06);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(232, 93, 4, 0.3);
+}
+
 .order-status-badge {
   font-size: 0.75rem;
   font-weight: 600;

@@ -32,6 +32,7 @@ else
                 <tr>
                     <th>Order ID</th>
                     <th>Date</th>
+                    <th>Receiver</th>
                     <th>Total</th>
                     <th>Status</th>
                     <th style="width:100px;"></th>
@@ -43,6 +44,7 @@ else
                     <tr>
                         <td>#@item.OrderId</td>
                         <td>@item.OrderDate.ToString("MMM dd, yyyy HH:mm")</td>
+                        <td>@(item.ReceiverName ?? item.Username)</td>
                         <td class="fw-bold">$@item.TotalAmount.ToString("F2")</td>
                         <td>
                             <span class="badge @(item.Status == "Delivered" ? "bg-success" : item.Status == "Cancelled" ? "bg-danger" : "bg-warning text-dark")">

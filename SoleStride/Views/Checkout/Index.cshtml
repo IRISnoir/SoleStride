@@ -24,12 +24,20 @@
                 <div class="form-section-title">Shipping Information</div>
                 <form asp-action="PlaceOrder" method="post">
                     <div class="mb-3">
+                        <label for="receiverName" class="form-label-custom">Receiver Name</label>
+                        <input type="text" name="receiverName" id="receiverName" class="form-control form-control-custom" placeholder="Full name of the person receiving the order" />
+                    </div>
+                    <div class="mb-3">
                         <label for="shippingAddress" class="form-label-custom">Shipping Address</label>
                         <textarea name="shippingAddress" id="shippingAddress" class="form-control form-control-custom" rows="3" placeholder="Enter your full address" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="phone" class="form-label-custom">Phone Number</label>
                         <input type="text" name="phone" id="phone" class="form-control form-control-custom" placeholder="Phone number" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="customerNote" class="form-label-custom">Note</label>
+                        <textarea name="customerNote" id="customerNote" class="form-control form-control-custom" rows="2" placeholder="Any note for the seller (optional)"></textarea>
                     </div>
                     <button type="submit" class="btn btn-submit">Place Order</button>
                     <a asp-controller="Cart" asp-action="Index" class="btn btn-back">Back to Cart</a>

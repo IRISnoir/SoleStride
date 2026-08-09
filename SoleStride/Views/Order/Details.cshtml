@@ -85,11 +85,25 @@
                     <span class="detail-label">Shipping</span>
                     <span class="detail-value">@Model.ShippingAddress</span>
                 </div>
+                @if (!string.IsNullOrEmpty(Model.ReceiverName))
+                {
+                    <div class="detail-row">
+                        <span class="detail-label">Receiver</span>
+                        <span class="detail-value">@Model.ReceiverName</span>
+                    </div>
+                }
                 @if (!string.IsNullOrEmpty(Model.Phone))
                 {
                     <div class="detail-row">
                         <span class="detail-label">Phone</span>
                         <span class="detail-value">@Model.Phone</span>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.CustomerNote))
+                {
+                    <div class="detail-row">
+                        <span class="detail-label">Note</span>
+                        <span class="detail-value">@Model.CustomerNote</span>
                     </div>
                 }
             </div>

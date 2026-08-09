@@ -18,9 +18,15 @@ namespace SoleStride.Controllers
             return HttpContext.Session.GetString("Role") == "Admin";
         }
 
-        public async Task<IActionResult> Index()
+        private bool IsStaff()
         {
-            if (!IsAdmin())
+            return HttpContext.Session.GetString("Role") == "Staff";
+        }
+
+        public async Task<IActionResult> Index(string? month)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "Admin" && role != "Staff")
                 return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
 
             var orders = await _context.Orders
@@ -28,6 +34,12 @@ namespace SoleStride.Controllers
                 .ThenInclude(d => d.Product)
                 .ThenInclude(p => p.Category)
                 .ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(month) && DateTime.TryParse(month + "-01", out var monthStart))
+            {
+                var monthEnd = monthStart.AddMonths(1);
+                orders = orders.Where(o => o.OrderDate >= monthStart && o.OrderDate < monthEnd).ToList();
+            }
 
             var shoes = await _context.Shoes.Include(s => s.Category).ToListAsync();
             var stock = await _context.ShoeStocks.ToListAsync();
@@ -89,10 +101,62 @@ namespace SoleStride.Controllers
                     .ToList(),
                 AvailableCounts = shoes.ToDictionary(
                     s => s.ProductId,
-                    s => stock.Count(x => x.ProductId == s.ProductId && x.Status == ShoeStock.InventoryStatus.Available))
+                    s => stock.Count(x => x.ProductId == s.ProductId && x.Status == ShoeStock.InventoryStatus.Available)),
+                SelectedMonth = month
             };
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Users()
+        {
+            if (!IsAdmin())
+                return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
+
+            var users = await _context.Users.OrderBy(u => u.Role).ThenBy(u => u.Username).ToListAsync();
+            return View(users);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateRole(string username, string role)
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
+
+            if (!Enum.TryParse<SoleStride.Models.User.UserRole>(role, out var newRole))
+            {
+                TempData["UserError"] = "Invalid role.";
+                return RedirectToAction(nameof(Users));
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null)
+            {
+                TempData["UserError"] = "User not found.";
+                return RedirectToAction(nameof(Users));
+            }
+
+            var currentUsername = HttpContext.Session.GetString("Username");
+            var adminCount = await _context.Users.CountAsync(u => u.Role == SoleStride.Models.User.UserRole.Admin);
+
+            if (user.Username == currentUsername && newRole != SoleStride.Models.User.UserRole.Admin)
+            {
+                TempData["UserError"] = "You cannot remove your own admin role.";
+                return RedirectToAction(nameof(Users));
+            }
+
+            if (user.Role == SoleStride.Models.User.UserRole.Admin && newRole != SoleStride.Models.User.UserRole.Admin && adminCount <= 1)
+            {
+                TempData["UserError"] = "Cannot demote the last admin.";
+                return RedirectToAction(nameof(Users));
+            }
+
+            user.Role = newRole;
+            await _context.SaveChangesAsync();
+
+            TempData["UserSuccess"] = $"Updated role of '{username}' to {newRole}.";
+            return RedirectToAction(nameof(Users));
         }
     }
 }

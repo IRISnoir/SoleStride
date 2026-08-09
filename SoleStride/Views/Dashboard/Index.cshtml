@@ -11,6 +11,24 @@
     <h1>Admin Dashboard</h1>
 </div>
 
+<div class="dash-tabs mb-4">
+    <a asp-action="Index" class="dash-tab @(string.IsNullOrEmpty(ViewContext.RouteData.Values["action"]?.ToString()) || ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.056l2.874 2.574L13.964 5H10.5a.5.5 0 0 1-.5-.5"/>
+        </svg>
+        Bảng thống kê
+    </a>
+    @if (Context.Session.GetString("Role") == "Admin")
+    {
+        <a asp-action="Users" class="dash-tab @(ViewContext.RouteData.Values["action"]?.ToString() == "Users" ? "active" : "")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+            </svg>
+            Quản lý người dùng
+        </a>
+    }
+</div>
+
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
         <div class="dash-stat">
@@ -240,6 +258,14 @@
         <div class="dash-card">
             <div class="dash-card-header">
                 <h3 class="dash-card-title">Revenue by Category</h3>
+                <form asp-action="Index" method="get" class="d-flex align-items-center gap-2">
+                    <input type="month" name="month" class="form-control form-control-sm" value="@Model.SelectedMonth" style="width:auto;" />
+                    <button type="submit" class="btn btn-sm btn-submit">Filter</button>
+                    @if (!string.IsNullOrEmpty(Model.SelectedMonth))
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-back">Clear</a>
+                    }
+                </form>
             </div>
             @if (Model.SalesByCategory.Any())
             {

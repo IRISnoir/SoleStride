@@ -1,0 +1,149 @@
+@model List<SoleStride.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    var roles = new[]
+    {
+        SoleStride.Models.User.UserRole.Admin,
+        SoleStride.Models.User.UserRole.Staff,
+        SoleStride.Models.User.UserRole.User
+    };
+    var adminCount = Model.Count(u => u.Role == SoleStride.Models.User.UserRole.Admin);
+    var staffCount = Model.Count(u => u.Role == SoleStride.Models.User.UserRole.Staff);
+    var userCount = Model.Count(u => u.Role == SoleStride.Models.User.UserRole.User);
+}
+
+<div class="page-header mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#e85d04;">
+        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+    </svg>
+    <h1>Quản lý người dùng</h1>
+</div>
+
+<div class="dash-tabs mb-4">
+    <a asp-action="Index" class="dash-tab">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.056l2.874 2.574L13.964 5H10.5a.5.5 0 0 1-.5-.5"/>
+        </svg>
+        Bảng thống kê
+    </a>
+    <a asp-action="Users" class="dash-tab active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+        </svg>
+        Quản lý người dùng
+    </a>
+</div>
+
+@if (TempData["UserError"] != null)
+{
+    <div class="alert alert-danger alert-custom">@TempData["UserError"]</div>
+}
+@if (TempData["UserSuccess"] != null)
+{
+    <div class="alert alert-success alert-custom">@TempData["UserSuccess"]</div>
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-orange">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@Model.Count</div>
+                <div class="dash-stat-label">Total Users</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-purple">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                    <path d="M0 8a8 8 0 0 0 16 0 8 8 0 0 0-16 0m8 4.5A4.5 4.5 0 0 1 3.54 9h8.92A4.5 4.5 0 0 1 8 12.5"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@adminCount</div>
+                <div class="dash-stat-label">Admins</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 1a4.5 4.5 0 0 0-4.5 4.5V7H2a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-1.5V5.5A4.5 4.5 0 0 0 8 1m0 2a2.5 2.5 0 0 1 2.5 2.5V7h-5V5.5A2.5 2.5 0 0 1 8 3"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@staffCount</div>
+                <div class="dash-stat-label">Staff</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-green">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-3-4a2 2 0 1 1 0 4 2 2 0 0 1 0-4m6 14v-1.5A3.5 3.5 0 0 0 10.5 11h-5A3.5 3.5 0 0 0 2 14.5V16h12Z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@userCount</div>
+                <div class="dash-stat-label">Users</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dash-card">
+    <div class="dash-card-header">
+        <h3 class="dash-card-title">All Users</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th style="width:200px;">Change Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@user.Username</td>
+                        <td>@($"{user.FirstName} {user.LastName}".Trim())</td>
+                        <td>@user.EmailAddress</td>
+                        <td>@(user.Phone ?? "-")</td>
+                        <td>
+                            <span class="badge @(user.Role == SoleStride.Models.User.UserRole.Admin ? "bg-danger text-white" : user.Role == SoleStride.Models.User.UserRole.Staff ? "bg-info text-white" : "bg-secondary text-white")">
+                                @user.Role
+                            </span>
+                        </td>
+                        <td>
+                            <form asp-action="UpdateRole" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="username" value="@user.Username" />
+                                <select name="role" class="form-select form-select-sm">
+                                    @foreach (var r in roles)
+                                    {
+                                        <option value="@r" selected="@(user.Role == r)">@r</option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-submit">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
