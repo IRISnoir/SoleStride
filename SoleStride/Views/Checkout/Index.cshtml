@@ -58,7 +58,8 @@
                 }
                 else
                 {
-                    <form asp-controller="Checkout"
+                    <form id="placeOrderForm"
+                          asp-controller="Checkout"
                           asp-action="PlaceOrder"
                           method="post">
 
@@ -230,6 +231,7 @@
                 </div>
 
                 <textarea name="customerNote"
+                          form="placeOrderForm"
                           class="form-control"
                           rows="5"
                           placeholder="Add a note for your order..."></textarea>
