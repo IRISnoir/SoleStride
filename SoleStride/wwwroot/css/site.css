@@ -1424,6 +1424,26 @@ select.auth-input {
   opacity: 1;
 }
 
+.cart-count-badge {
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #e85d04 0%, #f48c06 100%);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar.collapsed .cart-count-badge {
+  position: absolute;
+  right: 14px;
+}
+
 .sidebar-footer {
   padding: 0.75rem;
   border-top: 1px solid rgba(250,163,7,0.12);
