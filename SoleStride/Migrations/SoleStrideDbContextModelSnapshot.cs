@@ -54,7 +54,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("AddressId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("SoleStride.Models.Category", b =>
@@ -70,7 +70,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("SoleStride.Models.Order", b =>
@@ -115,7 +115,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
@@ -144,7 +144,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderStock", b =>
@@ -167,7 +167,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("OrderStocks");
+                    b.ToTable("OrderStocks", (string)null);
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>
@@ -194,7 +194,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoeStocks");
+                    b.ToTable("ShoeStocks", (string)null);
                 });
 
             modelBuilder.Entity("SoleStride.Models.Shoes", b =>
@@ -247,7 +247,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Shoes");
+                    b.ToTable("Shoes", (string)null);
                 });
 
             modelBuilder.Entity("SoleStride.Models.User", b =>
@@ -289,7 +289,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("Username");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>

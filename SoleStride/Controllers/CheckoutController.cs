@@ -83,6 +83,8 @@ public class CheckoutController : Controller
             return RedirectToAction("Login", "Account");
         }
 
+        ViewBag.DefaultName = username;
+
         return View("CreateAddress");
     }
 
@@ -370,6 +372,7 @@ public class CheckoutController : Controller
             Status = "Pending",
 
             ShippingAddress = address.AddressLine,
+            ReceiverName = address.RecipientName,
             Phone = address.Phone,
 
             CustomerNote = customerNote
@@ -386,18 +389,16 @@ public class CheckoutController : Controller
 
         foreach (var item in cart)
         {
-            _context.OrderDetails.Add(new OrderDetail
+            var orderDetail = new OrderDetail
             {
                 OrderId = order.OrderId,
                 ProductId = item.ProductId,
                 Quantity = item.Quantity,
                 Price = item.FinalPrice
-            });
+            };
 
-
-            // =========================
-            // 5. AVAILABLE → SOLD
-            // =========================
+            _context.OrderDetails.Add(orderDetail);
+            await _context.SaveChangesAsync();
 
             var stocks = await _context.ShoeStocks
                 .Where(s =>
@@ -409,6 +410,12 @@ public class CheckoutController : Controller
             foreach (var stock in stocks)
             {
                 stock.Status = ShoeStock.InventoryStatus.Sold;
+
+                _context.OrderStocks.Add(new OrderStock
+                {
+                    OrderDetailId = orderDetail.OrderDetailId,
+                    StockId = stock.StockId
+                });
             }
         }
 
