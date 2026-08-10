@@ -374,6 +374,7 @@ public class CheckoutController : Controller
             ShippingAddress = address.AddressLine,
             ReceiverName = address.RecipientName,
             Phone = address.Phone,
+            ReceiverName = address.RecipientName,
 
             CustomerNote = customerNote
         };
