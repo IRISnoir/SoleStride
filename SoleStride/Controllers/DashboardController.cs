@@ -138,8 +138,6 @@ namespace SoleStride.Controllers
             // Already have BestSellers in model; ensure it's top 10
 
             return View(model);
-
-            return View(model);
         }
 
         [HttpGet]
