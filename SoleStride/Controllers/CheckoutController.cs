@@ -83,6 +83,8 @@ public class CheckoutController : Controller
             return RedirectToAction("Login", "Account");
         }
 
+        ViewBag.DefaultName = username;
+
         return View("CreateAddress");
     }
 
@@ -371,6 +373,7 @@ public class CheckoutController : Controller
 
             ShippingAddress = address.AddressLine,
             Phone = address.Phone,
+            ReceiverName = address.RecipientName,
 
             CustomerNote = customerNote
         };

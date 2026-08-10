@@ -37,7 +37,8 @@
 
                         <input asp-for="RecipientName"
                                class="form-control"
-                               placeholder="Enter recipient name" />
+                               placeholder="Enter recipient name"
+                               value="@ViewBag.DefaultName"/>
 
                         <span asp-validation-for="RecipientName"
                               class="text-danger">
