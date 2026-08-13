@@ -24,6 +24,11 @@ namespace SoleStride.Models
         public List<CategorySaleItem> SalesByCategory { get; set; } = new();
         public List<Shoes> LowStockProducts { get; set; } = new();
         public Dictionary<Guid, int> AvailableCounts { get; set; } = new();
+        public string? SelectedMonth { get; set; }
+        public List<User> Users { get; set; } = new();
+        // Revenue time-series labels and values for charts
+        public List<string> RevenueLabels { get; set; } = new();
+        public List<decimal> RevenueValues { get; set; } = new();
     }
 
     public class BestSellerItem

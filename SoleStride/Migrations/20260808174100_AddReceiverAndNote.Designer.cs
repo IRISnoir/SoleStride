@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoleStride.Models;
 
@@ -11,9 +12,11 @@ using SoleStride.Models;
 namespace SoleStride.Migrations
 {
     [DbContext(typeof(SoleStrideDbContext))]
-    partial class SoleStrideDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260808174100_AddReceiverAndNote")]
+    partial class AddReceiverAndNote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,41 +24,6 @@ namespace SoleStride.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("SoleStride.Models.Address", b =>
-                {
-                    b.Property<int>("AddressId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressId"));
-
-                    b.Property<string>("AddressLine")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("RecipientName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AddressId");
-
-                    b.ToTable("Addresses", (string)null);
-                });
 
             modelBuilder.Entity("SoleStride.Models.Category", b =>
                 {
@@ -70,7 +38,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("SoleStride.Models.Order", b =>
@@ -115,7 +83,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
@@ -144,30 +112,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails", (string)null);
-                });
-
-            modelBuilder.Entity("SoleStride.Models.OrderStock", b =>
-                {
-                    b.Property<int>("OrderStockId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderStockId"));
-
-                    b.Property<int>("OrderDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StockId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderStockId");
-
-                    b.HasIndex("OrderDetailId");
-
-                    b.HasIndex("StockId");
-
-                    b.ToTable("OrderStocks", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>
@@ -194,7 +139,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoeStocks", (string)null);
+                    b.ToTable("ShoeStocks");
                 });
 
             modelBuilder.Entity("SoleStride.Models.Shoes", b =>
@@ -247,7 +192,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Shoes", (string)null);
+                    b.ToTable("Shoes");
                 });
 
             modelBuilder.Entity("SoleStride.Models.User", b =>
@@ -289,7 +234,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("Username");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
@@ -309,25 +254,6 @@ namespace SoleStride.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("SoleStride.Models.OrderStock", b =>
-                {
-                    b.HasOne("SoleStride.Models.OrderDetail", "OrderDetail")
-                        .WithMany()
-                        .HasForeignKey("OrderDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SoleStride.Models.ShoeStock", "ShoeStock")
-                        .WithMany()
-                        .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderDetail");
-
-                    b.Navigation("ShoeStock");
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>

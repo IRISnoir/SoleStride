@@ -2,62 +2,340 @@
 
 @{
     ViewData["Title"] = "Checkout";
+
+    var addresses =
+        ViewBag.Addresses as List<SoleStride.Models.Address>
+        ?? new List<SoleStride.Models.Address>();
 }
 
 <div class="page-header">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
-        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-        <path d="M11.354 5.646a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708l6-6a.5.5 0 0 1 .708 0"/>
-    </svg>
     <h1>Checkout</h1>
 </div>
 
 @if (TempData["CheckoutError"] != null)
 {
-    <div class="alert alert-danger alert-custom">@TempData["CheckoutError"]</div>
+    <div class="alert alert-danger">
+        @TempData["CheckoutError"]
+    </div>
+}
+
+@if (TempData["AddressSuccess"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["AddressSuccess"]
+    </div>
 }
 
 <div class="row g-4">
-    <div class="col-lg-7">
-        <div class="form-card">
-            <div class="form-section">
-                <div class="form-section-title">Shipping Information</div>
-                <form asp-action="PlaceOrder" method="post">
-                    <div class="mb-3">
-                        <label for="shippingAddress" class="form-label-custom">Shipping Address</label>
-                        <textarea name="shippingAddress" id="shippingAddress" class="form-control form-control-custom" rows="3" placeholder="Enter your full address" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label-custom">Phone Number</label>
-                        <input type="text" name="phone" id="phone" class="form-control form-control-custom" placeholder="Phone number" />
-                    </div>
-                    <button type="submit" class="btn btn-submit">Place Order</button>
-                    <a asp-controller="Cart" asp-action="Index" class="btn btn-back">Back to Cart</a>
-                </form>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-lg-5">
+    <!-- ================= LEFT: SHIPPING ADDRESS ================= -->
+    <div class="col-lg-7">
+
         <div class="form-card">
+
             <div class="form-section">
-                <div class="form-section-title">Order Summary</div>
-                @foreach (var item in Model)
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <div class="form-section-title mb-0">
+                        Shipping Address
+                    </div>
+
+                    <a asp-controller="Checkout"
+                       asp-action="CreateAddress"
+                       class="btn btn-primary">
+                        + Add Address
+                    </a>
+
+                </div>
+
+                @if (!addresses.Any())
                 {
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div>
-                            <span class="fw-medium">@item.ShoesName</span>
-                            <span class="text-muted ms-1">x @item.Quantity</span>
-                        </div>
-                        <span>$@item.Subtotal.ToString("F2")</span>
+                    <div class="alert alert-warning">
+                        You don't have any saved addresses.
+                        Please add an address before placing your order.
                     </div>
                 }
-                <hr />
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="h5 mb-0">Total</span>
-                    <span class="h5 mb-0 fw-bold">$@Model.Sum(i => i.Subtotal).ToString("F2")</span>
-                </div>
+                else
+                {
+                    <form id="placeOrderForm"
+                          asp-controller="Checkout"
+                          asp-action="PlaceOrder"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <!-- Dữ liệu cho PlaceOrder cũ -->
+                        <input type="hidden"
+                               id="shippingAddress"
+                               name="shippingAddress" />
+
+                        <input type="hidden"
+                               id="phone"
+                               name="phone" />
+
+                        @foreach (var address in addresses)
+                        {
+                            <div class="border rounded p-3 mb-3">
+
+                                <div class="d-flex align-items-start">
+
+                                    <div class="me-3">
+                                        <input type="radio"
+                                               name="addressId"
+                                               value="@address.AddressId"
+                                               class="form-check-input address-radio"
+                                               data-address="@address.AddressLine"
+                                               data-phone="@address.Phone"
+                                        @(address.IsDefault ? "checked" : "") />
+                                    </div>
+
+                                    <div class="flex-grow-1">
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <div>
+                                                <strong>
+                                                    @address.RecipientName
+                                                </strong>
+
+                                                @if (address.IsDefault)
+                                                {
+                                                    <span class="badge bg-success ms-2">
+                                                        Default
+                                                    </span>
+                                                }
+                                            </div>
+
+                                            <div>
+                                                <a asp-controller="Checkout"
+                                                   asp-action="EditAddress"
+                                                   asp-route-id="@address.AddressId"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    Edit
+                                                </a>
+
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="deleteAddress(@address.AddressId)">
+                                                    Delete
+                                                </button>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="mt-1">
+                                            <strong>SĐT:</strong> @address.Phone
+                                        </div>
+
+                                        <div class="mt-1">
+                                            <strong>Địa chỉ:</strong> @address.AddressLine
+                                        </div>
+
+                                        @if (!address.IsDefault)
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-sm btn-link p-0 mt-2"
+                                                    onclick="setDefaultAddress(@address.AddressId)">
+                                                Set as default
+                                            </button>
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+
+                        <button type="submit"
+                                class="btn btn-submit">
+                            Place Order
+                        </button>
+
+                        <a asp-controller="Cart"
+                           asp-action="Index"
+                           class="btn btn-back">
+                            Back to Cart
+                        </a>
+
+                    </form>
+                }
+
             </div>
+
         </div>
+
     </div>
+
+
+    <!-- ================= RIGHT ================= -->
+    <div class="col-lg-5">
+
+        <!-- ORDER SUMMARY -->
+        <div class="form-card mb-4">
+
+            <div class="form-section">
+
+                <div class="form-section-title">
+                    Order Summary
+                </div>
+
+                @foreach (var item in Model)
+                {
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <div>
+                            <span class="fw-medium">
+                                @item.ShoesName
+                            </span>
+
+                            <span class="text-muted ms-1">
+                                x @item.Quantity
+                            </span>
+                        </div>
+
+                        <span>
+                            $@item.Subtotal.ToString("F2")
+                        </span>
+
+                    </div>
+                }
+
+                <hr />
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <span class="h5 mb-0">
+                        Total
+                    </span>
+
+                    <span class="h5 mb-0 fw-bold">
+                        $@Model.Sum(i => i.Subtotal).ToString("F2")
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTE -->
+        <div class="form-card">
+
+            <div class="form-section">
+
+                <div class="form-section-title">
+                    Note
+                </div>
+
+                <textarea name="customerNote"
+                          form="placeOrderForm"
+                          class="form-control"
+                          rows="5"
+                          placeholder="Add a note for your order..."></textarea>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Hidden forms -->
+    <form id="deleteAddressForm"
+          asp-controller="Checkout"
+          asp-action="DeleteAddress"
+          method="post"
+          style="display:none;">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden"
+               id="deleteAddressId"
+               name="id" />
+
+    </form>
+
+
+    <form id="defaultAddressForm"
+          asp-controller="Checkout"
+          asp-action="SetDefaultAddress"
+          method="post"
+          style="display:none;">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden"
+               id="defaultAddressId"
+               name="id" />
+
+    </form>
+
+
+    <script>
+
+            // Khi chọn địa chỉ
+            document.querySelectorAll(".address-radio")
+                .forEach(function(radio) {
+
+                    radio.addEventListener("change", function() {
+
+                        document.getElementById("shippingAddress").value =
+                            this.dataset.address;
+
+                        document.getElementById("phone").value =
+                            this.dataset.phone;
+
+                    });
+
+                });
+
+
+            // Tự động chọn địa chỉ mặc định
+            document.addEventListener("DOMContentLoaded", function() {
+
+                const selected =
+                    document.querySelector(".address-radio:checked");
+
+                if (selected) {
+
+                    document.getElementById("shippingAddress").value =
+                        selected.dataset.address;
+
+                    document.getElementById("phone").value =
+                        selected.dataset.phone;
+
+                }
+
+            });
+
+
+            // Delete Address
+            function deleteAddress(id) {
+
+                if (confirm("Delete this address?")) {
+
+                    document.getElementById("deleteAddressId").value = id;
+
+                    document.getElementById("deleteAddressForm").submit();
+
+                }
+
+            }
+
+
+            // Set Default Address
+            function setDefaultAddress(id) {
+
+                document.getElementById("defaultAddressId").value = id;
+
+                document.getElementById("defaultAddressForm").submit();
+
+            }
+
+    </script>
+
 </div>
+

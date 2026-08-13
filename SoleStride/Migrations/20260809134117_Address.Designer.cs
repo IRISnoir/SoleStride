@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SoleStride.Models;
 
@@ -11,9 +12,11 @@ using SoleStride.Models;
 namespace SoleStride.Migrations
 {
     [DbContext(typeof(SoleStrideDbContext))]
-    partial class SoleStrideDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260809134117_Address")]
+    partial class Address
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +57,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("AddressId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("SoleStride.Models.Category", b =>
@@ -70,7 +73,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("SoleStride.Models.Order", b =>
@@ -115,7 +118,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
@@ -144,7 +147,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderStock", b =>
@@ -167,7 +170,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("OrderStocks", (string)null);
+                    b.ToTable("OrderStocks");
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>
@@ -194,7 +197,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoeStocks", (string)null);
+                    b.ToTable("ShoeStocks");
                 });
 
             modelBuilder.Entity("SoleStride.Models.Shoes", b =>
@@ -247,7 +250,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Shoes", (string)null);
+                    b.ToTable("Shoes");
                 });
 
             modelBuilder.Entity("SoleStride.Models.User", b =>
@@ -289,7 +292,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("Username");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
