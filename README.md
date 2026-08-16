@@ -1,3 +1,10 @@
+Để chạy bằng Docker, cài đặt Docker Desktop, sau đó mở terminal, vào thư mục của dự án (cùng thư mục với docker-compose.yaml) và chạy lệnh:
+```bash
+docker-compose up
+```
+
+---
+
 # SoleStride — Development Team Guidelines
 **Đội ngũ:** 5 developers | **Quy trình:** Scrum, 4 sprint | **Phạm vi:** 6 epic, 40 user story (US01–US40)
 
