@@ -10,6 +10,7 @@ RUN dotnet publish -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS migrate
 WORKDIR /src
 COPY --from=build /src .
+RUN dotnet restore
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"
 ENTRYPOINT ["dotnet", "ef", "database", "update"]
