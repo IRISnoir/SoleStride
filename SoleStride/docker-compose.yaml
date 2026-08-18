@@ -2,7 +2,7 @@ services:
   solestride:
     build: .
     ports:
-      - "8080:8080"
+      - "80:80"
     environment:
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=SoleStrideDB;User Id=sa;Password=P@ssword123;TrustServerCertificate=True
     depends_on:
