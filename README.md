@@ -11,6 +11,12 @@ docker-compose up
 
 ---
 
+AWS exclusive: Make 2 instances, SQL in 1, SoleStride in another, and connect them with security group. Point the SQL connection string correctly.
+
+<3 XOXO
+
+---
+
 # SoleStride — Development Team Guidelines
 **Đội ngũ:** 5 developers | **Quy trình:** Scrum, 4 sprint | **Phạm vi:** 6 epic, 40 user story (US01–US40)
 
