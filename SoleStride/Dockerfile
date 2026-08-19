@@ -19,5 +19,7 @@ ENTRYPOINT ["dotnet", "ef", "database", "update"]
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
+RUN mkdir -p /app/wwwroot/images
+RUN mkdir -p /app/wwwroot/avatars
 ENV ASPNETCORE_URLS=http://+:80
 ENTRYPOINT ["dotnet", "SoleStride.dll"]
