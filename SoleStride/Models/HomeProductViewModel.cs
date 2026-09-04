@@ -19,5 +19,13 @@ namespace SoleStride.Models
         /// Number of shoes sold (Status = Sold)
         /// </summary>
         public int QuantitySold { get; set; }
+
+        public Shoes Shoes1
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }

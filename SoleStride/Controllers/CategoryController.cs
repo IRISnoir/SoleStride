@@ -11,6 +11,22 @@ public class CategoryController : Controller
         _context = context;
     }
 
+    public Category Category
+    {
+        get => default;
+        set
+        {
+        }
+    }
+
+    public SoleStrideDbContext SoleStrideDbContext
+    {
+        get => default;
+        set
+        {
+        }
+    }
+
     private bool IsAdmin()
     {
         return HttpContext.Session.GetString("Role") == "Admin";
