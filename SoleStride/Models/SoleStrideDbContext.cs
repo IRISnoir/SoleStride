@@ -17,5 +17,53 @@ namespace SoleStride.Models
 
         // Address Book
         public DbSet<Address> Addresses { get; set; }
+
+        public Order Order
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public ShoeStock ShoeStock
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public OrderDetail OrderDetail
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public OrderStock OrderStock
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public User User
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public Shoes Shoes1
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }

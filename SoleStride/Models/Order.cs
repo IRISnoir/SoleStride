@@ -35,5 +35,13 @@ namespace SoleStride.Models
         public string? CustomerNote { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+        public OrderDetail OrderDetail
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }

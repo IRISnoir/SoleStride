@@ -52,5 +52,13 @@ namespace SoleStride.Models
         public float? SalePercentage { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        public Category Category1
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }

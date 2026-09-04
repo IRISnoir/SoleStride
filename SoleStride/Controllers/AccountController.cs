@@ -16,6 +16,22 @@ namespace SoleStride.Controllers
             _context = context;
         }
 
+        public User User
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public SoleStrideDbContext SoleStrideDbContext
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {

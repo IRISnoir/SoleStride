@@ -25,5 +25,21 @@ namespace SoleStride.Models
 
         [Required]
         public decimal Price { get; set; }
+
+        public Shoes Shoes
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public Order Order1
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }

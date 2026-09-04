@@ -19,5 +19,21 @@ namespace SoleStride.Models
 
         [ForeignKey(nameof(StockId))]
         public ShoeStock? ShoeStock { get; set; }
+
+        public OrderDetail OrderDetail1
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
+        public ShoeStock ShoeStock1
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }

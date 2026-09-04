@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="SoleStride.Models.Address">
+    <Position X="38.5" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAQAAAAAACAAAAQAAAAAAAAAAAAAAAAAAIAAQAAA=</HashCode>
+      <FileName>Models\Address.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoleStride.Models.BirthdateConstraintAttribute">
+    <Position X="18" Y="12" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\BirthdateConstraintAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoleStride.Models.CartItem">
+    <Position X="35.25" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAQAAAAQAEAAAAAAAAAAAAAAAAAABAQAAAgAAAAAA=</HashCode>
+      <FileName>Models\CartItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoleStride.Models.Category">
+    <Position X="24" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoleStride.Models.DashboardViewModel">
+    <Position X="27.25" Y="4" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAGBACEAwgAkAIEAACIAQAKSAAAABAAAAAFAAAQBQAA=</HashCode>
+      <FileName>Models\DashboardViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Order" />
+      <Property Name="BestSellerItem" />
+      <Property Name="CategorySaleItem" />
+      <Property Name="User" />
+      <Property Name="Shoes" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Models.BestSellerItem">
+    <Position X="51" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAQAAAAAAAAAAAAAAACAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\DashboardViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoleStride.Models.CategorySaleItem">
+    <Position X="47.75" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Models\DashboardViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoleStride.Models.ErrorViewModel">
+    <Position X="44.75" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ErrorViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoleStride.Models.HomeProductViewModel">
+    <Position X="57.75" Y="4" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABIAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\HomeProductViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Shoes1" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Models.Order">
+    <Position X="19.75" Y="4" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>GAAAAAAEQAAQAAAQARAgAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Models\Order.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="OrderDetail" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Models.OrderDetail">
+    <Position X="41.75" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EAECAAAAAQAAAIAAAAAAAAAAAAAAAAAAAAAAgQAAAAA=</HashCode>
+      <FileName>Models\OrderDetail.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Shoes" />
+      <Property Name="Order1" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Models.OrderStock">
+    <Position X="54.25" Y="4" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAABAAAAAAAAAAAAgAAAAIQQAAAAA=</HashCode>
+      <FileName>Models\OrderStock.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="OrderDetail1" />
+      <Property Name="ShoeStock1" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Models.Shoes">
+    <Position X="64.25" Y="4" Width="2.5" />
+    <NestedTypes>
+      <Enum Name="SoleStride.Models.Shoes.Gender" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Models\Shoes.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>GMAAQQAAAQAgAgIAAAAAAAAAAAAAAAAAQAAAAAAACAA=</HashCode>
+      <FileName>Models\Shoes.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Category1" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Models.ShoeStock">
+    <Position X="31.75" Y="4" Width="2.75" />
+    <NestedTypes>
+      <Enum Name="SoleStride.Models.ShoeStock.InventoryStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Models\ShoeStock.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EAAAAAAEAAAAAIAAAIAAAACAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Models\ShoeStock.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Shoes1" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Models.SoleStrideDbContext">
+    <Position X="10.5" Y="12.75" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAFBACAAAAAAIIAAABAAAAAAAAABAAgABAAAAAAACAA=</HashCode>
+      <FileName>Models\SoleStrideDbContext.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Order" />
+      <Property Name="ShoeStock" />
+      <Property Name="OrderDetail" />
+      <Property Name="OrderStock" />
+      <Property Name="User" />
+      <Property Name="Shoes1" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Models.User">
+    <Position X="61" Y="4" Width="2.5" />
+    <NestedTypes>
+      <Enum Name="SoleStride.Models.User.UserRole" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Models\User.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SoleStride.Models.User.Gender" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Models\User.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAMAAAAAAAAAIEQAAAAQAAAAAAAACAAAAIgAAAAg=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SoleStride.Controllers.AccountController">
+    <Position X="30.25" Y="17.25" Width="9.75" />
+    <TypeIdentifier>
+      <HashCode>CAABAAABAwAAhAAAAAAAAAIAAAABAAAAABMQAAAAAAA=</HashCode>
+      <FileName>Controllers\AccountController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="User" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Controllers.DashboardController">
+    <Position X="20.5" Y="17.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>CAARACAAAAAABAAEAAAAAAAACAAAAAgAAAUAAAAAAgA=</HashCode>
+      <FileName>Controllers\DashboardController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="DashboardViewModel" />
+      <Property Name="User" />
+      <Property Name="ShoeStock" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SoleStride.Controllers.HomeController">
+    <Position X="61.5" Y="17.25" Width="10" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAABQAgAAAAAAAAAAACAQgAAAEAAAAgAAA=</HashCode>
+      <FileName>Controllers\HomeController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ShoeStock" />
+      <Property Name="ErrorViewModel" />
+      <Property Name="HomeProductViewModel" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CartController">
+    <Position X="56.25" Y="17.25" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAgAABBAAAAAAABEAQAAAAAAAAAAGAAAAAACA=</HashCode>
+      <FileName>Controllers\CartController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="CartItem" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CategoryController">
+    <Position X="40.75" Y="17.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAABBACAAAAAAAAACAEAAEAAAAEAAAgACAA=</HashCode>
+      <FileName>Controllers\CategoryController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Category" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="CheckoutController">
+    <Position X="72.25" Y="17.25" Width="7" />
+    <TypeIdentifier>
+      <HashCode>CAEAAAAAgEABBAAAABAAAEAAAAAAAAgDBIEAAAAAAAA=</HashCode>
+      <FileName>Controllers\CheckoutController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="OrderDetail" />
+      <Property Name="OrderStock" />
+      <Property Name="ShoeStock" />
+      <Property Name="CartItem" />
+      <Property Name="Order" />
+      <Property Name="Address" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="OrderController">
+    <Position X="25.5" Y="17.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>CAEAAAAEAAABBAAAAAAAAAAACAAAAAgAAAEQAAAAAgA=</HashCode>
+      <FileName>Controllers\OrderController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Order" />
+      <Property Name="ShoeStock" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ShoesController">
+    <Position X="45.5" Y="17.25" Width="10" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAgAAABBICAAAAAAAAACAEAAEACAAEAAAAAAgA=</HashCode>
+      <FileName>Controllers\ShoesController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Shoes" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="StockController">
+    <Position X="80" Y="17.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAABAAAAAAAABBACAEAAEgAAAEAAAAAAgA=</HashCode>
+      <FileName>Controllers\StockController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ShoeStock" />
+      <Property Name="SoleStrideDbContext" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Mvc.Controller">
+    <Position X="49.25" Y="10.75" Width="6" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.ComponentModel.DataAnnotations.ValidationAttribute">
+    <Position X="17.5" Y="7.5" Width="5.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.Object">
+    <Position X="41.5" Y="0.5" Width="3.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Microsoft.EntityFrameworkCore.DbContext">
+    <Position X="9.75" Y="1.5" Width="6.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Mvc.ControllerBase" Collapsed="true">
+    <Position X="51.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
