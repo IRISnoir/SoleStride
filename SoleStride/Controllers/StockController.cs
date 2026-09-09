@@ -11,22 +11,6 @@ public class StockController : Controller
         _context = context;
     }
 
-    public ShoeStock ShoeStock
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public SoleStrideDbContext SoleStrideDbContext
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
     public bool IsAdmin()
     {
         return HttpContext.Session.GetString("Role") == "Admin";

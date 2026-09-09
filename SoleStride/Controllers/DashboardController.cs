@@ -13,38 +13,6 @@ namespace SoleStride.Controllers
             _context = context;
         }
 
-        public DashboardViewModel DashboardViewModel
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public User User
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public ShoeStock ShoeStock
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public SoleStrideDbContext SoleStrideDbContext
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
         private bool IsAdmin()
         {
             return HttpContext.Session.GetString("Role") == "Admin";

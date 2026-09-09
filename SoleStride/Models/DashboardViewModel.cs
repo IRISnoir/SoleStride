@@ -29,46 +29,6 @@ namespace SoleStride.Models
         // Revenue time-series labels and values for charts
         public List<string> RevenueLabels { get; set; } = new();
         public List<decimal> RevenueValues { get; set; } = new();
-
-        public Order Order
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public BestSellerItem BestSellerItem
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public CategorySaleItem CategorySaleItem
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public User User
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public Shoes Shoes
-        {
-            get => default;
-            set
-            {
-            }
-        }
     }
 
     public class BestSellerItem

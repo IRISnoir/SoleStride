@@ -11,22 +11,6 @@ public class CartController : Controller
         _context = context;
     }
 
-    public CartItem CartItem
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public SoleStrideDbContext SoleStrideDbContext
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
     private List<CartItem> GetCart()
     {
         var data = HttpContext.Session.GetString("Cart");

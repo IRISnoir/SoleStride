@@ -12,62 +12,6 @@ public class CheckoutController : Controller
         _context = context;
     }
 
-    public OrderDetail OrderDetail
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public OrderStock OrderStock
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public ShoeStock ShoeStock
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public CartItem CartItem
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public Order Order
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public Address Address
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public SoleStrideDbContext SoleStrideDbContext
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
     private List<CartItem> GetCart()
     {
         var data = HttpContext.Session.GetString("Cart");
