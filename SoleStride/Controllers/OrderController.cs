@@ -11,30 +11,6 @@ public class OrderController : Controller
         _context = context;
     }
 
-    public Order Order
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public ShoeStock ShoeStock
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public SoleStrideDbContext SoleStrideDbContext
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
     private bool IsAdmin()
     {
         return HttpContext.Session.GetString("Role") == "Admin";

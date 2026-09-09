@@ -13,22 +13,6 @@ public class ShoesController : Controller
         _context = context;
     }
 
-    public Shoes Shoes
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
-    public SoleStrideDbContext SoleStrideDbContext
-    {
-        get => default;
-        set
-        {
-        }
-    }
-
     private bool IsAdmin()
     {
         return HttpContext.Session.GetString("Role") == "Admin";

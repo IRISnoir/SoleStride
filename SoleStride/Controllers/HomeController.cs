@@ -14,38 +14,6 @@ namespace SoleStride.Controllers
             _context = context;
         }
 
-        public ShoeStock ShoeStock
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public ErrorViewModel ErrorViewModel
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public HomeProductViewModel HomeProductViewModel
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
-        public SoleStrideDbContext SoleStrideDbContext
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
         public async Task<IActionResult> Index(
             string? categoryId,
             string? gender,

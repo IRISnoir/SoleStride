@@ -27,13 +27,5 @@ namespace SoleStride.Models
         public DateTime EntryDate { get; set; } = DateTime.Now;
 
         public DateTime? PurchaseDate { get; set; }
-
-        public Shoes Shoes1
-        {
-            get => default;
-            set
-            {
-            }
-        }
     }
 }
