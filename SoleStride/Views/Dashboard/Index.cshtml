@@ -27,6 +27,14 @@
             Quản lý người dùng
         </a>
     }
+    <form asp-action="Index" method="get" class="d-flex align-items-center gap-2 ms-auto">
+        <input type="month" name="month" class="form-control form-control-sm" value="@Model.SelectedMonth" style="width:auto;" />
+        <button type="submit" class="btn btn-sm btn-submit">Filter</button>
+        @if (!string.IsNullOrEmpty(Model.SelectedMonth))
+        {
+            <a asp-action="Index" class="btn btn-sm btn-back">Clear</a>
+        }
+    </form>
 </div>
 
 <div class="row g-3 mb-4">
@@ -258,14 +266,6 @@
         <div class="dash-card">
             <div class="dash-card-header">
                 <h3 class="dash-card-title">Revenue by Category</h3>
-                <form asp-action="Index" method="get" class="d-flex align-items-center gap-2">
-                    <input type="month" name="month" class="form-control form-control-sm" value="@Model.SelectedMonth" style="width:auto;" />
-                    <button type="submit" class="btn btn-sm btn-submit">Filter</button>
-                    @if (!string.IsNullOrEmpty(Model.SelectedMonth))
-                    {
-                        <a asp-action="Index" class="btn btn-sm btn-back">Clear</a>
-                    }
-                </form>
             </div>
             @if (Model.SalesByCategory.Any())
             {
