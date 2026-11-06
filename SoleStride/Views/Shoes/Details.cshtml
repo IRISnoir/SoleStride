@@ -1,112 +1,175 @@
 @model SoleStride.Models.Shoes
 
 @{
-    ViewData["Title"] = "Shoes Details";
+    ViewData["Title"] = Model.ShoesName;
     var salePrice = Model.SalePercentage.HasValue && Model.SalePercentage > 0
         ? Model.Price * (decimal)(1 - Model.SalePercentage.Value / 100)
         : Model.Price;
+    var userRole = Context.Session.GetString("Role");
 }
 
-<div class="shoes-detail container-fluid">
-    <div class="page-header">
-        <h1 class="shoes-title">@Model.ShoesName</h1>
-        <div class="product-category-pill">@(Model.Category?.CategoryName ?? Model.CategoryId.ToString())</div>
-    </div>
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <nav class="mb-4" aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0" style="font-size:0.88rem;">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-muted">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Shoes" asp-action="Index" class="text-muted">Shoes Collection</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">@Model.ShoesName</li>
+        </ol>
+    </nav>
 
     <div class="row g-4 align-items-start">
+        <!-- 1. Left Column: Product Gallery -->
         <div class="col-lg-6">
-            <div class="image-card">
+            <div class="detail-gallery-box">
                 @if (!string.IsNullOrEmpty(Model.ImageUrl))
                 {
-                    <div class="image-wrapper">
-                        <img src="@Model.ImageUrl" alt="@Model.ShoesName" class="detail-image" />
-                    </div>
+                    <img src="@Model.ImageUrl" alt="@Model.ShoesName" id="mainShoeImage" />
                 }
                 else
                 {
-                    <div class="image-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" fill="#adb5bd" viewBox="0 0 16 16">
-                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3-3-2.5 3-1-1.5-4 5h12z"/>
+                    <div class="card-img-placeholder text-center p-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
                         </svg>
+                        <p class="mt-2 mb-0">No image available for this model</p>
                     </div>
+                }
+
+                @if (Model.SalePercentage.HasValue && Model.SalePercentage > 0)
+                {
+                    <span class="badge-sale-tag" style="top:20px; right:20px; font-size:0.85rem; padding:0.35rem 0.85rem;">
+                        SALE -@Model.SalePercentage.Value%
+                    </span>
                 }
             </div>
         </div>
 
+        <!-- 2. Right Column: Product Info & Purchase Form -->
         <div class="col-lg-6">
-            <div class="form-card detail-info">
-                <div class="form-section">
-                    <div class="form-section-title">Product Details</div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Category</span>
-                        <span class="detail-value">@(Model.Category?.CategoryName ?? Model.CategoryId)</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Gender</span>
-                        <span class="detail-value">@Model.ShoesGender</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Size</span>
-                        <span class="detail-value">@Model.ShoesSize</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Color</span>
-                        <span class="detail-value">@Model.ShoesColor</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Material</span>
-                        <span class="detail-value">@Model.Material</span>
-                    </div>
-
-                    @if (!string.IsNullOrEmpty(Model.Description))
+            <div class="detail-info-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-dark text-white" style="font-size:0.75rem;">@(Model.Category?.CategoryName ?? "Footwear")</span>
+                    <span class="badge bg-light text-muted border" style="font-size:0.75rem;">Gender: @Model.ShoesGender</span>
+                    @if (!string.IsNullOrEmpty(Model.SkuId))
                     {
-                        <div class="detail-row">
-                            <span class="detail-label">Description</span>
-                            <span class="detail-value">@Model.Description</span>
+                        <span class="text-muted small ms-auto">SKU: @Model.SkuId</span>
+                    }
+                </div>
+
+                <h1 class="detail-title">@Model.ShoesName</h1>
+
+                <!-- Price Box -->
+                <div class="detail-price-box">
+                    @if (Model.SalePercentage.HasValue && Model.SalePercentage > 0)
+                    {
+                        <span class="detail-price-main">$@salePrice.ToString("F2")</span>
+                        <span class="detail-price-strike">$@Model.Price.ToString("F2")</span>
+                        <span class="badge bg-danger text-white ms-2" style="font-size:0.8rem;">Save @Model.SalePercentage.Value%</span>
+                    }
+                    else
+                    {
+                        <span class="detail-price-main" style="color:var(--text-main);">$@Model.Price.ToString("F2")</span>
+                    }
+                </div>
+
+                <!-- Description -->
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="mb-4">
+                        <label class="form-label-custom mb-1">Overview</label>
+                        <p class="text-muted" style="line-height:1.7;">@Model.Description</p>
+                    </div>
+                }
+
+                <!-- Specifications Grid -->
+                <div class="detail-spec-grid">
+                    <div class="detail-spec-item">
+                        <span class="detail-spec-label">Selected Size</span>
+                        <span class="detail-spec-val">US @Model.ShoesSize</span>
+                    </div>
+                    <div class="detail-spec-item">
+                        <span class="detail-spec-label">Colorway</span>
+                        <span class="detail-spec-val">@Model.ShoesColor</span>
+                    </div>
+                    <div class="detail-spec-item">
+                        <span class="detail-spec-label">Material</span>
+                        <span class="detail-spec-val">@Model.Material</span>
+                    </div>
+                    <div class="detail-spec-item">
+                        <span class="detail-spec-label">Gender Category</span>
+                        <span class="detail-spec-val">@Model.ShoesGender</span>
+                    </div>
+                </div>
+
+                <!-- Purchase Form (POST to Cart/AddToCart) -->
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-4">
+                    <input type="hidden" name="productId" value="@Model.ProductId" />
+                    
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div>
+                            <label class="form-label-custom mb-1">Quantity</label>
+                            <div class="qty-stepper-box">
+                                <button type="button" class="qty-step-btn qty-minus">−</button>
+                                <input type="number" name="quantity" class="qty-step-input" value="1" min="1" max="99" />
+                                <button type="button" class="qty-step-btn qty-plus">+</button>
+                            </div>
                         </div>
-                    }
 
-                    <div class="detail-row price-row">
-                        <span class="detail-label">Price</span>
-                        <span class="detail-value">
-                            @if (Model.SalePercentage.HasValue && Model.SalePercentage > 0)
-                            {
-                                <span class="price-original">$@Model.Price.ToString("F2")</span>
-                                <span class="price-large">$@salePrice.ToString("F2")</span>
-                                <span class="sale-percent">(-@Model.SalePercentage.Value%)</span>
-                            }
-                            else
-                            {
-                                <span class="price-large">$@Model.Price.ToString("F2")</span>
-                            }
-                        </span>
+                        <div class="flex-grow-1" style="padding-top:1.6rem;">
+                            <button type="submit" class="btn-brand w-100" style="padding:0.75rem 1.5rem; font-size:1rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                                </svg>
+                                <span>Add to Shopping Cart</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Admin Action Options -->
+                @if (userRole == "Staff" || userRole == "Admin")
+                {
+                    <div class="d-flex gap-2 pt-3 border-top">
+                        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-secondary flex-fill">Edit Shoe Details</a>
+                        @if (userRole == "Admin")
+                        {
+                            <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-outline-danger flex-fill">Delete Product</a>
+                        }
+                    </div>
+                }
+
+                <!-- Trust Badges Strip -->
+                <div class="trust-badges-strip">
+                    <div class="trust-badge-item">
+                        <div class="trust-badge-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-4 0H.5a.5.5 0 0 1-.5-.5v-7z"/>
+                            </svg>
+                        </div>
+                        <span>Fast Express Shipping</span>
                     </div>
 
-                    <div class="detail-row">
-                        <span class="detail-label">SKU</span>
-                        <span class="detail-value">@(Model.SkuId ?? "-")</span>
+                    <div class="trust-badge-item">
+                        <div class="trust-badge-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.464 9.99 1.579 2.065 3.48 3.018 4.395 3.317a1.6 1.6 0 0 0 1.054 0c.915-.299 2.816-1.252 4.395-3.317 1.677-2.195 3.06-5.513 2.464-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0"/>
+                            </svg>
+                        </div>
+                        <span>100% Authentic Guarantee</span>
+                    </div>
+
+                    <div class="trust-badge-item">
+                        <div class="trust-badge-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                            </svg>
+                        </div>
+                        <span>30-Day Easy Exchange</span>
                     </div>
                 </div>
 
-                <div class="actions mt-4">
-                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
-                        <input type="hidden" name="productId" value="@Model.ProductId" />
-                        <input type="hidden" name="quantity" value="1" />
-                        <button type="submit" class="btn btn-primary btn-add-cart">Add to Cart</button>
-                    </form>
-                    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
-                    {
-                        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-primary ms-2">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-outline-danger ms-2">Delete</a>
-                    }
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-back ms-3">Back to Shoe Collection</a>
-                </div>
             </div>
         </div>
     </div>

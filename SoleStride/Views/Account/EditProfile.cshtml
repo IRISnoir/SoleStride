@@ -4,155 +4,177 @@
     ViewData["Title"] = "Edit Profile";
 }
 
-<form asp-action="EditProfile" method="post" enctype="multipart/form-data" id="editProfileForm">
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1" style="font-size:0.88rem;">
+            <li class="breadcrumb-item"><a asp-action="Profile" class="text-muted">My Profile</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Edit Profile</li>
+        </ol>
+    </nav>
+    <h1 class="h2 fw-bold mb-0">Edit Account Information</h1>
+</div>
+
+@if (TempData["ProfileError"] != null)
+{
+    <div class="alert alert-danger py-2 small mb-4" style="border-radius:var(--radius-md);">
+        @TempData["ProfileError"]
+    </div>
+}
+
 <div class="row g-4">
+    <!-- Left Column: Avatar & Basic Identity -->
     <div class="col-lg-4">
-        <div class="form-card text-center">
-            <div class="position-relative d-inline-block">
+        <div class="card-custom p-4 text-center">
+            <div class="position-relative d-inline-block mb-3">
                 <div id="avatarPreviewContainer">
                     @if (!string.IsNullOrEmpty(Model.AvatarUrl))
                     {
-                        <img src="@Model.AvatarUrl" id="avatarPreview" alt="@Model.Username" class="rounded-circle" style="width:120px; height:120px; object-fit:cover; border:4px solid #f1f3f5;" />
+                        <img src="@Model.AvatarUrl" id="avatarPreview" alt="@Model.Username" class="profile-avatar-large" />
                     }
                     else
                     {
-                        <div id="avatarPreview" class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width:120px; height:120px; background:linear-gradient(135deg, #212529, #495057);">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#adb5bd" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                            </svg>
+                        <div id="avatarPreview" class="profile-avatar-placeholder">
+                            @Model.Username.Substring(0, 1).ToUpper()
                         </div>
                     }
                 </div>
-                <label for="avatarFileInput" class="btn btn-sm btn-outline-secondary rounded-circle position-absolute bottom-0 end-0" style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; background:#fff; border:2px solid #fff; cursor:pointer;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168z"/>
+                <label for="avatarFileInput" class="btn btn-sm btn-brand position-absolute bottom-0 end-0 rounded-circle p-2 shadow" style="width:36px; height:36px; cursor:pointer;" title="Upload new photo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                        <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0"/>
                     </svg>
                 </label>
-                <input type="file" name="avatarFile" id="avatarFileInput" accept="image/*" style="display:none;" onchange="previewAvatar(event)" />
             </div>
-                <h4 class="mt-3 mb-0 fw-bold">@Model.FirstName @Model.LastName</h4>
-            <p class="text-muted mb-0">@@@Model.Username</p>
+
+            <h2 class="h5 fw-bold mb-0">@Model.FirstName @Model.LastName</h2>
+            <p class="text-muted small mb-2">@@@Model.Username</p>
+            <span class="badge bg-light text-dark border">@Model.Role</span>
+            <p class="text-muted small mt-3 mb-0">Click the camera icon to select a new profile picture from your computer.</p>
         </div>
     </div>
 
+    <!-- Right Column: Personal Information Form -->
     <div class="col-lg-8">
-        <div class="form-card">
+        <div class="card-custom p-4 mb-4">
+            <h3 class="h5 fw-bold mb-3 pb-2 border-bottom">Personal Information</h3>
 
-                @if (TempData["ProfileError"] != null)
-                {
-                    <div class="alert alert-danger alert-custom">@TempData["ProfileError"]</div>
-                }
+            <form asp-action="EditProfile" method="post" enctype="multipart/form-data" id="editProfileForm">
+                <input type="file" name="avatarFile" id="avatarFileInput" accept="image/*" style="display:none;" onchange="previewAvatar(event)" />
 
-                <div class="form-section">
-                    <div class="form-section-title">Personal Information</div>
-                    <div class="mb-3">
-                        <label class="form-label-custom">Username</label>
-                        <input class="form-control form-control-custom" value="@Model.Username" disabled style="background:#f8f9fa; color:#6c757d;" />
-                        <small class="text-muted">Username cannot be changed.</small>
+                <div class="mb-3">
+                    <label class="form-label-custom">Username</label>
+                    <input class="form-control-custom bg-light" value="@Model.Username" disabled />
+                    <span class="text-muted small">Username is unique and cannot be changed.</span>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="firstName" class="form-label-custom">First Name</label>
+                        <input type="text" name="firstName" id="firstName" class="form-control-custom" value="@Model.FirstName" placeholder="First name" />
                     </div>
-                    <div class="form-row">
-                        <div class="mb-3">
-                            <label for="firstName" class="form-label-custom">First Name</label>
-                            <input type="text" name="firstName" id="firstName" class="form-control form-control-custom" value="@Model.FirstName" placeholder="First name" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="lastName" class="form-label-custom">Last Name</label>
-                            <input type="text" name="lastName" id="lastName" class="form-control form-control-custom" value="@Model.LastName" placeholder="Last name" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="mb-3">
-                            <label for="phone" class="form-label-custom">Phone</label>
-                            <input type="text" name="phone" id="phone" class="form-control form-control-custom" value="@Model.Phone" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="emailAddress" class="form-label-custom">Email</label>
-                            <input type="email" name="emailAddress" id="emailAddress" class="form-control form-control-custom" value="@Model.EmailAddress" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="mb-3">
-                            <label for="birthdate" class="form-label-custom">Birthdate</label>
-                            <input type="date" name="birthdate" id="birthdate" class="form-control form-control-custom" value="@Model.Birthdate.ToString("yyyy-MM-dd")" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="userGender" class="form-label-custom">Gender</label>
-                            @{
-                                var isMale = Model.UserGender == SoleStride.Models.User.Gender.Male;
-                                var isFemale = Model.UserGender == SoleStride.Models.User.Gender.Female;
-                                var isOther = Model.UserGender == SoleStride.Models.User.Gender.Other;
-                            }
-                            <select name="userGender" id="userGender" class="form-control form-control-custom">
-                                <option value="Male" selected="@isMale">Male</option>
-                                <option value="Female" selected="@isFemale">Female</option>
-                                <option value="Other" selected="@isOther">Other</option>
-                            </select>
-                        </div>
+                    <div class="col-md-6">
+                        <label for="lastName" class="form-label-custom">Last Name</label>
+                        <input type="text" name="lastName" id="lastName" class="form-control-custom" value="@Model.LastName" placeholder="Last name" />
                     </div>
                 </div>
 
-                <div class="d-flex gap-2 pt-3" style="border-top:1px solid #f1f3f5;">
-                    <button type="submit" class="btn btn-submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
-                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
-                        </svg>
-                        Save Changes
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label-custom">Phone Number</label>
+                        <input type="text" name="phone" id="phone" class="form-control-custom" value="@Model.Phone" placeholder="Phone number" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="emailAddress" class="form-label-custom">Email Address</label>
+                        <input type="email" name="emailAddress" id="emailAddress" class="form-control-custom" value="@Model.EmailAddress" placeholder="name@example.com" />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="birthdate" class="form-label-custom">Birthdate</label>
+                        <input type="date" name="birthdate" id="birthdate" class="form-control-custom" value="@Model.Birthdate.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="userGender" class="form-label-custom">Gender</label>
+                        @{
+                            var isMale = Model.UserGender == SoleStride.Models.User.Gender.Male;
+                            var isFemale = Model.UserGender == SoleStride.Models.User.Gender.Female;
+                            var isOther = Model.UserGender == SoleStride.Models.User.Gender.Other;
+                        }
+                        <select name="userGender" id="userGender" class="form-select-custom">
+                            <option value="Male" selected="@isMale">Male</option>
+                            <option value="Female" selected="@isFemale">Female</option>
+                            <option value="Other" selected="@isOther">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 pt-3 border-top">
+                    <button type="submit" class="btn-brand">
+                        <span>Save Changes</span>
                     </button>
-                    <a asp-action="Profile" class="btn btn-back">Cancel</a>
+                    <a asp-action="Profile" class="btn-brand-outline">
+                        Cancel
+                    </a>
                 </div>
             </form>
         </div>
 
-        <div class="form-card mt-4" id="changePassword">
-            <div class="form-section mb-0">
-                <div class="form-section-title">Change Password</div>
+        <!-- Change Password Box -->
+        <div class="card-custom p-4" id="changePassword">
+            <h3 class="h5 fw-bold mb-1">Security & Password</h3>
+            <p class="text-muted small mb-3">Update your password to keep your account safe.</p>
 
-                @if (TempData["PasswordSuccess"] != null)
-                {
-                    <div class="alert alert-success alert-custom">@TempData["PasswordSuccess"]</div>
-                }
-                @if (TempData["PasswordError"] != null)
-                {
-                    <div class="alert alert-danger alert-custom">@TempData["PasswordError"]</div>
-                }
+            @if (TempData["PasswordSuccess"] != null)
+            {
+                <div class="alert alert-success py-2 small mb-3" style="border-radius:var(--radius-md);">
+                    @TempData["PasswordSuccess"]
+                </div>
+            }
+            @if (TempData["PasswordError"] != null)
+            {
+                <div class="alert alert-danger py-2 small mb-3" style="border-radius:var(--radius-md);">
+                    @TempData["PasswordError"]
+                </div>
+            }
 
-                <form asp-action="ChangePassword" method="post">
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label-custom">Current Password</label>
-                        <input type="password" name="currentPassword" id="currentPassword" class="form-control form-control-custom" required />
+            <form asp-action="ChangePassword" method="post">
+                <div class="mb-3">
+                    <label for="currentPassword" class="form-label-custom">Current Password</label>
+                    <input type="password" name="currentPassword" id="currentPassword" class="form-control-custom" required placeholder="••••••••" />
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="newPassword" class="form-label-custom">New Password</label>
+                        <input type="password" name="newPassword" id="newPassword" class="form-control-custom" required minlength="6" placeholder="Min. 6 characters" />
                     </div>
-                    <div class="form-row">
-                        <div class="mb-3">
-                            <label for="newPassword" class="form-label-custom">New Password</label>
-                            <input type="password" name="newPassword" id="newPassword" class="form-control form-control-custom" required minlength="6" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirmPassword" class="form-label-custom">Confirm Password</label>
-                            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control form-control-custom" required />
-                        </div>
+                    <div class="col-md-6">
+                        <label for="confirmPassword" class="form-label-custom">Confirm New Password</label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control-custom" required placeholder="Repeat password" />
                     </div>
-                    <button type="submit" class="btn btn-submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
-                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                        Update Password
-                    </button>
-                </form>
-            </div>
+                </div>
+                <button type="submit" class="btn-brand">
+                    <span>Update Password</span>
+                </button>
+            </form>
         </div>
     </div>
 </div>
 
-<script>
-function previewAvatar(event) {
-    var file = event.target.files[0];
-    if (file) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var container = document.getElementById('avatarPreviewContainer');
-            container.innerHTML = '<img src="' + e.target.result + '" class="rounded-circle" style="width:120px; height:120px; object-fit:cover; border:4px solid #f1f3f5;" />';
-        };
-        reader.readAsDataURL(file);
-    }
+@section Scripts {
+    <script>
+        function previewAvatar(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var container = document.getElementById('avatarPreviewContainer');
+                    if (container) {
+                        container.innerHTML = '<img src="' + e.target.result + '" class="profile-avatar-large" alt="New Avatar Preview" />';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 }
-</script>
