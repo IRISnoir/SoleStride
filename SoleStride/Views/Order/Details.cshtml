@@ -4,150 +4,170 @@
     ViewData["Title"] = $"Order #{Model.OrderId}";
     var role = Context.Session.GetString("Role");
     var canManage = role == "Admin" || role == "Staff";
+    var badgeClass = Model.Status switch
+    {
+        "Delivered" => "bg-success text-white",
+        "Shipped" => "bg-info text-white",
+        "Processing" => "bg-primary text-white",
+        "Cancelled" => "bg-danger text-white",
+        _ => "bg-warning text-dark"
+    };
 }
 
-<div class="page-header">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:#6c757d;">
-        <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-    </svg>
-    <h1>Order #@Model.OrderId</h1>
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1" style="font-size:0.88rem;">
+            <li class="breadcrumb-item"><a asp-action="Index" class="text-muted">Orders</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Order #@Model.OrderId</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h1 class="h2 fw-bold mb-1">Order #@Model.OrderId</h1>
+            <span class="text-muted small">Placed on @Model.OrderDate.ToString("MMMM dd, yyyy HH:mm")</span>
+        </div>
+        <span class="badge @badgeClass px-3 py-2" style="font-size:0.88rem; border-radius:var(--radius-full);">
+            Status: @Model.Status
+        </span>
+    </div>
 </div>
 
 @if (TempData["OrderSuccess"] != null)
 {
-    <div class="alert alert-success alert-custom">@TempData["OrderSuccess"]</div>
+    <div class="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius:var(--radius-md);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>
+        <div>@TempData["OrderSuccess"]</div>
+    </div>
 }
 
-<div class="row g-4">
+<div class="row g-4 align-items-start">
+    <!-- Left Column: Purchased Items -->
     <div class="col-lg-8">
-        <div class="form-card">
-            <div class="form-section">
-                <div class="form-section-title">Order Items</div>
-                <div class="table-custom">
-                    <table class="table mb-0">
-                        <thead>
+        <div class="card-custom p-4">
+            <h2 class="h5 fw-bold mb-3 pb-2 border-bottom">Items in this Order</h2>
+            <div class="table-responsive">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Shoe Model</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detail in Model.OrderDetails)
+                        {
                             <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>Qty</th>
-                                <th>Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var detail in Model.OrderDetails)
-                            {
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            @if (!string.IsNullOrEmpty(detail.Product.ImageUrl))
-                                            {
-                                                <img src="@detail.Product.ImageUrl" alt="@detail.Product.ShoesName" style="width:40px;height:40px;object-fit:cover;border-radius:6px;" />
-                                            }
-                                            <span class="fw-medium">@detail.Product.ShoesName</span>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        @if (!string.IsNullOrEmpty(detail.Product.ImageUrl))
+                                        {
+                                            <img src="@detail.Product.ImageUrl" alt="@detail.Product.ShoesName" style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--border);" />
+                                        }
+                                        else
+                                        {
+                                            <div style="width:48px;height:48px;background:var(--bg-subtle);border-radius:8px;"></div>
+                                        }
+                                        <div>
+                                            <a asp-controller="Shoes" asp-action="Details" asp-route-id="@detail.Product.ProductId" class="fw-bold text-dark text-decoration-none">
+                                                @detail.Product.ShoesName
+                                            </a>
+                                            <div class="text-muted small">Category: @detail.Product.CategoryId</div>
                                         </div>
-                                    </td>
-                                    <td>$@detail.Price.ToString("F2")</td>
-                                    <td>@detail.Quantity</td>
-                                    <td class="fw-bold">$@((detail.Price * detail.Quantity).ToString("F2"))</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <div class="d-flex justify-content-end mt-3">
-                    <h5 class="mb-0">Total: <strong>$@Model.TotalAmount.ToString("F2")</strong></h5>
-                </div>
+                                    </div>
+                                </td>
+                                <td>$@detail.Price.ToString("F2")</td>
+                                <td>@detail.Quantity</td>
+                                <td class="text-end fw-bold text-dark">$@((detail.Price * detail.Quantity).ToString("F2"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top">
+                <span class="text-muted">Total Paid</span>
+                <span class="h4 fw-bold mb-0 text-dark" style="color:var(--accent) !important;">$@Model.TotalAmount.ToString("F2")</span>
             </div>
         </div>
     </div>
 
+    <!-- Right Column: Shipping & Receiver Info -->
     <div class="col-lg-4">
-        <div class="form-card">
-            <div class="form-section">
-                <div class="form-section-title">Order Info</div>
-                <div class="detail-row">
-                    <span class="detail-label">Order ID</span>
-                    <span class="detail-value"><strong>#@Model.OrderId</strong></span>
-                </div>
-                @if (!string.IsNullOrEmpty(Model.ReceiverName))
-                {
-                    <div class="detail-row">
-                        <span class="detail-label">Receiver</span>
-                        <span class="detail-value"><strong>@Model.ReceiverName</strong></span>
-                    </div>
-                }
-                <div class="detail-row">
-                    <span class="detail-label">Date</span>
-                    <span class="detail-value">@Model.OrderDate.ToString("MMM dd, yyyy HH:mm")</span>
-                </div>
-                @if (!string.IsNullOrEmpty(Model.Phone))
-                {
-                    <div class="detail-row">
-                        <span class="detail-label">Phone</span>
-                        <span class="detail-value">@Model.Phone</span>
-                    </div>
-                }
-                <div class="detail-row">
-                    <span class="detail-label">Shipping</span>
-                    <span class="detail-value">@Model.ShippingAddress</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Status</span>
-                    <span class="detail-value">
-                        <span class="badge @(Model.Status == "Delivered" ? "bg-success" : Model.Status == "Cancelled" ? "bg-danger" : "bg-warning text-dark")">
-                            @Model.Status
-                        </span>
-                    </span>
-                </div>
-                @if (!string.IsNullOrEmpty(Model.CustomerNote))
-                {
-                    <div class="detail-row">
-                        <span class="detail-label">Note</span>
-                        <span class="detail-value">@Model.CustomerNote</span>
-                    </div>
-                }
+        <div class="card-custom p-4 mb-4">
+            <h3 class="h6 fw-bold mb-3 pb-2 border-bottom">Delivery Information</h3>
+
+            <div class="mb-3">
+                <span class="text-muted small d-block">Recipient Name</span>
+                <span class="fw-bold text-dark">@(Model.ReceiverName ?? Model.Username)</span>
             </div>
+
+            @if (!string.IsNullOrEmpty(Model.Phone))
+            {
+                <div class="mb-3">
+                    <span class="text-muted small d-block">Contact Phone</span>
+                    <span class="fw-bold text-dark">@Model.Phone</span>
+                </div>
+            }
+
+            <div class="mb-3">
+                <span class="text-muted small d-block">Delivery Address</span>
+                <span class="fw-medium text-dark">@Model.ShippingAddress</span>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.CustomerNote))
+            {
+                <div class="mb-3 p-3 bg-light rounded">
+                    <span class="text-muted small d-block fw-bold mb-1">Customer Note:</span>
+                    <span class="small text-secondary">@Model.CustomerNote</span>
+                </div>
+            }
         </div>
 
+        <!-- Order Management (Staff / Admin status change or Customer cancel) -->
         @if (canManage)
         {
-            <div class="form-card mt-3">
-                <div class="form-section">
-                    <div class="form-section-title">Update Status</div>
-                    <form asp-action="UpdateStatus" method="post">
-                        <input type="hidden" name="orderId" value="@Model.OrderId" />
-                        <div class="mb-3">
-                            <select name="status" class="form-control form-control-custom">
-                                <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
-                                <option value="Processing" selected="@(Model.Status == "Processing")">Processing</option>
-                                <option value="Shipped" selected="@(Model.Status == "Shipped")">Shipped</option>
-                                <option value="Delivered" selected="@(Model.Status == "Delivered")">Delivered</option>
-                                <option value="Cancelled" selected="@(Model.Status == "Cancelled")">Cancelled</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-submit w-100">Update</button>
-                    </form>
-                </div>
+            <div class="card-custom p-4">
+                <h3 class="h6 fw-bold mb-2">Staff Status Management</h3>
+                <form asp-action="UpdateStatus" method="post">
+                    <input type="hidden" name="orderId" value="@Model.OrderId" />
+                    <div class="mb-3">
+                        <select name="status" class="form-select-custom">
+                            <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
+                            <option value="Processing" selected="@(Model.Status == "Processing")">Processing</option>
+                            <option value="Shipped" selected="@(Model.Status == "Shipped")">Shipped</option>
+                            <option value="Delivered" selected="@(Model.Status == "Delivered")">Delivered</option>
+                            <option value="Cancelled" selected="@(Model.Status == "Cancelled")">Cancelled</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-brand w-100 justify-content-center">
+                        Update Status
+                    </button>
+                </form>
             </div>
         }
         else
         {
             @if (Model.Status != "Cancelled" && Model.Status != "Delivered")
             {
-                <div class="form-card mt-3">
-                    <div class="form-section">
-                        <div class="form-section-title">Update Status</div>
-                        <form asp-action="CancelOrder" method="post">
-                            <input type="hidden" name="orderId" value="@Model.OrderId" />
-                            <button type="submit" class="btn btn-submit w-100">Cancel Order</button>
-                        </form>
-                    </div>
+                <div class="card-custom p-4">
+                    <h3 class="h6 fw-bold mb-2">Order Options</h3>
+                    <p class="text-muted small mb-3">If you need to cancel this order, you can do so before it enters shipping.</p>
+                    <form asp-action="CancelOrder" method="post" onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                        <input type="hidden" name="orderId" value="@Model.OrderId" />
+                        <button type="submit" class="btn btn-outline-danger w-100">Cancel Order</button>
+                    </form>
                 </div>
             }
         }
-    </div>
-</div>
 
-<div class="mt-3">
-    <a asp-action="Index" class="btn btn-back">Back to Orders</a>
+        <div class="mt-3">
+            <a asp-action="Index" class="btn-brand-outline w-100 justify-content-center">
+                Back to Orders List
+            </a>
+        </div>
+    </div>
 </div>
