@@ -94,6 +94,18 @@ namespace SoleStride.Controllers
                 });
             }
 
+            var currentRole = HttpContext.Session.GetString("Role");
+            if (currentRole == "Admin" || currentRole == "Staff")
+            {
+                var productsWithNewReviews = await _context.ProductReviews
+                    .Where(r => string.IsNullOrEmpty(r.ShopReply) || r.CreatedAt >= DateTime.Now.AddDays(-2))
+                    .Select(r => r.ProductId)
+                    .Distinct()
+                    .ToListAsync();
+
+                ViewBag.ProductsWithNewReviews = new HashSet<Guid>(productsWithNewReviews);
+            }
+
             return View(homeProducts);
         }
 

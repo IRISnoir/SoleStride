@@ -150,6 +150,21 @@ namespace SoleStride.Controllers
             return View(users);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Reviews()
+        {
+            if (!IsAdmin() && !IsStaff())
+                return RedirectToAction("Login", "Account", new { returnUrl = Request.Path + Request.QueryString });
+
+            var reviews = await _context.ProductReviews
+                .Include(r => r.Product)
+                .Include(r => r.User)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return View(reviews);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateRole(string username, string role)

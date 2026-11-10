@@ -1,6 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+var contentRoot = Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "Views"))
+    ? Directory.GetCurrentDirectory()
+    : (Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "SoleStride", "Views"))
+        ? Path.Combine(Directory.GetCurrentDirectory(), "SoleStride")
+        : AppContext.BaseDirectory);
+
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = contentRoot
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

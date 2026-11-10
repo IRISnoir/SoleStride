@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace SoleStride.Models
 {
@@ -17,5 +17,8 @@ namespace SoleStride.Models
 
         // Address Book
         public DbSet<Address> Addresses { get; set; }
+
+        // Product Reviews
+        public DbSet<ProductReview> ProductReviews { get; set; }
     }
 }
