@@ -54,7 +54,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("AddressId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("SoleStride.Models.Category", b =>
@@ -70,7 +70,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("SoleStride.Models.Order", b =>
@@ -115,7 +115,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
@@ -144,7 +144,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderStock", b =>
@@ -167,7 +167,66 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("OrderStocks", (string)null);
+                    b.ToTable("OrderStocks");
+                });
+
+            modelBuilder.Entity("SoleStride.Models.ProductReview", b =>
+                {
+                    b.Property<int>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewId"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FitFeedback")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HelpfulCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsVerifiedPurchase")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ShopRepliedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShopReply")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("Username");
+
+                    b.ToTable("ProductReviews");
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>
@@ -194,7 +253,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoeStocks", (string)null);
+                    b.ToTable("ShoeStocks");
                 });
 
             modelBuilder.Entity("SoleStride.Models.Shoes", b =>
@@ -247,7 +306,7 @@ namespace SoleStride.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Shoes", (string)null);
+                    b.ToTable("Shoes");
                 });
 
             modelBuilder.Entity("SoleStride.Models.User", b =>
@@ -289,7 +348,7 @@ namespace SoleStride.Migrations
 
                     b.HasKey("Username");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("SoleStride.Models.OrderDetail", b =>
@@ -328,6 +387,25 @@ namespace SoleStride.Migrations
                     b.Navigation("OrderDetail");
 
                     b.Navigation("ShoeStock");
+                });
+
+            modelBuilder.Entity("SoleStride.Models.ProductReview", b =>
+                {
+                    b.HasOne("SoleStride.Models.Shoes", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SoleStride.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("Username")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SoleStride.Models.ShoeStock", b =>

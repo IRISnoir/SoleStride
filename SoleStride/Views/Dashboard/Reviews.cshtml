@@ -1,0 +1,285 @@
+@model List<SoleStride.Models.ProductReview>
+
+@{
+    ViewData["Title"] = "Quản lý đánh giá sản phẩm";
+    var userRole = Context.Session.GetString("Role");
+    var totalReviews = Model.Count;
+    var avgRating = totalReviews > 0 ? Model.Average(r => r.Rating) : 0.0;
+    var verifiedCount = Model.Count(r => r.IsVerifiedPurchase);
+    var hiddenCount = Model.Count(r => !r.IsVisible);
+    var returnUrl = Url.Action("Reviews", "Dashboard");
+}
+
+<div class="page-header mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" style="color:var(--accent);">
+        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+    </svg>
+    <h1>Quản lý đánh giá sản phẩm</h1>
+</div>
+
+<div class="dash-tabs mb-4">
+    <a asp-action="Index" class="dash-tab">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.056l2.874 2.574L13.964 5H10.5a.5.5 0 0 1-.5-.5"/>
+        </svg>
+        Bảng thống kê
+    </a>
+    @if (userRole == "Admin")
+    {
+        <a asp-action="Users" class="dash-tab">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+            </svg>
+            Quản lý người dùng
+        </a>
+    }
+    <a asp-action="Reviews" class="dash-tab active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+        </svg>
+        Quản lý đánh giá
+    </a>
+</div>
+
+@if (TempData["ReviewSuccess"] != null)
+{
+    <div class="auth-alert-custom auth-alert-success mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+        <div>@TempData["ReviewSuccess"]</div>
+    </div>
+}
+@if (TempData["ReviewError"] != null)
+{
+    <div class="auth-alert-custom auth-alert-danger mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/></svg>
+        <div>@TempData["ReviewError"]</div>
+    </div>
+}
+
+<!-- Stat Counters -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-orange">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@totalReviews</div>
+                <div class="dash-stat-label">Tổng đánh giá</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@(totalReviews > 0 ? avgRating.ToString("0.0") : "0.0") ★</div>
+                <div class="dash-stat-label">Điểm trung bình</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-green">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@verifiedCount</div>
+                <div class="dash-stat-label">Đã mua hàng</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="dash-stat">
+            <div class="dash-stat-icon dash-stat-icon-purple">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="dash-stat-value">@hiddenCount</div>
+                <div class="dash-stat-label">Đang ẩn</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reviews Table Card -->
+<div class="dash-card">
+    <div class="dash-card-header">
+        <h3 class="dash-card-title">Danh sách đánh giá toàn hệ thống</h3>
+        <span class="text-muted small">Hiển thị @totalReviews đánh giá</span>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th style="min-width:180px;">Sản phẩm</th>
+                        <th style="min-width:150px;">Khách hàng</th>
+                        <th style="width:130px;">Đánh giá</th>
+                        <th style="min-width:280px;">Nội dung & Phản hồi</th>
+                        <th style="width:120px;">Ngày gửi</th>
+                        <th style="width:100px;">Trạng thái</th>
+                        <th style="min-width:160px; text-align:right;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (!string.IsNullOrEmpty(r.Product?.ImageUrl))
+                                    {
+                                        <img src="@r.Product.ImageUrl" alt="@r.Product.ShoesName" style="width:40px; height:40px; object-fit:cover; border-radius:8px; border:1px solid var(--border);" />
+                                    }
+                                    <div>
+                                        <a asp-controller="Shoes" asp-action="Details" asp-route-id="@r.ProductId" class="fw-semibold text-dark text-decoration-none">
+                                            @r.Product?.ShoesName
+                                        </a>
+                                        <div class="text-muted small">Size: US @r.Product?.ShoesSize • @r.Product?.ShoesColor</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="fw-semibold">@r.Username</div>
+                                @if (r.IsVerifiedPurchase)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size:0.7rem;">
+                                        ✓ Đã mua hàng
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-muted border rounded-pill" style="font-size:0.7rem;">
+                                        Thành viên
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                <div style="color:#f59e0b; font-size:0.9rem;">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        @(i <= r.Rating ? "★" : "☆")
+                                    }
+                                </div>
+                                <span class="badge bg-light text-dark border rounded-pill mt-1" style="font-size:0.72rem;">
+                                    @(r.FitFeedback switch
+                                    {
+                                        SoleStride.Models.ShoeFit.RunsSmall => "Chật (-0.5)",
+                                        SoleStride.Models.ShoeFit.RunsLarge => "Rộng (+0.5)",
+                                        _ => "Chuẩn size"
+                                    })
+                                </span>
+                            </td>
+
+                            <td>
+                                @if (!string.IsNullOrEmpty(r.Title))
+                                {
+                                    <div class="fw-bold mb-1" style="font-size:0.88rem;">@r.Title</div>
+                                }
+                                <div class="text-muted small" style="line-height:1.45;">@r.Comment</div>
+
+                                @if (!string.IsNullOrEmpty(r.ShopReply))
+                                {
+                                    <div class="mt-2 p-2 rounded-2" style="background:#f8fafc; border-left:2px solid var(--accent); font-size:0.82rem;">
+                                        <span class="badge bg-warning text-dark me-1" style="font-size:0.65rem;">Shop phản hồi</span>
+                                        <span class="text-secondary">@r.ShopReply</span>
+                                    </div>
+                                }
+
+                                <!-- Reply Form Collapse -->
+                                <div class="collapse mt-2" id="dashReplyBox-@r.ReviewId">
+                                    <form asp-controller="Review" asp-action="ShopReply" method="post" class="p-3 border rounded-3" style="background:#f8fafc; border-color:#e2e8f0 !important;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="reviewId" value="@r.ReviewId" />
+                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                        <label class="form-label text-dark fw-bold mb-1" style="font-size:0.8rem;">Phản hồi từ SoleStride:</label>
+                                        <textarea name="reply" class="form-control form-control-sm mb-2" rows="2" style="border-radius:10px; border:1.5px solid #cbd5e1; font-size:0.85rem;" placeholder="Nhập câu trả lời từ cửa hàng..." required>@r.ShopReply</textarea>
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-sm btn-brand" style="font-size:0.75rem;">Lưu phản hồi</button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#dashReplyBox-@r.ReviewId" style="font-size:0.75rem;">Hủy</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </td>
+
+                            <td class="small text-muted">
+                                @r.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                @if (r.IsVisible)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Hiển thị</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">Đã ẩn</span>
+                                }
+                            </td>
+
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-1">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#dashReplyBox-@r.ReviewId" title="Trả lời nhận xét">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/></svg>
+                                    </button>
+
+                                    <form asp-controller="Review" asp-action="ToggleVisibility" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="reviewId" value="@r.ReviewId" />
+                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                        <button type="submit" class="btn btn-sm @(r.IsVisible ? "btn-outline-warning" : "btn-outline-success")" title="@(r.IsVisible ? "Ẩn đánh giá này" : "Hiện lại đánh giá này")">
+                                            @if (r.IsVisible)
+                                            {
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/></svg>
+                                            }
+                                            else
+                                            {
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/></svg>
+                                            }
+                                        </button>
+                                    </form>
+
+                                    <form asp-controller="Review" asp-action="Delete" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn đánh giá này?');" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="reviewId" value="@r.ReviewId" />
+                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa đánh giá">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="dash-empty py-5 text-center text-muted">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" class="mb-3 text-muted">
+                <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+            </svg>
+            <p class="mb-0">Chưa có đánh giá nào trên hệ thống.</p>
+        </div>
+    }
+</div>

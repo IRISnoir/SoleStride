@@ -151,6 +151,21 @@ else
                         {
                             <span class="badge-sale-tag">-@item.SalePercentage.Value%</span>
                         }
+
+                        @if (Context.Session.GetString("Role") == "Admin" || Context.Session.GetString("Role") == "Staff")
+                        {
+                            var newReviewsSet = ViewBag.ProductsWithNewReviews as HashSet<Guid>;
+                            if (newReviewsSet != null && newReviewsSet.Contains(item.ProductId))
+                            {
+                                <span class="badge-seller-card-corner" title="Sản phẩm có đánh giá mới từ khách hàng">
+                                    <span class="seller-pulse-container">
+                                        <span class="seller-pulse-ring"></span>
+                                        <span class="seller-pulse-dot"></span>
+                                    </span>
+                                    <span>Đánh giá mới</span>
+                                </span>
+                            }
+                        }
                     </div>
 
                     <div class="card-body">
