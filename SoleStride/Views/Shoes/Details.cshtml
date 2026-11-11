@@ -1,113 +1,902 @@
 @model SoleStride.Models.Shoes
 
 @{
-    ViewData["Title"] = "Shoes Details";
+    ViewData["Title"] = Model.ShoesName;
     var salePrice = Model.SalePercentage.HasValue && Model.SalePercentage > 0
         ? Model.Price * (decimal)(1 - Model.SalePercentage.Value / 100)
         : Model.Price;
+    var userRole = Context.Session.GetString("Role");
 }
 
-<div class="shoes-detail container-fluid">
-    <div class="page-header">
-        <h1 class="shoes-title">@Model.ShoesName</h1>
-        <div class="product-category-pill">@(Model.Category?.CategoryName ?? Model.CategoryId.ToString())</div>
-    </div>
+<div class="container-fluid px-0">
+    <!-- Breadcrumb -->
+    <nav class="mb-4" aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0" style="font-size:0.88rem;">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-muted">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Shoes" asp-action="Index" class="text-muted">Shoes Collection</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">@Model.ShoesName</li>
+        </ol>
+    </nav>
 
     <div class="row g-4 align-items-start">
+        <!-- 1. Left Column: Product Gallery -->
         <div class="col-lg-6">
-            <div class="image-card">
+            <div class="detail-gallery-box">
                 @if (!string.IsNullOrEmpty(Model.ImageUrl))
                 {
-                    <div class="image-wrapper">
-                        <img src="@Model.ImageUrl" alt="@Model.ShoesName" class="detail-image" />
-                    </div>
+                    <img src="@Model.ImageUrl" alt="@Model.ShoesName" id="mainShoeImage" />
                 }
                 else
                 {
-                    <div class="image-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" fill="#adb5bd" viewBox="0 0 16 16">
-                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-                            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3-3-2.5 3-1-1.5-4 5h12z"/>
+                    <div class="card-img-placeholder text-center p-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
                         </svg>
+                        <p class="mt-2 mb-0">No image available for this model</p>
                     </div>
+                }
+
+                @if (ViewBag.HasNewReviewForSeller == true)
+                {
+                    <a href="#reviews-section" class="badge-seller-new-review-corner" title="Có @ViewBag.NewReviewCount đánh giá mới từ khách hàng - Nhấp để xem và phản hồi">
+                        <span class="seller-pulse-container">
+                            <span class="seller-pulse-ring"></span>
+                            <span class="seller-pulse-dot"></span>
+                        </span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+                        </svg>
+                        <span>Có @ViewBag.NewReviewCount đánh giá mới</span>
+                    </a>
+                }
+
+                @if (Model.SalePercentage.HasValue && Model.SalePercentage > 0)
+                {
+                    <span class="badge-sale-tag" style="top:20px; right:20px; font-size:0.85rem; padding:0.35rem 0.85rem;">
+                        SALE -@Model.SalePercentage.Value%
+                    </span>
                 }
             </div>
         </div>
 
+        <!-- 2. Right Column: Product Info & Purchase Form -->
         <div class="col-lg-6">
-            <div class="form-card detail-info">
-                <div class="form-section">
-                    <div class="form-section-title">Product Details</div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Category</span>
-                        <span class="detail-value">@(Model.Category?.CategoryName ?? Model.CategoryId)</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Gender</span>
-                        <span class="detail-value">@Model.ShoesGender</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Size</span>
-                        <span class="detail-value">@Model.ShoesSize</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Color</span>
-                        <span class="detail-value">@Model.ShoesColor</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">Material</span>
-                        <span class="detail-value">@Model.Material</span>
-                    </div>
-
-                    @if (!string.IsNullOrEmpty(Model.Description))
+            <div class="detail-info-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-dark text-white" style="font-size:0.75rem;">@(Model.Category?.CategoryName ?? "Footwear")</span>
+                    <span class="badge bg-light text-muted border" style="font-size:0.75rem;">Gender: @Model.ShoesGender</span>
+                    @if (!string.IsNullOrEmpty(Model.SkuId))
                     {
-                        <div class="detail-row">
-                            <span class="detail-label">Description</span>
-                            <span class="detail-value">@Model.Description</span>
-                        </div>
+                        <span class="text-muted small ms-auto">SKU: @Model.SkuId</span>
                     }
+                </div>
 
-                    <div class="detail-row price-row">
-                        <span class="detail-label">Price</span>
-                        <span class="detail-value">
-                            @if (Model.SalePercentage.HasValue && Model.SalePercentage > 0)
+                <h1 class="detail-title">@Model.ShoesName</h1>
+
+                <!-- Star Rating Badge & Jump Link -->
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="d-inline-flex gap-1" style="color:#f59e0b;">
+                        @{
+                            double avgR = ViewBag.AverageRating != null ? (double)ViewBag.AverageRating : 0.0;
+                            int totalR = ViewBag.TotalReviews != null ? (int)ViewBag.TotalReviews : 0;
+                            int roundedAvg = (int)Math.Round(avgR);
+                        }
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= roundedAvg)
                             {
-                                <span class="price-original">$@Model.Price.ToString("F2")</span>
-                                <span class="price-large">$@salePrice.ToString("F2")</span>
-                                <span class="sale-percent">(-@Model.SalePercentage.Value%)</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
                             }
                             else
                             {
-                                <span class="price-large">$@Model.Price.ToString("F2")</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#e2e8f0" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
                             }
-                        </span>
+                        }
                     </div>
-
-                    <div class="detail-row">
-                        <span class="detail-label">SKU</span>
-                        <span class="detail-value">@(Model.SkuId ?? "-")</span>
-                    </div>
-                </div>
-
-                <div class="actions mt-4">
-                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
-                        <input type="hidden" name="productId" value="@Model.ProductId" />
-                        <input type="hidden" name="quantity" value="1" />
-                        <button type="submit" class="btn btn-primary btn-add-cart">Add to Cart</button>
-                    </form>
-                    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+                    <span class="fw-bold" style="font-size:0.92rem;">@(totalR > 0 ? avgR.ToString("0.0") : "No reviews yet")</span>
+                    <a href="#reviews-section" class="text-muted small" style="text-decoration:underline;">(@totalR review@(totalR == 1 ? "" : "s"))</a>
+                    @if (ViewBag.TrueToSizePct != null && (int)ViewBag.TrueToSizePct > 0)
                     {
-                        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-primary ms-2">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-outline-danger ms-2">Delete</a>
+                        <span class="badge bg-light text-dark border ms-2" style="font-size:0.75rem;">@ViewBag.TrueToSizePct% say True to Size</span>
                     }
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-back ms-3">Back to Shoe Collection</a>
                 </div>
+
+                <!-- Price Box -->
+                <div class="detail-price-box">
+                    @if (Model.SalePercentage.HasValue && Model.SalePercentage > 0)
+                    {
+                        <span class="detail-price-main">$@salePrice.ToString("F2")</span>
+                        <span class="detail-price-strike">$@Model.Price.ToString("F2")</span>
+                        <span class="badge bg-danger text-white ms-2" style="font-size:0.8rem;">Save @Model.SalePercentage.Value%</span>
+                    }
+                    else
+                    {
+                        <span class="detail-price-main" style="color:var(--text-main);">$@Model.Price.ToString("F2")</span>
+                    }
+                </div>
+
+                <!-- Description -->
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="mb-4">
+                        <label class="form-label-custom mb-1">Overview</label>
+                        <p class="text-muted" style="line-height:1.7;">@Model.Description</p>
+                    </div>
+                }
+
+                <!-- Specifications Grid -->
+                <div class="detail-spec-grid">
+                    <div class="detail-spec-item">
+                        <span class="detail-spec-label">Selected Size</span>
+                        <span class="detail-spec-val">US @Model.ShoesSize</span>
+                    </div>
+                    <div class="detail-spec-item">
+                        <span class="detail-spec-label">Colorway</span>
+                        <span class="detail-spec-val">@Model.ShoesColor</span>
+                    </div>
+                    <div class="detail-spec-item">
+                        <span class="detail-spec-label">Material</span>
+                        <span class="detail-spec-val">@Model.Material</span>
+                    </div>
+                    <div class="detail-spec-item">
+                        <span class="detail-spec-label">Gender Category</span>
+                        <span class="detail-spec-val">@Model.ShoesGender</span>
+                    </div>
+                </div>
+
+                <!-- Purchase Form (POST to Cart/AddToCart) -->
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-4">
+                    <input type="hidden" name="productId" value="@Model.ProductId" />
+                    
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div>
+                            <label class="form-label-custom mb-1">Quantity</label>
+                            <div class="qty-stepper-box">
+                                <button type="button" class="qty-step-btn qty-minus">−</button>
+                                <input type="number" name="quantity" class="qty-step-input" value="1" min="1" max="99" />
+                                <button type="button" class="qty-step-btn qty-plus">+</button>
+                            </div>
+                        </div>
+
+                        <div class="flex-grow-1" style="padding-top:1.6rem;">
+                            <button type="submit" class="btn-brand w-100" style="padding:0.75rem 1.5rem; font-size:1rem;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                                </svg>
+                                <span>Add to Shopping Cart</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Admin Action Options -->
+                @if (userRole == "Staff" || userRole == "Admin")
+                {
+                    <div class="d-flex gap-2 pt-3 border-top">
+                        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-outline-secondary flex-fill">Edit Shoe Details</a>
+                        @if (userRole == "Admin")
+                        {
+                            <a asp-action="Delete" asp-route-id="@Model.ProductId" class="btn btn-outline-danger flex-fill">Delete Product</a>
+                        }
+                    </div>
+                }
+
+                <!-- Trust Badges Strip -->
+                <div class="trust-badges-strip">
+                    <div class="trust-badge-item">
+                        <div class="trust-badge-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-4 0H.5a.5.5 0 0 1-.5-.5v-7z"/>
+                            </svg>
+                        </div>
+                        <span>Fast Express Shipping</span>
+                    </div>
+
+                    <div class="trust-badge-item">
+                        <div class="trust-badge-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.464 9.99 1.579 2.065 3.48 3.018 4.395 3.317a1.6 1.6 0 0 0 1.054 0c.915-.299 2.816-1.252 4.395-3.317 1.677-2.195 3.06-5.513 2.464-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0"/>
+                            </svg>
+                        </div>
+                        <span>100% Authentic Guarantee</span>
+                    </div>
+
+                    <div class="trust-badge-item">
+                        <div class="trust-badge-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                            </svg>
+                        </div>
+                        <span>30-Day Easy Exchange</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+
+    <!-- =======================================================================
+         3. Customer Reviews & Ratings Section
+         ======================================================================= -->
+    <div class="reviews-section-wrap" id="reviews-section">
+        <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+            <div>
+                <span class="reviews-header-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                    </svg>
+                    Community Feedback
+                </span>
+                <h2 class="reviews-section-title">Customer Reviews & Ratings</h2>
+                <p class="reviews-section-subtitle">Real comfort, sizing and durability feedback from verified SoleStride buyers</p>
+            </div>
+            
+            <div>
+                @if (Context.Session.GetString("Username") != null)
+                {
+                    <button class="btn btn-brand" type="button" data-bs-toggle="collapse" data-bs-target="#writeReviewCollapse" aria-expanded="false" aria-controls="writeReviewCollapse" id="toggleWriteReviewBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                        </svg>
+                        <span>@(ViewBag.CurrentUserReview != null ? "Edit Your Review" : "Write a Review")</span>
+                    </button>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Shoes", new { id = Model.ProductId })#reviews-section" class="btn btn-brand">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                        </svg>
+                        <span>Sign In to Review</span>
+                    </a>
+                }
+            </div>
+        </div>
+
+        @if (TempData["ReviewSuccess"] != null)
+        {
+            <div class="auth-alert-custom auth-alert-success mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg>
+                <div>@TempData["ReviewSuccess"]</div>
+            </div>
+        }
+
+        @if (TempData["ReviewError"] != null)
+        {
+            <div class="auth-alert-custom auth-alert-danger mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                </svg>
+                <div>@TempData["ReviewError"]</div>
+            </div>
+        }
+
+        <!-- 3.1 Overview Card -->
+        <div class="review-overview-card">
+            <!-- Left: Score Box -->
+            <div class="review-score-box">
+                <div class="review-score-num">@(ViewBag.TotalReviews > 0 ? ViewBag.AverageRating.ToString("0.0") : "0.0")</div>
+                <div class="review-stars-row">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Round((double)ViewBag.AverageRating))
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#e2e8f0" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+                        }
+                    }
+                </div>
+                <div class="review-total-label">Based on @ViewBag.TotalReviews review@(ViewBag.TotalReviews == 1 ? "" : "s")</div>
+            </div>
+
+            <!-- Middle: Breakdown Bars -->
+            <div class="review-breakdown-box">
+                @{
+                    var dist = (Dictionary<int, int>)ViewBag.RatingDistribution;
+                    int totalRev = (int)ViewBag.TotalReviews;
+                }
+                @for (int star = 5; star >= 1; star--)
+                {
+                    int count = dist != null && dist.ContainsKey(star) ? dist[star] : 0;
+                    int pct = totalRev > 0 ? (int)Math.Round((double)count / totalRev * 100) : 0;
+                    <div class="review-bar-row" data-star-filter="@star" title="Filter by @star stars">
+                        <span class="review-bar-label">@star ★</span>
+                        <div class="review-bar-track">
+                            <div class="review-bar-fill" style="width: @pct%;"></div>
+                        </div>
+                        <span class="review-bar-count">(@count)</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Right: Fit Feedback Meter -->
+            <div class="review-fit-col">
+                <div class="review-fit-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                        <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8m0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    <span>Shoe Fit Feedback</span>
+                </div>
+                
+                <div class="review-fit-track">
+                    <div class="review-fit-seg review-fit-seg-small" style="width: @(ViewBag.RunsSmallPct)%;" title="Runs Small: @(ViewBag.RunsSmallPct)%"></div>
+                    <div class="review-fit-seg review-fit-seg-true" style="width: @(ViewBag.TrueToSizePct)%;" title="True to Size: @(ViewBag.TrueToSizePct)%"></div>
+                    <div class="review-fit-seg review-fit-seg-large" style="width: @(ViewBag.RunsLargePct)%;" title="Runs Large: @(ViewBag.RunsLargePct)%"></div>
+                </div>
+
+                <div class="review-fit-legend">
+                    <span>Small: @ViewBag.RunsSmallPct%</span>
+                    <span class="review-fit-highlight">True to Size: @ViewBag.TrueToSizePct%</span>
+                    <span>Large: @ViewBag.RunsLargePct%</span>
+                </div>
+
+                <div class="small text-muted text-center">
+                    @if (ViewBag.TotalReviews > 0)
+                    {
+                        <span>Majority of buyers recommend ordering your <strong>usual size</strong>.</span>
+                    }
+                    else
+                    {
+                        <span>No sizing votes yet. Be the first to advise fellow sneakerheads!</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.2 Collapsible Review Form -->
+        @if (Context.Session.GetString("Username") != null)
+        {
+            var userReview = (SoleStride.Models.ProductReview?)ViewBag.CurrentUserReview;
+            var isEditing = userReview != null;
+            int initialRating = userReview?.Rating ?? 5;
+            int initialFit = (int)(userReview?.FitFeedback ?? SoleStride.Models.ShoeFit.TrueToSize);
+            var currentUsername = Context.Session.GetString("Username") ?? "User";
+
+            <div class="collapse mb-4 @(TempData["ReviewError"] != null ? "show" : "")" id="writeReviewCollapse">
+                <div class="review-form-card">
+                    <!-- Form Header -->
+                    <div class="review-form-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="review-form-icon-pill">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                </svg>
+                            </span>
+                            <div>
+                                <h3 class="review-form-title">@(isEditing ? "Update Your Review" : "Share Your Experience")</h3>
+                                <p class="review-form-subtitle mb-0">Help your fellow sneakerheads find the perfect size, feel and performance</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close review-form-close" data-bs-toggle="collapse" data-bs-target="#writeReviewCollapse" aria-label="Close"></button>
+                    </div>
+
+                    <!-- User Identity & Verified Buyer Strip -->
+                    <div class="review-user-strip">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="review-user-avatar-badge">
+                                @currentUsername.Substring(0, 1).ToUpper()
+                            </div>
+                            <span style="font-size:0.88rem; color:var(--text-body);">
+                                Reviewing as: <strong style="color:var(--text-main);">@currentUsername</strong>
+                            </span>
+                        </div>
+
+                        @if (ViewBag.IsVerifiedBuyer == true)
+                        {
+                            <div class="review-verified-pill" title="You bought this product on SoleStride">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+                                <span>Verified Buyer</span>
+                            </div>
+                        }
+                    </div>
+
+                    <form asp-controller="Review" asp-action="Create" method="post" id="productReviewForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productId" value="@Model.ProductId" />
+                        <input type="hidden" name="rating" id="reviewRatingInput" value="@initialRating" />
+
+                        <!-- Top Row: Rating Picker + Sizing Feedback -->
+                        <div class="row g-3 mb-4">
+                            <!-- Overall Rating -->
+                            <div class="col-12 col-md-5">
+                                <label class="review-field-label">
+                                    <span class="review-label-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+                                        Overall Rating <span class="text-danger">*</span>
+                                    </span>
+                                    <span class="review-rating-badge" id="starRatingHintText">@(initialRating switch { 1 => "Poor (1/5)", 2 => "Fair (2/5)", 3 => "Good (3/5)", 4 => "Great (4/5)", _ => "Excellent! (5/5)" })</span>
+                                </label>
+                                <div class="review-star-box">
+                                    <div class="star-rating-selector" id="interactiveStarPicker">
+                                        @for (int s = 1; s <= 5; s++)
+                                        {
+                                            <button type="button" class="star-rating-btn @(s <= initialRating ? "selected" : "")" data-value="@s" aria-label="@s stars">★</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Shoe Sizing / Fit Feedback -->
+                            <div class="col-12 col-md-7">
+                                <label class="review-field-label">
+                                    <span class="review-label-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></svg>
+                                        How does this shoe fit? <span class="text-danger">*</span>
+                                    </span>
+                                </label>
+                                <div class="fit-pills-group">
+                                    <input type="radio" class="fit-pill-input" name="fitFeedback" id="fitSmall" value="RunsSmall" @(initialFit == 1 ? "checked" : "") />
+                                    <label for="fitSmall" class="fit-pill-label" title="Feels tighter than expected">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg>
+                                        <span>Runs Small (-0.5)</span>
+                                    </label>
+
+                                    <input type="radio" class="fit-pill-input" name="fitFeedback" id="fitTrue" value="TrueToSize" @(initialFit == 2 ? "checked" : "") />
+                                    <label for="fitTrue" class="fit-pill-label" title="Fits true to standard shoe sizes">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/></svg>
+                                        <span>True to Size (Recommended)</span>
+                                    </label>
+
+                                    <input type="radio" class="fit-pill-input" name="fitFeedback" id="fitLarge" value="RunsLarge" @(initialFit == 3 ? "checked" : "") />
+                                    <label for="fitLarge" class="fit-pill-label" title="Feels roomier than expected">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></svg>
+                                        <span>Runs Large (+0.5)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Headline Input -->
+                        <div class="review-form-group">
+                            <label for="reviewTitleInput" class="review-field-label">
+                                <span class="review-label-text">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3z"/>
+                                    </svg>
+                                    Review Headline (Optional)
+                                </span>
+                                <span class="text-muted small">Max 120 characters</span>
+                            </label>
+                            <input type="text" name="title" id="reviewTitleInput" class="review-input-control" placeholder="e.g. Ultra comfortable cushioning for all-day city walks & runs" maxlength="120" value="@(isEditing ? userReview?.Title : "")" />
+                        </div>
+
+                        <!-- Detailed Review / Chatbox Composer -->
+                        <div class="review-form-group mb-4">
+                            <label for="reviewCommentInput" class="review-field-label">
+                                <span class="review-label-text">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+                                        <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9 9 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.4 10.4 0 0 1-.524 2.318l-.003.011a11 11 0 0 1-.244.637c-.079.186.074.394.273.362a22 22 0 0 0 .693-.125m.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6-3.004 6-7 6a8 8 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a11 11 0 0 0 .398-2"/>
+                                    </svg>
+                                    Detailed Review <span class="text-danger">*</span>
+                                </span>
+                                <span class="review-char-pill"><span id="reviewCharCount">0</span> / 1000</span>
+                            </label>
+
+                            <!-- Modern Chatbox Container -->
+                            <div class="review-chatbox-wrap">
+                                <textarea name="comment" id="reviewCommentInput" class="review-chatbox-textarea" rows="4" placeholder="How does the midsole cushioning feel? Is the upper breathable? Would you recommend this pair to a friend?" required maxlength="1000">@(isEditing ? userReview?.Comment : "")</textarea>
+                                
+                                <div class="review-chatbox-footer">
+                                    <div class="review-chatbox-hints">
+                                        <span class="text-muted" style="font-size:0.75rem;">Quick Topics:</span>
+                                        <span class="review-hint-tag" onclick="appendReviewHint('Ultra soft cushioning')">Comfort</span>
+                                        <span class="review-hint-tag" onclick="appendReviewHint('Great traction & grip')">Traction</span>
+                                        <span class="review-hint-tag" onclick="appendReviewHint('Breathable mesh upper')">Breathability</span>
+                                        <span class="review-hint-tag" onclick="appendReviewHint('Fits true to size')">Sizing</span>
+                                        <span class="review-hint-tag" onclick="appendReviewHint('Durable materials & clean build')">Build Quality</span>
+                                    </div>
+                                    <div class="d-none d-sm-block text-muted" style="font-size:0.74rem;">
+                                        Be polite & helpful
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit / Cancel Actions -->
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pt-1">
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="submit" class="btn btn-brand px-4 py-2" id="submitReviewBtn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M15.854.146a.5.5 0 0 1 .11.54l-5.8 14.5a.5.5 0 0 1-.928.026L6.5 9.5 1.788 6.764a.5.5 0 0 1 .026-.928l14.5-5.8a.5.5 0 0 1 .54.11z"/></svg>
+                                    <span>@(isEditing ? "Update Review" : "Submit Review")</span>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary px-3 py-2" data-bs-toggle="collapse" data-bs-target="#writeReviewCollapse">Cancel</button>
+                            </div>
+                            <span class="text-muted small">Your review will be posted publicly on SoleStride</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+
+        <!-- 3.3 Filter & Sort Toolbar -->
+        <div class="review-filter-toolbar">
+            <div class="review-filter-pills" id="reviewFilterPills">
+                <button type="button" class="review-filter-pill active" data-filter="all">All Reviews (@ViewBag.TotalReviews)</button>
+                <button type="button" class="review-filter-pill" data-filter="5">5 ★ (@(dist != null && dist.ContainsKey(5) ? dist[5] : 0))</button>
+                <button type="button" class="review-filter-pill" data-filter="4">4 ★ (@(dist != null && dist.ContainsKey(4) ? dist[4] : 0))</button>
+                <button type="button" class="review-filter-pill" data-filter="3">3 ★ (@(dist != null && dist.ContainsKey(3) ? dist[3] : 0))</button>
+                <button type="button" class="review-filter-pill" data-filter="verified">✓ Verified Only</button>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small fw-semibold">Sort by:</span>
+                <select class="form-select form-select-sm" id="reviewSortSelect" style="width:auto; border-radius:var(--radius-full); font-weight:600; padding-right:2rem;">
+                    <option value="newest" selected>Newest First</option>
+                    <option value="highest">Highest Rating</option>
+                    <option value="lowest">Lowest Rating</option>
+                    <option value="helpful">Most Helpful</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 3.4 Reviews Cards List -->
+        <div id="reviewsListContainer">
+            @{
+                var reviewList = (List<SoleStride.Models.ProductReview>?)ViewBag.Reviews;
+            }
+
+            @if (reviewList != null && reviewList.Any())
+            {
+                foreach (var r in reviewList)
+                {
+                    <div class="review-card-item" data-rating="@r.Rating" data-verified="@(r.IsVerifiedPurchase ? "true" : "false")" data-date="@r.CreatedAt.Ticks" data-helpful="@r.HelpfulCount">
+                        <div class="review-card-header">
+                            <div class="review-author-info">
+                                <div class="review-author-avatar">
+                                    @if (!string.IsNullOrEmpty(r.User?.AvatarUrl))
+                                    {
+                                        <img src="@r.User.AvatarUrl" alt="@r.Username" />
+                                    }
+                                    else
+                                    {
+                                        <span>@(r.Username.Substring(0, 1).ToUpper())</span>
+                                    }
+                                </div>
+                                <div>
+                                    <div class="review-author-name">
+                                        <span>@r.Username</span>
+                                        @if (r.IsVerifiedPurchase)
+                                        {
+                                            <span class="review-verified-badge" title="Verified SoleStride Customer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>
+                                                Verified Buyer
+                                            </span>
+                                        }
+                                        @if (!r.IsVisible)
+                                        {
+                                            <span class="badge bg-warning text-dark" style="font-size:0.7rem;">Hidden by Staff</span>
+                                        }
+                                    </div>
+                                    <div class="review-date-label">@r.CreatedAt.ToString("MMMM dd, yyyy")</div>
+                                </div>
+                            </div>
+
+                            <div class="review-card-rating">
+                                <div class="review-stars-mini">
+                                    @for (int s = 1; s <= 5; s++)
+                                    {
+                                        if (s <= r.Rating)
+                                        {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+                                        }
+                                        else
+                                        {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="#e2e8f0" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+                                        }
+                                    }
+                                </div>
+                                <span class="review-fit-badge">
+                                    @(r.FitFeedback switch
+                                    {
+                                        SoleStride.Models.ShoeFit.RunsSmall => "Fit: Runs Small",
+                                        SoleStride.Models.ShoeFit.RunsLarge => "Fit: Runs Large",
+                                        _ => "Fit: True to Size"
+                                    })
+                                </span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(r.Title))
+                        {
+                            <h4 class="review-card-title">@r.Title</h4>
+                        }
+
+                        <p class="review-card-body">@r.Comment</p>
+
+                        <!-- Shop Reply if exists -->
+                        @if (!string.IsNullOrEmpty(r.ShopReply))
+                        {
+                            <div class="review-shop-reply-box">
+                                <div class="review-shop-reply-header">
+                                    <span class="review-shop-badge">Official Store</span>
+                                    <span>SoleStride Response</span>
+                                    @if (r.ShopRepliedAt.HasValue)
+                                    {
+                                        <span class="text-muted small fw-normal">• @r.ShopRepliedAt.Value.ToString("MMM dd, yyyy")</span>
+                                    }
+                                </div>
+                                <p class="review-shop-reply-text">@r.ShopReply</p>
+                            </div>
+                        }
+
+                        <!-- Footer Actions -->
+                        <div class="review-card-footer">
+                            <button type="button" class="btn-helpful" data-review-id="@r.ReviewId">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.314.733-.562 1.058C5.716 5.42 5.37 5.757 4.965 6.046c-.4.286-.88.544-1.465.733v7.354c.73-.08 1.488-.236 2.204-.493 1.25-.448 2.222-1.127 2.91-1.879.684-.75 1.15-1.576 1.485-2.28.328-.686.533-1.287.643-1.632.11-.345.16-.547.16-.547s.07-.323.07-.714c0-.527-.15-1.042-.44-1.428a2.1 2.1 0 0 0-.82-.628c.45-.44.7-.99.7-1.56 0-.67-.35-1.3-.92-1.63.4-.44.59-.98.59-1.52 0-.86-.53-1.61-1.32-1.85zM3 7H1a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/>
+                                </svg>
+                                <span>Helpful</span>
+                                <span class="helpful-count">(@r.HelpfulCount)</span>
+                            </button>
+
+                            <div class="review-admin-actions">
+                                @if (Context.Session.GetString("Username") == r.Username)
+                                {
+                                    <form asp-controller="Review" asp-action="Delete" method="post" onsubmit="return confirm('Delete your review?');" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="reviewId" value="@r.ReviewId" />
+                                        <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Shoes", new { id = Model.ProductId })#reviews-section" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:0.25rem 0.65rem;">Delete</button>
+                                    </form>
+                                }
+
+                                @if (userRole == "Admin" || userRole == "Staff")
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#replyBox-@r.ReviewId" style="font-size:0.75rem; padding:0.25rem 0.65rem;">
+                                        @(string.IsNullOrEmpty(r.ShopReply) ? "Reply as Store" : "Edit Reply")
+                                    </button>
+
+                                    <form asp-controller="Review" asp-action="ToggleVisibility" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="reviewId" value="@r.ReviewId" />
+                                        <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Shoes", new { id = Model.ProductId })#reviews-section" />
+                                        <button type="submit" class="btn btn-sm @(r.IsVisible ? "btn-outline-warning" : "btn-outline-success")" style="font-size:0.75rem; padding:0.25rem 0.65rem;">
+                                            @(r.IsVisible ? "Hide" : "Publish")
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Admin Reply Inline Collapse Form -->
+                        @if (userRole == "Admin" || userRole == "Staff")
+                        {
+                            <div class="collapse mt-3" id="replyBox-@r.ReviewId">
+                                <form asp-controller="Review" asp-action="ShopReply" method="post" class="p-3 rounded-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="reviewId" value="@r.ReviewId" />
+                                    <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Shoes", new { id = Model.ProductId })#reviews-section" />
+                                    <label class="review-field-label mb-2">
+                                        <span class="review-label-text">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/></svg>
+                                            Official Response from SoleStride:
+                                        </span>
+                                    </label>
+                                    <textarea name="reply" class="review-input-control mb-2" rows="3" style="height:auto; min-height:80px;" placeholder="Thank customer or offer sizing/return support..." required maxlength="1000">@r.ShopReply</textarea>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-sm btn-brand">Save Reply</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#replyBox-@r.ReviewId">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="review-empty-box">
+                    <div class="review-empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                        </svg>
+                    </div>
+                    <h4 class="review-empty-title">Be the first to review @Model.ShoesName!</h4>
+                    <p class="review-empty-desc">Have you worn these sneakers? Help your fellow sneakerheads find the right fit and feel by sharing your impressions.</p>
+                    @if (Context.Session.GetString("Username") != null)
+                    {
+                        <button class="btn btn-brand" type="button" data-bs-toggle="collapse" data-bs-target="#writeReviewCollapse">Write the First Review</button>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Shoes", new { id = Model.ProductId })#reviews-section" class="btn btn-brand">Sign In to Review</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (ViewBag.HasNewReviewForSeller == true)
+    {
+        <!-- Floating Seller Notification at Bottom-Left Screen -->
+        <div class="seller-toast-bottom-left" id="sellerReviewToast">
+            <div class="seller-toast-icon-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+                </svg>
+                <span class="seller-toast-pulse"></span>
+            </div>
+            <div class="seller-toast-text">
+                <div class="seller-toast-badge">Thông báo người bán hàng</div>
+                <div class="seller-toast-message">Sản phẩm này có <strong>@ViewBag.NewReviewCount đánh giá mới</strong> vừa được gửi!</div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <a href="#reviews-section" class="btn btn-sm btn-brand seller-toast-action">
+                    Phản hồi ngay
+                </a>
+                <button type="button" class="btn-close btn-close-white seller-toast-dismiss" onclick="var t=document.getElementById('sellerReviewToast'); if(t) t.remove();" aria-label="Đóng"></button>
+            </div>
+        </div>
+    }
 </div>
+
+@section Scripts {
+    <script>
+        window.appendReviewHint = function (text) {
+            var textarea = document.getElementById('reviewCommentInput');
+            if (!textarea) return;
+            var current = textarea.value.trim();
+            if (current.length > 0) {
+                textarea.value = current + '. ' + text;
+            } else {
+                textarea.value = text;
+            }
+            textarea.focus();
+            var charCount = document.getElementById('reviewCharCount');
+            if (charCount) charCount.textContent = textarea.value.length;
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. Star Rating Interactive Picker
+            var starBtns = document.querySelectorAll('.star-rating-btn');
+            var ratingInput = document.getElementById('reviewRatingInput');
+            var hintText = document.getElementById('starRatingHintText');
+            var hints = { 1: 'Poor (1/5)', 2: 'Fair (2/5)', 3: 'Good (3/5)', 4: 'Great (4/5)', 5: 'Excellent! (5/5)' };
+
+            starBtns.forEach(function (btn) {
+                btn.addEventListener('mouseenter', function () {
+                    var val = parseInt(this.getAttribute('data-value'));
+                    starBtns.forEach(function (b) {
+                        var bVal = parseInt(b.getAttribute('data-value'));
+                        if (bVal <= val) {
+                            b.classList.add('hovered');
+                        } else {
+                            b.classList.remove('hovered');
+                        }
+                    });
+                    if (hintText && hints[val]) hintText.textContent = hints[val];
+                });
+
+                btn.addEventListener('mouseleave', function () {
+                    starBtns.forEach(function (b) { b.classList.remove('hovered'); });
+                    var currentVal = parseInt(ratingInput ? ratingInput.value : 5);
+                    if (hintText && hints[currentVal]) hintText.textContent = hints[currentVal];
+                });
+
+                btn.addEventListener('click', function () {
+                    var val = parseInt(this.getAttribute('data-value'));
+                    if (ratingInput) ratingInput.value = val;
+                    starBtns.forEach(function (b) {
+                        var bVal = parseInt(b.getAttribute('data-value'));
+                        if (bVal <= val) {
+                            b.classList.add('selected');
+                        } else {
+                            b.classList.remove('selected');
+                        }
+                    });
+                    if (hintText && hints[val]) hintText.textContent = hints[val];
+                });
+            });
+
+            // 2. Character counter for comment
+            var commentInput = document.getElementById('reviewCommentInput');
+            var charCount = document.getElementById('reviewCharCount');
+            if (commentInput && charCount) {
+                var updateCount = function () {
+                    charCount.textContent = commentInput.value.length;
+                };
+                commentInput.addEventListener('input', updateCount);
+                updateCount();
+            }
+
+            // 3. Helpful button click handler (AJAX)
+            document.querySelectorAll('.btn-helpful').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var reviewId = this.getAttribute('data-review-id');
+                    var button = this;
+                    if (button.classList.contains('active')) return;
+
+                    fetch('/Review/MarkHelpful?reviewId=' + reviewId, {
+                        method: 'POST',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (data.success) {
+                            var countSpan = button.querySelector('.helpful-count');
+                            if (countSpan) countSpan.textContent = '(' + data.helpfulCount + ')';
+                            button.classList.add('active');
+                        }
+                    })
+                    .catch(function (err) { console.error('Helpful vote error:', err); });
+                });
+            });
+
+            // 4. Client-side Filter & Sort Reviews
+            var filterPills = document.querySelectorAll('.review-filter-pill');
+            var sortSelect = document.getElementById('reviewSortSelect');
+            var reviewItems = Array.from(document.querySelectorAll('.review-card-item'));
+            var container = document.getElementById('reviewsListContainer');
+
+            function applyFilterAndSort() {
+                var activeFilter = document.querySelector('.review-filter-pill.active')?.getAttribute('data-filter') || 'all';
+                var sortMode = sortSelect ? sortSelect.value : 'newest';
+
+                // Filter
+                var visibleItems = reviewItems.filter(function (item) {
+                    var rating = item.getAttribute('data-rating');
+                    var verified = item.getAttribute('data-verified');
+
+                    if (activeFilter === 'all') return true;
+                    if (activeFilter === 'verified') return verified === 'true';
+                    return rating === activeFilter;
+                });
+
+                // Sort
+                visibleItems.sort(function (a, b) {
+                    if (sortMode === 'newest') {
+                        return parseInt(b.getAttribute('data-date')) - parseInt(a.getAttribute('data-date'));
+                    } else if (sortMode === 'highest') {
+                        return parseInt(b.getAttribute('data-rating')) - parseInt(a.getAttribute('data-rating'));
+                    } else if (sortMode === 'lowest') {
+                        return parseInt(a.getAttribute('data-rating')) - parseInt(b.getAttribute('data-rating'));
+                    } else if (sortMode === 'helpful') {
+                        return parseInt(b.getAttribute('data-helpful')) - parseInt(a.getAttribute('data-helpful'));
+                    }
+                    return 0;
+                });
+
+                // Re-render visibility
+                reviewItems.forEach(function (item) { item.style.display = 'none'; });
+                visibleItems.forEach(function (item) {
+                    item.style.display = 'block';
+                    container.appendChild(item);
+                });
+            }
+
+            filterPills.forEach(function (pill) {
+                pill.addEventListener('click', function () {
+                    filterPills.forEach(function (p) { p.classList.remove('active'); });
+                    this.classList.add('active');
+                    applyFilterAndSort();
+                });
+            });
+
+            // Allow clicking on breakdown bars to filter
+            document.querySelectorAll('.review-bar-row').forEach(function (row) {
+                row.addEventListener('click', function () {
+                    var star = this.getAttribute('data-star-filter');
+                    filterPills.forEach(function (p) {
+                        if (p.getAttribute('data-filter') === star) {
+                            p.click();
+                        }
+                    });
+                });
+            });
+
+            if (sortSelect) {
+                sortSelect.addEventListener('change', applyFilterAndSort);
+            }
+        });
+    </script>
+}

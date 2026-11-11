@@ -12,106 +12,129 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
-    <div class="auth-split">
-        <div class="auth-brand">
+<body style="background:var(--bg-page);">
+    <div class="auth-split-container">
+        <!-- 1. Left Brand Side -->
+        <div class="auth-brand-side">
             <div class="auth-brand-content">
-                <svg class="auth-brand-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                </svg>
-                <h1 class="auth-brand-title">SoleStride</h1>
-                <p class="auth-brand-tagline">Step into style with premium footwear crafted for every journey.</p>
-                <div class="auth-brand-features">
-                    <div class="auth-brand-feature">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                <a asp-controller="Home" asp-action="Index" class="auth-brand-logo">
+                    <div class="site-brand-icon" style="width:44px; height:44px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
+                            <path d="M3 9V6.8c0-.3.2-.6.5-.7l2-.7c.3-.1.6 0 .8.2l1 1" />
                         </svg>
-                        <span>Curated collections for every style</span>
                     </div>
-                    <div class="auth-brand-feature">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                        <span>Fast & free shipping on orders over $50</span>
+                    <span>SoleStride</span>
+                </a>
+
+                <h2 class="display-6 fw-bold text-white mb-3" style="letter-spacing:-0.03em;">Welcome to the Next Step in Footwear.</h2>
+                <p class="text-light mb-4" style="line-height:1.7; font-size:1.05rem;">
+                    Sign in to unlock exclusive early drops, customized sneaker recommendations, and express shipping benefits.
+                </p>
+
+                <div class="auth-perks-list mt-4">
+                    <div class="auth-perk-item">
+                        <div class="auth-perk-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                            </svg>
+                        </div>
+                        <span>Curated authentic collections from top global sneaker brands</span>
                     </div>
-                    <div class="auth-brand-feature">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                        <span>Easy 30-day returns, no questions asked</span>
+
+                    <div class="auth-perk-item">
+                        <div class="auth-perk-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                            </svg>
+                        </div>
+                        <span>Complimentary express delivery on orders over $50</span>
+                    </div>
+
+                    <div class="auth-perk-item">
+                        <div class="auth-perk-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                            </svg>
+                        </div>
+                        <span>Fast, seamless 30-day returns and exchanges</span>
                     </div>
                 </div>
             </div>
+
+            <div class="text-white-50 small">
+                &copy; @DateTime.Now.Year SoleStride Footwear Inc.
+            </div>
         </div>
 
-        <div class="auth-form-panel">
-            <div class="auth-form-inner">
-                <div class="auth-form-header">
-                    <a asp-controller="Home" asp-action="Index" class="auth-back-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+        <!-- 2. Right Form Side -->
+        <div class="auth-form-side">
+            <div class="auth-form-box">
+                <div class="mb-4">
+                    <a asp-controller="Home" asp-action="Index" class="text-muted small d-inline-flex align-items-center gap-1 mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
                         </svg>
-                        Back to Home
+                        Back to Shop
                     </a>
-                    <h1>Welcome back</h1>
-                    <p>Sign in to your SoleStride account to continue.</p>
+                    <h1 class="auth-form-title">Welcome Back</h1>
+                    <p class="auth-form-subtitle">Enter your SoleStride credentials to continue</p>
                 </div>
 
                 @if (ViewBag.Error != null)
                 {
-                    <div class="auth-alert">@ViewBag.Error</div>
+                    <div class="alert alert-danger py-2 small mb-3" style="border-radius:var(--radius-md);">
+                        @ViewBag.Error
+                    </div>
                 }
+
                 @if (TempData["ResetSuccess"] != null)
                 {
-                    <div class="auth-alert" style="background:#f0fff4; color:#198754; border-color:#b8f0c9;">@TempData["ResetSuccess"]</div>
+                    <div class="alert alert-success py-2 small mb-3" style="border-radius:var(--radius-md);">
+                        @TempData["ResetSuccess"]
+                    </div>
                 }
 
                 <form asp-action="Login" method="post">
                     <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-                    <div class="auth-form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="auth-input" id="username" name="username" placeholder="Enter your username" required autofocus />
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label-custom">Username</label>
+                        <input type="text" class="form-control-custom" id="username" name="username" placeholder="Your username" required autofocus />
                     </div>
 
-                    <div class="auth-form-group">
-                        <label for="password">Password</label>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="loginPassword" class="form-label-custom mb-0">Password</label>
+                            <a asp-action="ForgotPassword" class="text-muted small" style="font-size:0.8rem;">Forgot password?</a>
+                        </div>
                         <div class="auth-input-group">
-                            <input type="password" class="auth-input" id="loginPassword" name="password" placeholder="Enter your password" required />
-                            <button class="auth-input-group-btn" type="button" id="toggleLoginPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" id="loginEyeIcon">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                    <circle cx="12" cy="12" r="3"/>
+                            <input type="password" class="form-control-custom" id="loginPassword" name="password" placeholder="••••••••" required />
+                            <button type="button" class="auth-password-toggle" data-toggle="password" data-target="loginPassword" title="Show/Hide password">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
                                 </svg>
                             </button>
                         </div>
                     </div>
 
-                    <button type="submit" class="auth-btn">Sign In</button>
+                    <button type="submit" class="btn-brand w-100 justify-content-center mt-3" style="padding:0.75rem 1.5rem; font-size:1rem;">
+                        <span>Sign In</span>
+                    </button>
                 </form>
 
-                <div class="text-center mt-3">
-                    <a asp-action="ForgotPassword" class="auth-forgot-link">Forgot password?</a>
-                </div>
-
-                <div class="auth-footer-text">
-                    Don't have an account? <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]">Create one</a>
+                <div class="text-center mt-4 pt-3 border-top small text-muted">
+                    New to SoleStride? 
+                    <a asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="fw-bold text-dark">
+                        Create an account
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        document.getElementById('toggleLoginPassword').addEventListener('click', function () {
-            var passwordInput = document.getElementById('loginPassword');
-            var eyeIcon = document.getElementById('loginEyeIcon');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-            }
-        });
-    </script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

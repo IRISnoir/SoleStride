@@ -1,4 +1,4 @@
-﻿@{
+@{
     var cartCount = 0;
     var cartJson = Context.Session.GetString("Cart");
     if (!string.IsNullOrEmpty(cartJson))
@@ -10,6 +10,11 @@
         }
         catch { }
     }
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var userRole = Context.Session.GetString("Role");
+    var username = Context.Session.GetString("Username");
+    var avatarUrl = Context.Session.GetString("AvatarUrl");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -17,209 +22,407 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SoleStride</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SoleStride.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <div class="layout-wrapper">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="sidebar-brand">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="sidebar-brand-icon" viewBox="0 0 16 16">
-                        <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                    </svg>
-                    <span class="sidebar-brand-text">SoleStride</span>
-                </a>
-                <button class="sidebar-collapse-btn" id="sidebarCollapse" type="button" title="Thu gọn sidebar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                    </svg>
-                </button>
-                <button class="sidebar-close" id="sidebarClose" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-                    </svg>
-                </button>
-            </div>
+    <div class="site-wrapper">
 
-            <nav class="sidebar-nav">
-                <div class="sidebar-section">
-                    <span class="sidebar-section-title">Main</span>
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" && ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
-                        </svg>
-                        <span class="sidebar-link-text">Home</span>
-                    </a>
-                    @if (Context.Session.GetString("Role") == "Admin" || Context.Session.GetString("Role") == "Staff")
-                    {
-                        <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+        <!-- 1. Top Announcement Bar -->
+        <div class="announcement-bar">
+            <span class="badge-pill-sale">HOT DEALS</span>
+            <span>Free Express Shipping on orders over $50 • 100% Authentic Footwear • 30-Day Easy Returns</span>
+        </div>
+
+        <!-- 2. Admin / Staff Quick Bar (Only visible to privileged roles) -->
+        @if (userRole == "Admin" || userRole == "Staff")
+        {
+            <div class="staff-quick-bar">
+                <div class="container-xl d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="staff-badge-role">@userRole Panel</span>
+                        <span>Management Mode:</span>
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.056l2.874 2.574L13.964 5H10.5a.5.5 0 0 1-.5-.5"/>
                             </svg>
-                            <span class="sidebar-link-text">Dashboard</span>
+                            Dashboard
                         </a>
-                    }
-                </div>
-
-                <div class="sidebar-section">
-                    <span class="sidebar-section-title">Shopping</span>
-                    <a asp-controller="Cart" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Cart" ? "active" : "")">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                        </svg>
-                        <span class="sidebar-link-text">Cart</span>
-                        <span class="cart-count-badge @(cartCount == 0 ? "d-none" : "")" id="cartCount">@cartCount</span>
-                    </a>
-                    <a asp-controller="Order" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                        </svg>
-                        <span class="sidebar-link-text">Orders</span>
-                    </a>
-                </div>
-
-                <div class="sidebar-section">
-                    <span class="sidebar-section-title">Products</span>
-                    <a asp-controller="Shoes" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Shoes" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
-                            <path d="M3 9V6.8c0-.3.2-.6.5-.7l2-.7c.3-.1.6 0 .8.2l1 1" />
-                            <path d="M2 12.5h11" stroke="currentColor" stroke-width=".6" fill="none" />
-                        </svg>
-                        <span class="sidebar-link-text">All Shoes</span>
-                    </a>
-                    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
-                    {
-                        <a asp-controller="Stock" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Stock" ? "active" : "")">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <a asp-controller="Stock" asp-action="Index">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm7-2v-2H7v2zM5 0h6a1 1 0 0 1 1 1v3H4V1a1 1 0 0 1 1-1"/>
                             </svg>
-                            <span class="sidebar-link-text">Stock</span>
+                            Stock Manager
                         </a>
-                        <a asp-controller="Shoes" asp-action="Create" class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Shoes" && ViewContext.RouteData.Values["action"]?.ToString() == "Create" ? "active" : "")">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <a asp-controller="Shoes" asp-action="Create" class="text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
                             </svg>
-                            <span class="sidebar-link-text">Add Product</span>
+                            Add Product
                         </a>
-                    }
-                </div>
-
-                @if (Context.Session.GetString("Role") == "Admin")
-                {
-                    <div class="sidebar-section">
-                        <span class="sidebar-section-title">Categories</span>
-                        <a asp-controller="Category" asp-action="Create" class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tags" viewBox="0 0 16 16">
-                                <path d="M3 2v4.586l7 7L14.586 9l-7-7zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586z" />
-                                <path d="M5.5 5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m0 1a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M1 7.086a1 1 0 0 0 .293.707L8.75 15.25l-.043.043a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 0 7.586V3a1 1 0 0 1 1-1z" />
-                            </svg>
-                            <span class="sidebar-link-text">Manage Categories</span>
-                        </a>
+                        @if (userRole == "Admin")
+                        {
+                            <a asp-controller="Category" asp-action="Create" class="text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M3 2v4.586l7 7L14.586 9l-7-7zM2 2a1 1 0 0 1 1-1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 2 6.586z" />
+                                </svg>
+                                Categories
+                            </a>
+                        }
                     </div>
-                }
+                </div>
+            </div>
+        }
 
-            </nav>
+        <!-- 3. Main Sticky Navbar -->
+        <header class="site-header">
+            <div class="container-xl">
+                <nav class="site-navbar">
+                    <!-- Brand Logo -->
+                    <a asp-controller="Home" asp-action="Index" class="site-brand">
+                        <div class="site-brand-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
+                                <path d="M3 9V6.8c0-.3.2-.6.5-.7l2-.7c.3-.1.6 0 .8.2l1 1" />
+                            </svg>
+                        </div>
+                        <span class="site-brand-text">Sole<span>Stride</span></span>
+                    </a>
 
-            <div class="sidebar-footer">
-                @if (Context.Session.GetString("Username") != null)
-                {
-                    <div class="sidebar-user dropdown">
-                        <button class="sidebar-user-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div class="sidebar-user-avatar">
-                                @{
-                                    var avatarUrl = Context.Session.GetString("AvatarUrl");
-                                }
-                                @if (!string.IsNullOrEmpty(avatarUrl))
-                                {
-                                    <img src="@avatarUrl" alt="Avatar" class="sidebar-avatar-img" />
-                                }
-                                else
-                                {
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                                    </svg>
-                                }
+                    <!-- Desktop Nav Links -->
+                    <ul class="site-nav-links">
+                        <li>
+                            <a asp-controller="Home" asp-action="Index" class="site-nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")">
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Shoes" asp-action="Index" class="site-nav-link @(currentController == "Shoes" ? "active" : "")">
+                                Shoes Collection
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="Index" asp-route-onSale="true" class="site-nav-link">
+                                Sale %
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Order" asp-action="Index" class="site-nav-link @(currentController == "Order" ? "active" : "")">
+                                My Orders
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Search Input -->
+                    <form asp-controller="Home" asp-action="Search" method="get" class="site-search-form">
+                        <svg class="site-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                        </svg>
+                        <input type="text" name="query" class="site-search-input" placeholder="Search shoes, sneakers, brands..." value="@Context.Request.Query["query"]" />
+                    </form>
+
+                    <!-- Nav Right Actions -->
+                    <div class="site-actions">
+                        <!-- Shopping Cart -->
+                        <a asp-controller="Cart" asp-action="Index" class="action-btn" id="desktopCartBtn" title="View Cart">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                            </svg>
+                            <span class="cart-badge @(cartCount == 0 ? "d-none" : "")" id="cartCount">@cartCount</span>
+                        </a>
+
+                        <!-- User Profile Dropdown or Sign In -->
+                        @if (username != null)
+                        {
+                            <div class="dropdown">
+                                <button class="user-dropdown-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if (!string.IsNullOrEmpty(avatarUrl))
+                                    {
+                                        <img src="@avatarUrl" alt="@username" class="user-avatar-mini" />
+                                    }
+                                    else
+                                    {
+                                        <div class="user-avatar-mini">
+                                            @username.Substring(0, 1).ToUpper()
+                                        </div>
+                                    }
+                                    <span class="user-name-mini">@username</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
+                                    <li>
+                                        <div class="px-3 py-2 border-bottom">
+                                            <div class="fw-bold text-dark">@username</div>
+                                            <span class="badge bg-light text-muted border">Role: @userRole</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                            </svg>
+                                            My Profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Order" asp-action="Index">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                            </svg>
+                                            My Orders
+                                        </a>
+                                    </li>
+                                    @if (userRole == "Admin" || userRole == "Staff")
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.056l2.874 2.574L13.964 5H10.5a.5.5 0 0 1-.5-.5"/>
+                                                </svg>
+                                                Dashboard
+                                            </a>
+                                        </li>
+                                    }
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                                            </svg>
+                                            Logout
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="sidebar-user-info">
-                                <span class="sidebar-user-name">@Context.Session.GetString("Username")</span>
-                                <span class="sidebar-user-role">@Context.Session.GetString("Role")</span>
-                            </div>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn-brand" style="padding: 0.45rem 1.15rem; font-size: 0.88rem;">
+                                Sign In
+                            </a>
+                        }
+
+                        <!-- Mobile Menu Button -->
+                        <button class="action-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuDrawer" aria-controls="mobileMenuDrawer" title="Open Menu">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                            </svg>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end sidebar-dropdown">
-                            <li><a class="dropdown-item sidebar-dropdown-item" asp-controller="Account" asp-action="Profile">Account</a></li>
-                            <li><hr class="sidebar-dropdown-divider dropdown-divider"></li>
-                            <li><a class="dropdown-item sidebar-dropdown-item sidebar-logout" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- 4. Mobile Offcanvas Menu -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenuDrawer" aria-labelledby="mobileMenuDrawerLabel">
+            <div class="offcanvas-header mobile-drawer-header">
+                <a asp-controller="Home" asp-action="Index" class="site-brand">
+                    <div class="site-brand-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
+                        </svg>
+                    </div>
+                    <span class="site-brand-text">Sole<span>Stride</span></span>
+                </a>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <div class="p-3 border-bottom">
+                    <form asp-controller="Home" asp-action="Search" method="get">
+                        <input type="text" name="query" class="form-control form-control-custom" placeholder="Search shoes..." value="@Context.Request.Query["query"]" />
+                    </form>
+                </div>
+                <div class="mobile-drawer-nav">
+                    <a asp-controller="Home" asp-action="Index" class="mobile-drawer-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")">
+                        Home
+                    </a>
+                    <a asp-controller="Shoes" asp-action="Index" class="mobile-drawer-link @(currentController == "Shoes" ? "active" : "")">
+                        All Shoes Collection
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" asp-route-onSale="true" class="mobile-drawer-link">
+                        On Sale Products
+                    </a>
+                    <a asp-controller="Cart" asp-action="Index" class="mobile-drawer-link @(currentController == "Cart" ? "active" : "")">
+                        Shopping Cart (@cartCount)
+                    </a>
+                    <a asp-controller="Order" asp-action="Index" class="mobile-drawer-link @(currentController == "Order" ? "active" : "")">
+                        My Orders
+                    </a>
+
+                    @if (userRole == "Admin" || userRole == "Staff")
+                    {
+                        <div class="pt-3 mt-3 border-top">
+                            <span class="text-uppercase text-muted fw-bold px-3" style="font-size:0.75rem;">Staff & Admin Tools</span>
+                            <a asp-controller="Dashboard" asp-action="Index" class="mobile-drawer-link mt-1">
+                                Dashboard Analytics
+                            </a>
+                            <a asp-controller="Stock" asp-action="Index" class="mobile-drawer-link">
+                                Stock Management
+                            </a>
+                            <a asp-controller="Shoes" asp-action="Create" class="mobile-drawer-link">
+                                + Add New Product
+                            </a>
+                            @if (userRole == "Admin")
+                            {
+                                <a asp-controller="Category" asp-action="Create" class="mobile-drawer-link">
+                                    Manage Categories
+                                </a>
+                            }
+                        </div>
+                    }
+
+                    <div class="pt-3 mt-3 border-top">
+                        @if (username != null)
+                        {
+                            <a asp-controller="Account" asp-action="Profile" class="mobile-drawer-link">
+                                My Profile (@username)
+                            </a>
+                            <a asp-controller="Account" asp-action="Logout" class="mobile-drawer-link text-danger">
+                                Sign Out
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn-brand w-100 justify-content-center mt-2">
+                                Sign In / Register
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Main Content Area -->
+        <main class="site-main">
+            <div class="container-xl py-4">
+                @RenderBody()
+            </div>
+        </main>
+
+        <!-- 6. E-Commerce Footer -->
+        <footer class="site-footer">
+            <div class="container-xl">
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <a asp-controller="Home" asp-action="Index" class="footer-brand">
+                            <div class="site-brand-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
+                                </svg>
+                            </div>
+                            <span>SoleStride</span>
+                        </a>
+                        <p class="text-secondary small mb-3">
+                            Step into greatness with premium footwear crafted for peak athletic performance, modern lifestyle comfort, and iconic street fashion.
+                        </p>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-dark border text-light">100% Authentic</span>
+                            <span class="badge bg-dark border text-light">Express Delivery</span>
+                            <span class="badge bg-dark border text-light">Secure Checkout</span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 col-6">
+                        <div class="footer-heading">Collections</div>
+                        <ul class="footer-links">
+                            <li><a asp-controller="Shoes" asp-action="Index">All Footwear</a></li>
+                            <li><a asp-controller="Home" asp-action="Index" asp-route-gender="Men">Men's Sneakers</a></li>
+                            <li><a asp-controller="Home" asp-action="Index" asp-route-gender="Women">Women's Sneakers</a></li>
+                            <li><a asp-controller="Home" asp-action="Index" asp-route-onSale="true">Hot Sales %</a></li>
                         </ul>
                     </div>
-                }
-                else
-                {
-                    <div class="sidebar-footer-links">
-                        <a asp-controller="Account" asp-action="Login" class="sidebar-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8 7.646 5.354a.5.5 0 0 1 0-.708"/>
-                                <path d="M4.5 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5"/>
-                                <path fill-rule="evenodd" d="M2.5 14.5A1.5 1.5 0 0 1 1 13V3a1.5 1.5 0 0 1 1.5-1.5h6A1.5 1.5 0 0 1 10 3v1.5a.5.5 0 0 1-1 0V3a.5.5 0 0 0-.5-.5h-6A.5.5 0 0 0 2 3v10a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5v-1.5a.5.5 0 0 1 1 0V13a1.5 1.5 0 0 1-1.5 1.5z"/>
-                            </svg>
-                            <span class="sidebar-link-text">Sign In</span>
-                        </a>
+
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <div class="footer-heading">Customer Care</div>
+                        <ul class="footer-links">
+                            <li><a asp-controller="Order" asp-action="Index">Track Order</a></li>
+                            <li><a asp-controller="Cart" asp-action="Index">Shopping Cart</a></li>
+                            <li><a asp-controller="Home" asp-action="Privacy">Shipping & Returns</a></li>
+                            <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+                        </ul>
                     </div>
-                }
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-heading">Stay in the Loop</div>
+                        <p class="text-secondary small">Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>
+                        <div class="input-group">
+                            <input type="email" class="form-control form-control-custom" placeholder="Enter your email..." />
+                            <button class="btn btn-brand" type="button" style="border-radius: 0 var(--radius-md) var(--radius-md) 0;">Join</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <div>&copy; @DateTime.Now.Year SoleStride Footwear Inc. All rights reserved.</div>
+                    <div class="d-flex gap-3">
+                        <a asp-controller="Home" asp-action="Privacy" class="text-secondary text-decoration-none small">Privacy</a>
+                        <a asp-controller="Home" asp-action="Privacy" class="text-secondary text-decoration-none small">Terms</a>
+                        <a asp-controller="Home" asp-action="Privacy" class="text-secondary text-decoration-none small">Support</a>
+                    </div>
+                </div>
             </div>
-        </aside>
+        </footer>
 
-        <div class="main-area">
-            <header class="topbar">
-                <button class="topbar-toggle" id="sidebarToggle" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+        <!-- 7. Mobile Bottom Navigation Bar -->
+        <nav class="mobile-bottom-nav">
+            <div class="mobile-bottom-nav-inner">
+                <a asp-controller="Home" asp-action="Index" class="mobile-nav-item @(currentController == "Home" && currentAction == "Index" ? "active" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
                     </svg>
-                </button>
-
-                <form asp-controller="Home" asp-action="Search" method="get" class="topbar-search">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="topbar-search-icon" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    <span>Home</span>
+                </a>
+                <a asp-controller="Shoes" asp-action="Index" class="mobile-nav-item @(currentController == "Shoes" ? "active" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
                     </svg>
-                    <input type="text" name="query" class="topbar-search-input" placeholder="Search shoes..." value="@Context.Request.Query["query"]" />
-                </form>
+                    <span>Shop</span>
+                </a>
+                <a asp-controller="Cart" asp-action="Index" class="mobile-nav-item @(currentController == "Cart" ? "active" : "")" id="mobileCartBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                    </svg>
+                    <span>Cart</span>
+                    <span class="mobile-nav-badge @(cartCount == 0 ? "d-none" : "")" id="mobileCartCount">@cartCount</span>
+                </a>
+                <a asp-controller="Order" asp-action="Index" class="mobile-nav-item @(currentController == "Order" ? "active" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                    </svg>
+                    <span>Orders</span>
+                </a>
+                <a asp-controller="Account" asp-action="Profile" class="mobile-nav-item @(currentController == "Account" ? "active" : "")">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                    </svg>
+                    <span>Account</span>
+                </a>
+            </div>
+        </nav>
 
-                <div class="topbar-title">@ViewData["Title"]</div>
-
-                <div class="topbar-right"></div>
-            </header>
-
-            <main class="main-content">
-                @RenderBody()
-            </main>
-        </div>
     </div>
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- Floating Cart Notification Toast -->
+    <div id="cartToast" class="cart-floating-toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+            </svg>
+        </div>
+        <div class="toast-text-box">
+            <div class="toast-text-title" id="toastTitle">Added to Cart!</div>
+            <div class="toast-text-desc" id="toastDesc">Your footwear selection is ready in your bag.</div>
+        </div>
+        <a asp-controller="Cart" asp-action="Index" class="toast-view-cart-btn">View Cart</a>
+    </div>
 
+    <!-- Core Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        document.getElementById('sidebarToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('show');
-            document.getElementById('sidebarOverlay').classList.toggle('show');
-        });
-        document.getElementById('sidebarClose').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.remove('show');
-            document.getElementById('sidebarOverlay').classList.remove('show');
-        });
-        document.getElementById('sidebarOverlay').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.remove('show');
-            document.getElementById('sidebarOverlay').classList.remove('show');
-        });
-        document.getElementById('sidebarCollapse').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -84,6 +84,17 @@ public class ShoesController : Controller
         ViewBag.OnSale = onSale;
         ViewBag.SortBy = sortBy;
 
+        if (IsAdmin() || IsStaff())
+        {
+            var productsWithNewReviews = await _context.ProductReviews
+                .Where(r => string.IsNullOrEmpty(r.ShopReply) || r.CreatedAt >= DateTime.Now.AddDays(-2))
+                .Select(r => r.ProductId)
+                .Distinct()
+                .ToListAsync();
+
+            ViewBag.ProductsWithNewReviews = new HashSet<Guid>(productsWithNewReviews);
+        }
+
         return View(shoes);
     }
 
@@ -96,11 +107,85 @@ public class ShoesController : Controller
         }
 
         var shoes = await _context.Shoes
+            .Include(m => m.Category)
             .FirstOrDefaultAsync(m => m.ProductId == id);
         if (shoes == null)
         {
             return NotFound();
         }
+
+        // Fetch Product Reviews
+        var userRole = HttpContext.Session.GetString("Role");
+        var isStaffOrAdmin = userRole == "Admin" || userRole == "Staff";
+
+        // Admin/Staff sees all reviews, normal users see visible only
+        var reviewsQuery = _context.ProductReviews
+            .Where(r => r.ProductId == id);
+
+        if (!isStaffOrAdmin)
+        {
+            reviewsQuery = reviewsQuery.Where(r => r.IsVisible);
+        }
+
+        var reviews = await reviewsQuery
+            .Include(r => r.User)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToListAsync();
+
+        var totalReviews = reviews.Count;
+        var avgRating = totalReviews > 0 ? reviews.Average(r => r.Rating) : 0.0;
+
+        // Rating distribution (5 down to 1 star)
+        var ratingDist = new Dictionary<int, int>
+        {
+            { 5, reviews.Count(r => r.Rating == 5) },
+            { 4, reviews.Count(r => r.Rating == 4) },
+            { 3, reviews.Count(r => r.Rating == 3) },
+            { 2, reviews.Count(r => r.Rating == 2) },
+            { 1, reviews.Count(r => r.Rating == 1) },
+        };
+
+        // Fit breakdown
+        var runsSmallCount = reviews.Count(r => r.FitFeedback == ShoeFit.RunsSmall);
+        var trueToSizeCount = reviews.Count(r => r.FitFeedback == ShoeFit.TrueToSize);
+        var runsLargeCount = reviews.Count(r => r.FitFeedback == ShoeFit.RunsLarge);
+
+        var runsSmallPct = totalReviews > 0 ? (int)Math.Round((double)runsSmallCount / totalReviews * 100) : 0;
+        var trueToSizePct = totalReviews > 0 ? (int)Math.Round((double)trueToSizeCount / totalReviews * 100) : 0;
+        var runsLargePct = totalReviews > 0 ? (int)Math.Round((double)runsLargeCount / totalReviews * 100) : 0;
+
+        // User specific state
+        var currentUsername = HttpContext.Session.GetString("Username");
+        ProductReview? currentUserReview = null;
+        var isVerifiedBuyer = false;
+
+        if (!string.IsNullOrEmpty(currentUsername))
+        {
+            currentUserReview = reviews.FirstOrDefault(r => r.Username == currentUsername);
+
+            isVerifiedBuyer = await _context.Orders
+                .Where(o => o.Username == currentUsername && o.Status == "Delivered")
+                .AnyAsync(o => o.OrderDetails.Any(od => od.ProductId == id));
+        }
+
+        ViewBag.Reviews = reviews;
+        ViewBag.TotalReviews = totalReviews;
+        ViewBag.AverageRating = Math.Round(avgRating, 1);
+        ViewBag.RatingDistribution = ratingDist;
+        ViewBag.RunsSmallPct = runsSmallPct;
+        ViewBag.TrueToSizePct = totalReviews > 0 && runsSmallPct == 0 && runsLargePct == 0 ? 100 : trueToSizePct;
+        ViewBag.RunsLargePct = runsLargePct;
+        ViewBag.CurrentUserReview = currentUserReview;
+        ViewBag.IsVerifiedBuyer = isVerifiedBuyer;
+
+        // Check for new reviews for seller (Admin/Staff)
+        var newReviewsForSeller = reviews
+            .Where(r => string.IsNullOrEmpty(r.ShopReply) || r.CreatedAt >= DateTime.Now.AddDays(-2))
+            .ToList();
+
+        ViewBag.HasNewReviewForSeller = isStaffOrAdmin && newReviewsForSeller.Any();
+        ViewBag.NewReviewCount = newReviewsForSeller.Count;
+        ViewBag.LatestNewReview = newReviewsForSeller.FirstOrDefault();
 
         return View(shoes);
     }

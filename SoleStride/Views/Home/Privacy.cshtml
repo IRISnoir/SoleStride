@@ -1,6 +1,44 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+@{
+    ViewData["Title"] = "Privacy & Customer Policies";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1" style="font-size:0.88rem;">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-muted">Home</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Policies</li>
+        </ol>
+    </nav>
+    <h1 class="h2 fw-bold mb-1">Customer Policies & Privacy</h1>
+    <p class="text-muted small mb-0">Learn about our data protection standards, shipping terms, and 30-day exchange guarantee.</p>
+</div>
+
+<div class="card-custom p-4 p-md-5">
+    <div class="mb-4 pb-3 border-bottom">
+        <h2 class="h5 fw-bold mb-2">1. Authenticity & Quality Guarantee</h2>
+        <p class="text-muted" style="line-height:1.7;">
+            Every single pair of sneakers and athletic footwear listed on SoleStride is rigorously checked and authenticated by our footwear specialists before dispatch. We guarantee 100% genuine products with manufacturer warranty.
+        </p>
+    </div>
+
+    <div class="mb-4 pb-3 border-bottom">
+        <h2 class="h5 fw-bold mb-2">2. Express Delivery & Free Shipping Policy</h2>
+        <p class="text-muted" style="line-height:1.7;">
+            We offer complimentary express delivery across the country for all orders exceeding $50. Standard orders are packed and dispatched within 24 hours on business days with tracking numbers provided in your Order History.
+        </p>
+    </div>
+
+    <div class="mb-4 pb-3 border-bottom">
+        <h2 class="h5 fw-bold mb-2">3. 30-Day Easy Exchange & Returns</h2>
+        <p class="text-muted" style="line-height:1.7;">
+            Wrong size? Changed your mind? No problem. We accept returns and size exchanges within 30 days of delivery, provided the footwear is unworn, in pristine condition, and in its original manufacturer shoebox.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="h5 fw-bold mb-2">4. Privacy & Data Protection</h2>
+        <p class="text-muted" style="line-height:1.7;">
+            Your personal information, phone numbers, and delivery addresses are encrypted and secured. We never sell or lease customer information to third-party advertisers. All payment transactions utilize industry-grade SSL encryption.
+        </p>
+    </div>
+</div>

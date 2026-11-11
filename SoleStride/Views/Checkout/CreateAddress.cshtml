@@ -1,116 +1,68 @@
-﻿@model SoleStride.Models.Address
+@model SoleStride.Models.Address
 
 @{
-    ViewData["Title"] = "Add Address";
+    ViewData["Title"] = "Add New Address";
 }
 
-<div class="page-header">
-    <h1>Add New Address</h1>
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1" style="font-size:0.88rem;">
+            <li class="breadcrumb-item"><a asp-action="Index" class="text-muted">Checkout</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Add New Address</li>
+        </ol>
+    </nav>
+    <h1 class="h3 fw-bold mb-0">Add New Shipping Address</h1>
 </div>
 
-<div class="row">
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-custom p-4 p-md-5">
+            <h2 class="h5 fw-bold mb-1">Recipient & Location Details</h2>
+            <p class="text-muted small mb-4">Please provide accurate contact details for smooth delivery.</p>
 
-    <div class="col-lg-7">
+            <form asp-action="CreateAddress" method="post">
+                @Html.AntiForgeryToken()
 
-        <div class="form-card">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-4"></div>
 
-            <div class="form-section">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="RecipientName" class="form-label-custom">Recipient Full Name</label>
+                        <input asp-for="RecipientName" class="form-control-custom" placeholder="e.g. John Doe" value="@ViewBag.DefaultName" />
+                        <span asp-validation-for="RecipientName" class="text-danger small"></span>
+                    </div>
 
-                <div class="form-section-title">
-                    Address Information
+                    <div class="col-md-6">
+                        <label asp-for="Phone" class="form-label-custom">Phone Number</label>
+                        <input asp-for="Phone" class="form-control-custom" placeholder="e.g. +1 (555) 019-2834" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
                 </div>
 
-                <form asp-action="CreateAddress" method="post">
+                <div class="mb-3">
+                    <label asp-for="AddressLine" class="form-label-custom">Street Address & Apartment / Suite</label>
+                    <textarea asp-for="AddressLine" class="form-control-custom" rows="3" placeholder="Enter house number, street name, ward, district, city..."></textarea>
+                    <span asp-validation-for="AddressLine" class="text-danger small"></span>
+                </div>
 
-                    @Html.AntiForgeryToken()
+                <div class="form-check mb-4">
+                    <input asp-for="IsDefault" class="form-check-input" style="accent-color:var(--accent);" />
+                    <label asp-for="IsDefault" class="form-check-label fw-semibold text-dark small cursor-pointer">
+                        Set this as my default shipping address
+                    </label>
+                </div>
 
-                    <div asp-validation-summary="ModelOnly"
-                         class="text-danger mb-3">
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="RecipientName"
-                               class="form-label">
-                            Recipient Name
-                        </label>
-
-                        <input asp-for="RecipientName"
-                               class="form-control"
-                               placeholder="Enter recipient name"
-                               value="@ViewBag.DefaultName"/>
-
-                        <span asp-validation-for="RecipientName"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="Phone"
-                               class="form-label">
-                            Phone Number
-                        </label>
-
-                        <input asp-for="Phone"
-                               class="form-control"
-                               placeholder="Enter phone number" />
-
-                        <span asp-validation-for="Phone"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="AddressLine"
-                               class="form-label">
-                            Address
-                        </label>
-
-                        <textarea asp-for="AddressLine"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Enter full address"></textarea>
-
-                        <span asp-validation-for="AddressLine"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="form-check mb-3">
-
-                        <input asp-for="IsDefault"
-                               class="form-check-input" />
-
-                        <label asp-for="IsDefault"
-                               class="form-check-label">
-                            Set as default address
-                        </label>
-
-                    </div>
-
-                    <button type="submit"
-                            class="btn btn-primary">
-                        Create
+                <div class="d-flex align-items-center gap-2 pt-3 border-top">
+                    <button type="submit" class="btn-brand">
+                        <span>Save Address</span>
                     </button>
-
-                    <a asp-action="Index"
-                       class="btn btn-secondary">
+                    <a asp-action="Index" class="btn-brand-outline">
                         Cancel
                     </a>
-
-                </form>
-
-            </div>
-
+                </div>
+            </form>
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {

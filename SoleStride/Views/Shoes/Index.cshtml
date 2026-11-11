@@ -1,33 +1,36 @@
 @model IEnumerable<SoleStride.Models.Shoes>
 
 @{
-    ViewData["Title"] = "All Shoes";
+    ViewData["Title"] = "All Shoes Collection";
     var categories = ViewBag.Categories as List<SoleStride.Models.Category>;
+    var userRole = Context.Session.GetString("Role");
 }
 
-<div class="page-header">
-    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
-        <path d="M3 9V6.8c0-.3.2-.6.5-.7l2-.7c.3-.1.6 0 .8.2l1 1" />
-        <path d="M2 12.5h11" stroke="currentColor" stroke-width=".6" fill="none" />
-    </svg>
-    <h1>All Shoes</h1>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="h2 fw-bold mb-1">All Shoes Collection</h1>
+        <p class="text-muted small mb-0">Browse through @Model.Count() premium pairs ready to ship</p>
+    </div>
+    @if (userRole == "Staff" || userRole == "Admin")
+    {
+        <div class="d-flex gap-2">
+            <a asp-action="Create" class="btn btn-brand" style="padding:0.45rem 1.25rem; font-size:0.88rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                </svg>
+                Add New Product
+            </a>
+        </div>
+    }
 </div>
 
-@if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
-{
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="page-subtitle mb-0">Manage your shoe inventory.</p>
-        <a asp-action="Create" class="btn btn-submit">Add Product</a>
-    </div>
-}
-
-<div class="filter-card mb-4">
-    <form asp-controller="Shoes" asp-action="Index" method="get" class="filter-form">
+<!-- Filter Toolbar -->
+<div class="filter-toolbar">
+    <form asp-controller="Shoes" asp-action="Index" method="get">
         <div class="filter-grid">
-            <div class="filter-field">
+            <div>
                 <label for="categoryId" class="form-label-custom">Category</label>
-                <select name="categoryId" id="categoryId" class="form-control form-control-custom">
+                <select name="categoryId" id="categoryId" class="form-select-custom">
                     <option value="">All Categories</option>
                     @if (categories != null)
                     {
@@ -39,144 +42,182 @@
                 </select>
             </div>
 
-            <div class="filter-field">
+            <div>
                 <label for="gender" class="form-label-custom">Gender</label>
-                <select name="gender" id="gender" class="form-control form-control-custom">
-                    <option value="">All</option>
+                <select name="gender" id="gender" class="form-select-custom">
+                    <option value="">All Genders</option>
                     <option value="Men" selected="@(ViewBag.SelectedGender == "Men")">Men</option>
                     <option value="Women" selected="@(ViewBag.SelectedGender == "Women")">Women</option>
                     <option value="Unisex" selected="@(ViewBag.SelectedGender == "Unisex")">Unisex</option>
                 </select>
             </div>
 
-            <div class="filter-field">
-                <label for="minSize" class="form-label-custom">Size (min - max)</label>
+            <div>
+                <label for="minSize" class="form-label-custom">Size (Min - Max)</label>
                 <div class="d-flex align-items-center gap-1">
-                    <input type="number" name="minSize" id="minSize" class="form-control form-control-custom" min="1" max="50" placeholder="Min" value="@ViewBag.MinSize" />
+                    <input type="number" name="minSize" id="minSize" class="form-control-custom" min="1" max="50" placeholder="Min" value="@ViewBag.MinSize" />
                     <span class="text-muted">-</span>
-                    <input type="number" name="maxSize" id="maxSize" class="form-control form-control-custom" min="1" max="50" placeholder="Max" value="@ViewBag.MaxSize" />
+                    <input type="number" name="maxSize" id="maxSize" class="form-control-custom" min="1" max="50" placeholder="Max" value="@ViewBag.MaxSize" />
                 </div>
             </div>
 
-            <div class="filter-field">
+            <div>
                 <label for="color" class="form-label-custom">Color</label>
-                <input type="text" name="color" id="color" class="form-control form-control-custom" placeholder="e.g. Black, Red" value="@ViewBag.SelectedColor" />
+                <input type="text" name="color" id="color" class="form-control-custom" placeholder="e.g. Black, White" value="@ViewBag.SelectedColor" />
             </div>
 
-            <div class="filter-field">
-                <label for="minPrice" class="form-label-custom">Price (min - max)</label>
+            <div>
+                <label for="minPrice" class="form-label-custom">Price Range ($)</label>
                 <div class="d-flex align-items-center gap-1">
-                    <input type="number" name="minPrice" id="minPrice" class="form-control form-control-custom" min="0" step="0.01" placeholder="Min $" value="@ViewBag.MinPrice" />
+                    <input type="number" name="minPrice" id="minPrice" class="form-control-custom" min="0" step="0.01" placeholder="Min $" value="@ViewBag.MinPrice" />
                     <span class="text-muted">-</span>
-                    <input type="number" name="maxPrice" id="maxPrice" class="form-control form-control-custom" min="0" step="0.01" placeholder="Max $" value="@ViewBag.MaxPrice" />
+                    <input type="number" name="maxPrice" id="maxPrice" class="form-control-custom" min="0" step="0.01" placeholder="Max $" value="@ViewBag.MaxPrice" />
                 </div>
             </div>
 
-            <div class="filter-field">
-                <label for="sortBy" class="form-label-custom">Sort by</label>
-                <select name="sortBy" id="sortBy" class="form-control form-control-custom">
-                    <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc")">Name (A-Z)</option>
-                    <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc")">Name (Z-A)</option>
-                    <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">Price (Low to High)</option>
-                    <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">Price (High to Low)</option>
-                    <option value="newest" selected="@(ViewBag.SortBy == "newest")">Newest</option>
+            <div>
+                <label for="sortBy" class="form-label-custom">Sort By</label>
+                <select name="sortBy" id="sortBy" class="form-select-custom">
+                    <option value="newest" selected="@(ViewBag.SortBy == "newest")">Newest Arrivals</option>
+                    <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">Price: Low to High</option>
+                    <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">Price: High to Low</option>
+                    <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc")">Name: A to Z</option>
+                    <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc")">Name: Z to A</option>
                 </select>
             </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-2 filter-actions mt-3">
-            <label class="filter-checkbox d-flex align-items-center gap-2 mb-0">
-                <input type="checkbox" name="onSale" value="true" checked="@(ViewBag.OnSale == true)" />
-                <span>On sale only</span>
+        <div class="filter-actions">
+            <label class="form-check d-flex align-items-center gap-2 mb-0 me-auto cursor-pointer">
+                <input type="checkbox" name="onSale" value="true" class="form-check-input" checked="@(ViewBag.OnSale == true)" style="accent-color:var(--accent);" />
+                <span class="fw-semibold text-dark small">On Sale items only</span>
             </label>
-            <button type="submit" class="btn btn-submit">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+            <button type="submit" class="btn-brand" style="padding:0.5rem 1.35rem; font-size:0.88rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                 </svg>
                 Apply Filters
             </button>
-            <a asp-controller="Shoes" asp-action="Index" class="btn btn-back">Clear</a>
+            <a asp-controller="Shoes" asp-action="Index" class="btn-brand-outline" style="padding:0.5rem 1.1rem; font-size:0.88rem;">
+                Reset
+            </a>
         </div>
     </form>
 </div>
 
+<!-- Product Catalogue Grid -->
 @if (!Model.Any())
 {
-    <div class="catalogue-empty">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-        </svg>
-        <h3>No shoes available</h3>
-        <p class="text-muted mb-0">Check back soon for new arrivals.</p>
+    <div class="card-custom text-center py-5 px-3">
+        <div class="mb-3 text-muted">
+            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+        </div>
+        <h3 class="h4 fw-bold">No Shoes Available</h3>
+        <p class="text-muted mb-3">No products match your criteria. Try resetting filters.</p>
+        <a asp-controller="Shoes" asp-action="Index" class="btn-brand mx-auto">View All Shoes</a>
     </div>
 }
 else
 {
-    <div class="d-flex flex-column gap-2">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         @foreach (var item in Model)
         {
             var salePrice = item.SalePercentage.HasValue && item.SalePercentage > 0
                 ? item.Price * (decimal)(1 - item.SalePercentage.Value / 100)
                 : item.Price;
 
-            <div class="product-card" data-details-url="@Url.Action("Details", "Shoes", new { id = item.ProductId })">
-                <div class="card-body py-2 px-3">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <div class="d-flex align-items-center gap-3">
-                            <h5 class="product-name mb-0 fs-6">@item.ShoesName</h5>
-                        </div>
-                        <div class="price-section mb-0">
-                            @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
-                            {
-                                <span class="price-original small">$@item.Price.ToString("F2")</span>
-                                <span class="price-sale ms-1">$@salePrice.ToString("F2")</span>
-                            }
-                            else
-                            {
-                                <span class="price-regular fs-6">$@item.Price.ToString("F2")</span>
-                            }
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex flex-wrap gap-2 mb-2">
-                        <span class="badge bg-light text-dark border">@item.ShoesGender</span>
-                        <span class="badge bg-light text-dark border">Size: @item.ShoesSize</span>
-                        <span class="badge bg-light text-dark border">Color: @item.ShoesColor</span>
-                        <span class="badge bg-light text-dark border">@item.Category?.CategoryName</span>
+            <div class="col">
+                <div class="product-card" data-details-url="@Url.Action("Details", "Shoes", new { id = item.ProductId })">
+                    <div class="card-img-wrapper">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.ShoesName" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="card-img-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M1.5 9.5c.4-.3.9-.5 1.4-.5h1.2c.3 0 .6-.1.8-.3l1.6-1.5c.3-.3.7-.4 1.1-.3l1.1.3c.4.1.7.4.8.8l.3 1c.1.3.4.5.7.5h2c1 0 2 .5 2.6 1.3.2.3.4.5.7.6l.7.3c.3.1.5.4.5.7v.7c0 .4-.3.7-.7.7H2c-.6 0-1-.4-1-1v-2c0-.5.2-1 .5-1.3z" />
+                                </svg>
+                                <span>No Image</span>
+                            </div>
+                        }
+
+                        <span class="badge-category-tag">@(item.Category?.CategoryName ?? "Footwear")</span>
+
                         @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
                         {
-                            <span class="badge bg-success text-white">-@item.SalePercentage.Value%</span>
+                            <span class="badge-sale-tag">-@item.SalePercentage.Value%</span>
+                        }
+
+                        @if (Context.Session.GetString("Role") == "Admin" || Context.Session.GetString("Role") == "Staff")
+                        {
+                            var newReviewsSet = ViewBag.ProductsWithNewReviews as HashSet<Guid>;
+                            if (newReviewsSet != null && newReviewsSet.Contains(item.ProductId))
+                            {
+                                <span class="badge-seller-card-corner" title="Sản phẩm có đánh giá mới từ khách hàng">
+                                    <span class="seller-pulse-container">
+                                        <span class="seller-pulse-ring"></span>
+                                        <span class="seller-pulse-dot"></span>
+                                    </span>
+                                    <span>Đánh giá mới</span>
+                                </span>
+                            }
                         }
                     </div>
 
-                    @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
-                    {
-                        <div class="staff-info mb-2">
-                            <span class="staff-chip">
-                                <span class="chip-label">ID</span>
-                                <span class="chip-value">@item.ProductId</span>
-                            </span>
-                            <span class="staff-chip">
-                                <span class="chip-label">SKU</span>
-                                <span class="chip-value">@item.SkuId</span>
-                            </span>
-                            <span class="staff-chip">
-                                <span class="chip-label">Category ID</span>
-                                <span class="chip-value">@item.CategoryId</span>
-                            </span>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="product-gender-badge">@item.ShoesGender</span>
+                            <span class="text-muted small">Size: @item.ShoesSize</span>
                         </div>
-                    }
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="small text-muted">@item.Category?.CategoryName</span>
-                        <div class="d-flex gap-2">
-                            @if (Context.Session.GetString("Role") == "Staff" || Context.Session.GetString("Role") == "Admin")
+                        <h3 class="product-name" title="@item.ShoesName">@item.ShoesName</h3>
+
+                        <div class="d-flex flex-wrap gap-1 mb-2">
+                            <span class="badge bg-light text-muted border" style="font-size:0.7rem;">Color: @item.ShoesColor</span>
+                            <span class="badge bg-light text-muted border" style="font-size:0.7rem;">@item.Material</span>
+                        </div>
+
+                        <div class="price-section">
+                            @if (item.SalePercentage.HasValue && item.SalePercentage > 0)
                             {
-                                <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation()">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation()">Delete</a>
+                                <span class="price-sale">$@salePrice.ToString("F2")</span>
+                                <span class="price-original">$@item.Price.ToString("F2")</span>
+                            }
+                            else
+                            {
+                                <span class="price-regular">$@item.Price.ToString("F2")</span>
                             }
                         </div>
+
+                        <!-- Direct Add To Cart Form -->
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post" onclick="event.stopPropagation()">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <input type="hidden" name="quantity" value="1" />
+                            <button type="submit" class="btn-card-cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                                </svg>
+                                <span>Add to Cart</span>
+                            </button>
+                        </form>
                     </div>
+
+                    @if (userRole == "Staff" || userRole == "Admin")
+                    {
+                        <div class="card-footer-admin" onclick="event.stopPropagation()">
+                            <div class="d-flex gap-2">
+                                <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-secondary flex-fill">Edit</a>
+                                @if (userRole == "Admin")
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger flex-fill">Delete</a>
+                                }
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         }
