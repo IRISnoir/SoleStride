@@ -3314,3 +3314,30 @@ img {
 .seller-toast-dismiss:hover {
   opacity: 1;
 }
+
+
+/* Messenger Floating Button */
+.messenger-float {
+    position: fixed;
+    right: 90px;
+    bottom: 20px;
+    width: 55px;
+    height: 55px;
+    background: #0084FF;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    text-decoration: none;
+    z-index: 9999;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+    transition: 0.25s;
+}
+
+    .messenger-float:hover {
+        background: #006AFF;
+        color: white;
+        transform: scale(1.1);
+    }
