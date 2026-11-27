@@ -20,5 +20,6 @@ namespace SoleStride.Models
 
         // Product Reviews
         public DbSet<ProductReview> ProductReviews { get; set; }
+        public DbSet<Store> Stores { get; set; }
     }
 }

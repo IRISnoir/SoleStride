@@ -1,5 +1,8 @@
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+@using Microsoft.EntityFrameworkCore
+@inject SoleStride.Models.SoleStrideDbContext StoreDbContext
+
 @{
     var cartCount = 0;
     var cartJson = Context.Session.GetString("Cart");
@@ -17,6 +20,7 @@
     var userRole = Context.Session.GetString("Role");
     var username = Context.Session.GetString("Username");
     var avatarUrl = Context.Session.GetString("AvatarUrl");
+    var footerStore = await StoreDbContext.Stores.AsNoTracking().FirstOrDefaultAsync();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +30,19 @@
     <title>@ViewData["Title"] - SoleStride</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        @if (footerStore != null)
+        {
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        }
+        <style>
+            .footer-store-location { padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.1); }
+            .footer-store-info { height: 100%; padding: 1.25rem; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; background: rgba(255,255,255,.03); }
+            .footer-store-info h5 { margin: .25rem 0 .75rem; color: #fff; }
+            .footer-store-link { color: #f48c06; font-size: .85rem; text-decoration: none; }
+            .footer-store-link:hover { color: #ffb347; text-decoration: underline; }
+            .footer-store-map { min-height: 230px; height: 100%; overflow: hidden; border-radius: 12px; }
+            @@media (max-width: 991.98px) { .footer-store-map { min-height: 280px; } }
+        </style>
 </head>
 <body>
     <div class="site-wrapper">
@@ -75,6 +92,7 @@
                         }
                     </div>
                 </div>
+
             </div>
         }
 
@@ -357,6 +375,34 @@
                     </div>
                 </div>
 
+                @if (footerStore != null)
+                {
+                    <div class="footer-store-location row g-4 align-items-stretch mt-4">
+                        <div class="col-lg-4">
+                            <div class="footer-store-info">
+                                <div class="footer-heading">Visit our store</div>
+                                <h5>@footerStore.StoreName</h5>
+                                <p class="text-secondary small mb-2">@footerStore.Address</p>
+                                <p class="text-secondary small mb-2">Phone: @footerStore.Phone</p>
+                                @if (!string.IsNullOrWhiteSpace(footerStore.OpeningHours))
+                                {
+                                    <p class="text-secondary small mb-3">Hours: @footerStore.OpeningHours</p>
+                                }
+                                <a href="https://www.google.com/maps/dir/?api=1&amp;destination=@Uri.EscapeDataString(footerStore.Address)"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="footer-store-link d-inline-block mb-2">
+                                    Get directions on Google Maps
+                                </a>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div id="footerStoreMap" class="footer-store-map" aria-label="Store location map"></div>
+                        </div>
+                    </div>
+                }
+
                 <div class="footer-bottom">
                     <div>&copy; @DateTime.Now.Year SoleStride Footwear Inc. All rights reserved.</div>
                     <div class="d-flex gap-3">
@@ -447,6 +493,26 @@
     <!-- Core Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @if (footerStore != null)
+    {
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const storeLocation = [@footerStore.Latitude, @footerStore.Longitude];
+                const footerMap = L.map('footerStoreMap', { scrollWheelZoom: false }).setView(storeLocation, 16);
+
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(footerMap);
+
+                L.marker(storeLocation)
+                    .addTo(footerMap)
+                    .bindPopup('<strong>@Html.Raw(System.Text.Json.JsonSerializer.Serialize(footerStore.StoreName))</strong><br>@Html.Raw(System.Text.Json.JsonSerializer.Serialize(footerStore.Address))')
+                    .openPopup();
+            });
+        </script>
+    }
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
